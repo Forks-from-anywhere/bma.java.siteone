@@ -1,0 +1,8 @@
+
+/.externalToolBuilders
+*.project
+*.settings
+*.classpath
+/*/target
+/*/gen-java
+/*/gen-php
