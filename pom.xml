@@ -48,9 +48,8 @@
 		</dependency>
 	</dependencies>
 	<modules>
-		<module>iplimit</module>
 		<module>matchlist</module>
-    <module>comments</module>
-    <module>quartz</module>
+		<module>comments</module>
+		<module>quartz</module>
   </modules>
 </project>
