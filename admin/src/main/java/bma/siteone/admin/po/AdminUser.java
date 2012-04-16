@@ -5,6 +5,11 @@ import java.util.Date;
 
 import bma.common.langutil.core.ToStringUtil;
 
+/**
+ * 用户
+ * @author liaozhuojie
+ *
+ */
 public class AdminUser extends AdminUserShared implements Serializable{
 
 	private static final long serialVersionUID = 1L;

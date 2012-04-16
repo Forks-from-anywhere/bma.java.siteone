@@ -3,7 +3,6 @@ package bma.siteone.admin;
 import static org.junit.Assert.*;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import org.codehaus.jackson.map.ObjectMapper;
@@ -16,6 +15,7 @@ import bma.common.jdbctemplate.JdbcTemplateUtil;
 import bma.common.langutil.core.PagerResult;
 import bma.common.langutil.testcase.SpringTestcaseUtil;
 import bma.siteone.admin.po.AdminApp;
+import bma.siteone.admin.po.AdminAuth;
 import bma.siteone.admin.po.AdminOp;
 import bma.siteone.admin.po.AdminOpLog;
 import bma.siteone.admin.po.AdminRole;
@@ -27,9 +27,12 @@ import bma.siteone.admin.service.AdminService;
 import bma.siteone.admin.service.OpLogForm;
 import bma.siteone.admin.service.OpLogQueryForm;
 import bma.siteone.admin.service.UserForm;
-import bma.siteone.admin.thrift.TAdminService;
-import bma.siteone.admin.thrift.TUserForm;
 
+/**
+ * 管理后台服务service层AdminServiceImpl测试用例
+ * @author liaozhuojie
+ *
+ */
 public class AdminServiceImplTest {
 
 	FileSystemXmlApplicationContext context;
@@ -65,7 +68,7 @@ public class AdminServiceImplTest {
 	public void testDeleteUser() throws Exception {
 		AdminService s = context.getBean("service", AdminService.class);
 		
-		String userName = "liaozj3";
+		String userName = "liaozj1";
 		assertTrue(s.deleteUser(userName));
 	}
 	
@@ -126,7 +129,7 @@ public class AdminServiceImplTest {
 	public void testDeleteApp() throws Exception {
 		AdminService s = context.getBean("service", AdminService.class);
 		
-		String appName = "app3";
+		String appName = "mms_admin";
 //		System.out.println(s.createUser(userForm));
 		assertTrue(s.deleteApp(appName));
 	}
@@ -206,7 +209,6 @@ public class AdminServiceImplTest {
 		
 		String appName = "app3";
 		String roleName = "role3";
-		String opName = "op4";
 		
 		List<AdminRoleOp> roleOpsList = s.queryRoleOps(roleName,appName);
 		System.out.println(roleOpsList);
@@ -269,26 +271,25 @@ public class AdminServiceImplTest {
 		AdminSync sync = new AdminSync();
 		
 		AdminApp adminApp = new AdminApp();
-		adminApp.setAppName("app1");
-		adminApp.setAppDescription("app desc 123123");
+		adminApp.setAppName("mms_admin");
+		adminApp.setAppDescription("mms desc");
 		sync.setAdminApp(adminApp);
 		
 		List<AdminRole> adminRoles = new ArrayList<AdminRole>();
 		//role
 		AdminRole adminRole = new AdminRole();
-		adminRole.setAppName("app1");
-		adminRole.setRoleName("liaozj1");
-		adminRole.setRoleDescription("role desc 123123");
+		adminRole.setAppName("mms_admin");
+		adminRole.setRoleName("admin");
+		adminRole.setRoleDescription("admin desc");
 		//role2
 		AdminRole adminRole2 = new AdminRole();
-		adminRole2.setAppName("app1");
-		adminRole2.setRoleName("liaozj2");
-		adminRole2.setRoleDescription("role2 desc 123123");
-		//role3
+		adminRole2.setAppName("mms_admin");
+		adminRole2.setRoleName("default");
+		adminRole2.setRoleDescription("default desc");
 		AdminRole adminRole3 = new AdminRole();
-		adminRole3.setAppName("app1");
-		adminRole3.setRoleName("liaozj3");
-		adminRole3.setRoleDescription("role3 desc 123123");
+		adminRole3.setAppName("mms_admin");
+		adminRole3.setRoleName("default2");
+		adminRole3.setRoleDescription("default desc");
 		
 		adminRoles.add(adminRole);
 		adminRoles.add(adminRole2);
@@ -298,56 +299,72 @@ public class AdminServiceImplTest {
 		List<AdminOp> adminOps = new ArrayList<AdminOp>();
 		//op1
 		AdminOp adminOp = new AdminOp();
-		adminOp.setAppName("app1");
-		adminOp.setOpName("op1");
-		adminOp.setOpDescription("op1 desc 123123");
-		//op2
-		AdminOp adminOp2 = new AdminOp();
-		adminOp2.setAppName("app1");
-		adminOp2.setOpName("op2");
-		adminOp2.setOpDescription("op2 desc 123123");
-		//op3
-		AdminOp adminOp3 = new AdminOp();
-		adminOp3.setAppName("app1");
-		adminOp3.setOpName("op3");
-		adminOp3.setOpDescription("op3 desc 123123");
-		
+		adminOp.setAppName("mms_admin");
+		adminOp.setOpName("changePassword");
+		adminOp.setOpDescription("changePassword desc");
 		adminOps.add(adminOp);
-		adminOps.add(adminOp2);
-		adminOps.add(adminOp3);
+		
+		//op_createUser
+		AdminOp adminOp_createUser = new AdminOp();
+		adminOp_createUser.setAppName("mms_admin");
+		adminOp_createUser.setOpName("createUser");
+		adminOp_createUser.setOpDescription("createUser desc");
+		adminOps.add(adminOp_createUser);
+		
+		//op_listUser
+		AdminOp op_listUser = new AdminOp();
+		op_listUser.setAppName("mms_admin");
+		op_listUser.setOpName("listUser");
+		op_listUser.setOpDescription("op_listUser desc");
+		adminOps.add(op_listUser);
+		
 		sync.setAdminOps(adminOps);
 		
 		
 		List<RoleOp> roleOps = new ArrayList<AdminSync.RoleOp>();
 		//roleOp1
 		RoleOp roleOp = new RoleOp();
-		roleOp.setRoleName("liaozj1");
-		roleOp.setOpName("op1");
+		roleOp.setRoleName("admin");
+		roleOp.setOpName("changePassword");
+		roleOps.add(roleOp);
+		
+		//roleOp_createUser
+		RoleOp roleOp_createUser = new RoleOp();
+		roleOp_createUser.setRoleName("admin");
+		roleOp_createUser.setOpName("createUser");
+		roleOps.add(roleOp_createUser);
+		
+		//roleOp_listUser
+		RoleOp roleOp_listUser = new RoleOp();
+		roleOp_listUser.setRoleName("admin");
+		roleOp_listUser.setOpName("listUser");
+		roleOps.add(roleOp_listUser);
+		
 		//roleOp2
 		RoleOp roleOp2 = new RoleOp();
-		roleOp2.setRoleName("liaozj1");
-		roleOp2.setOpName("op2");		
-		//roleOp3
-		RoleOp roleOp3 = new RoleOp();
-		roleOp3.setRoleName("liaozj2");
-		roleOp3.setOpName("op3");
-		//roleOp4
-		RoleOp roleOp4 = new RoleOp();
-		roleOp4.setRoleName("liaozj3");
-		roleOp4.setOpName("op3");
-		
-		roleOps.add(roleOp);
+		roleOp2.setRoleName("default");
+		roleOp2.setOpName("changePassword");		
 		roleOps.add(roleOp2);
-		roleOps.add(roleOp3);
-		roleOps.add(roleOp4);
+		
+		
 		sync.setRoleOps(roleOps);
 		
-		AdminUser liaozj1 = new AdminUser();
-		liaozj1.setUserName("liaozj1");
-		liaozj1.setPassword("111111");
-		liaozj1.setUserDescription("liaozj desc 123123");
+		AdminUser admin = new AdminUser();
+		admin.setUserName("admin");
+		admin.setPassword("admin");
+		admin.setUserDescription("admin desc");
 		
-		sync.setManager(liaozj1);
+		sync.setManager(admin);
+		
+		List<AdminAuth> adminAuths = new ArrayList<AdminAuth>();
+		//auth1
+		AdminAuth auth1 = new AdminAuth();
+		auth1.setAppName("mms_admin");
+		auth1.setUserName("admin");
+		auth1.setRoleName("admin");
+		
+		adminAuths.add(auth1);
+		sync.setAdminAuths(adminAuths);
 		
 		ObjectMapper mapper = new ObjectMapper();
 		String syncContent = mapper.writeValueAsString(sync);
@@ -356,7 +373,54 @@ public class AdminServiceImplTest {
 		assertTrue(s.syncApp(syncContent));
 //		assertFalse(s.checkUserAuth(userName,appName,opName));
 	}
+
+/*	
+	@Test
+	public void testQueryAppUsers() throws Exception {
+		AdminService s = context.getBean("service", AdminService.class);
+		
+		String appName = "mms_admin";
+		PagerResult<String> authsList = s.queryAppUsers(appName,3,2);
+		System.out.println(authsList);
+	}
+*/
 	
+	@Test
+	public void testQueryAppRoles() throws Exception {
+		AdminService s = context.getBean("service", AdminService.class);
+		
+		String appName = "mms_admin";
+		List<String> rolesList = s.queryAppRoles(appName);
+		System.out.println(rolesList);
+	}
 	
+	@Test
+	public void testCheckUserExist() throws Exception {
+		AdminService s = context.getBean("service", AdminService.class);
+		
+//		String userName = "admin";
+//		assertTrue(s.checkUserExist(userName));
+		
+		String userName = "xxx";
+		assertFalse(s.checkUserExist(userName));
+	}
+
+/*
+	@Test
+	public void testQueryAllUsers() throws Exception {
+		AdminService s = context.getBean("service", AdminService.class);
+		
+		PagerResult<String> authsList = s.queryAllUsers(2,2);
+		System.out.println(authsList);
+	}
+*/
+	
+	@Test
+	public void testQueryAllUser() throws Exception {
+		AdminService s = context.getBean("service", AdminService.class);
+		
+		List<AdminUser> usersList = s.queryAllUser();
+		System.out.println(usersList);
+	}
 
 }

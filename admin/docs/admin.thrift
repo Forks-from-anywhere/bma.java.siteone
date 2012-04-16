@@ -16,7 +16,7 @@
  * Did you also notice that Thrift supports C style comments?
  */
 
-namespace php admin
+namespace php bma.admin.thrift
 namespace java bma.siteone.admin.thrift
 
 struct TUser {
@@ -86,6 +86,22 @@ struct TOpLogQueryForm {
   11: optional string sortDir,
 }
 
+struct TAuth {
+  1: string userName,
+  2: string appName,
+  3: string roleName,
+}
+
+struct TAppUsersResult {
+  1: i32 total,
+  2: list<string> result,
+}
+
+struct TAllUsersResult {
+  1: i32 total,
+  2: list<string> result,
+}
+
 service TAdminService {
 
 	bool createUser(1:TUserForm userForm),
@@ -110,6 +126,18 @@ service TAdminService {
 
 	bool addOpLog(1:TOpLogForm opLogForm),
 
-	TOpLogRessult queryOpLogs(1:TOpLogQueryForm opLogQueryForm)
+	TOpLogRessult queryOpLogs(1:TOpLogQueryForm opLogQueryForm),
+
+	list<string> queryAppRoles(1:string appName),
+
+	bool checkUserExist(1:string userName),
+
+	TUser getUser(1:string userName),
+
+/*	TAppUsersResult queryAppUsers(1:string appName, 2:i32 page, 3:i32 pageSize),	*/
+
+/*	TAllUsersResult queryAllUsers(1:i32 page, 2:i32 pageSize),	*/
+
+	list<TUser> queryAllUser(),
 
 }

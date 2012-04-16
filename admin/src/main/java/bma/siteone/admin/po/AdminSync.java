@@ -2,6 +2,11 @@ package bma.siteone.admin.po;
 
 import java.util.List;
 
+/**
+ * 应用配置同步对象
+ * @author liaozhuojie
+ *
+ */
 public class AdminSync {
 
 	private AdminApp adminApp;
@@ -9,6 +14,12 @@ public class AdminSync {
 	private List<AdminRole> adminRoles;
 	
 	private List<AdminOp> adminOps;
+	
+	private List<RoleOp> roleOps;
+	
+	private AdminUser manager;
+	
+	private List<AdminAuth> adminAuths;
 	
 	public static class RoleOp{
 		
@@ -33,10 +44,6 @@ public class AdminSync {
 		}
 		
 	}
-	
-	private List<RoleOp> roleOps;
-	
-	private AdminUser manager;
 
 	public AdminApp getAdminApp() {
 		return adminApp;
@@ -77,5 +84,14 @@ public class AdminSync {
 	public void setManager(AdminUser manager) {
 		this.manager = manager;
 	}
+
+	public List<AdminAuth> getAdminAuths() {
+		return adminAuths;
+	}
+
+	public void setAdminAuths(List<AdminAuth> adminAuths) {
+		this.adminAuths = adminAuths;
+	}
+	
 	
 }

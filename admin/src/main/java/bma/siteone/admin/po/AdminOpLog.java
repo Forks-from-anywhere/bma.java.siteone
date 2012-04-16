@@ -5,6 +5,11 @@ import java.util.Date;
 
 import bma.common.langutil.core.ToStringUtil;
 
+/**
+ * 操作记录
+ * @author liaozhuojie
+ *
+ */
 public class AdminOpLog extends AdminOpLogShared implements Serializable{
 	
 	private static final long serialVersionUID = 1L;

@@ -5,6 +5,11 @@ import java.util.Date;
 
 import bma.common.langutil.core.ToStringUtil;
 
+/**
+ * 应用的角色
+ * @author liaozhuojie
+ *
+ */
 public class AdminRole implements Serializable{
 
 	private static final long serialVersionUID = 1L;

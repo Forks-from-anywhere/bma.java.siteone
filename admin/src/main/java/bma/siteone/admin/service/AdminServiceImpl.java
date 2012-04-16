@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import org.apache.thrift.TException;
 import org.codehaus.jackson.JsonParseException;
 import org.codehaus.jackson.map.JsonMappingException;
 import org.codehaus.jackson.map.ObjectMapper;
@@ -16,8 +17,6 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
-
-import com.mchange.v2.c3p0.impl.NewPooledConnection;
 
 import bma.common.jdbctemplate.JdbcTemplateHelper;
 import bma.common.langutil.core.DateTimeUtil;
@@ -35,6 +34,12 @@ import bma.siteone.admin.po.AdminRoleOp;
 import bma.siteone.admin.po.AdminSync;
 import bma.siteone.admin.po.AdminSync.RoleOp;
 import bma.siteone.admin.po.AdminUser;
+
+/**
+ * 管理后台服务层
+ * @author liaozhuojie
+ *
+ */
 
 @Transactional
 public class AdminServiceImpl implements AdminService{
@@ -154,9 +159,14 @@ public class AdminServiceImpl implements AdminService{
 		
 		CommonFieldValues tj = new CommonFieldValues();
 		tj.addString("user_name", userName);
-		int c = helper.executeDelete(adminUserTableName, tj);
+		helper.executeDelete(adminUserTableName, tj);
 		
-		return c == 1;
+		//删除用户对应的授权
+		CommonFieldValues authtj = new CommonFieldValues();
+		authtj.addString("user_name", userName);
+		helper.executeDelete(adminAuthUserRoleTableName, authtj);
+		
+		return true;
 	}
 	
 	@Transactional(propagation = Propagation.NOT_SUPPORTED, readOnly = true)
@@ -287,11 +297,21 @@ public class AdminServiceImpl implements AdminService{
 		}
 		//创建对应的管理员
 		AdminUser manager = sync.getManager();
-		UserForm userForm = new UserForm();
-		userForm.setUserName(manager.getUserName());
-		userForm.setPassword(manager.getPassword());
-		userForm.setUserDescription(manager.getUserDescription());
-		createUser(userForm);
+		AdminUser user = getUser(manager.getUserName());
+		if(user == null){
+			UserForm userForm = new UserForm();
+			userForm.setUserName(manager.getUserName());
+			userForm.setPassword(manager.getPassword());
+			userForm.setUserDescription(manager.getUserDescription());
+			createUser(userForm);
+		}
+		//创建管理员的授权
+		List<AdminAuth> adminAuths = sync.getAdminAuths();
+		for(AdminAuth auth : adminAuths){
+			//先删除
+			deleteUserAuth(auth.getUserName(), auth.getAppName(), auth.getRoleName());
+			addUserAuth(auth.getUserName(), auth.getAppName(), auth.getRoleName());
+		}
 			
 		return true;
 		
@@ -701,7 +721,6 @@ public class AdminServiceImpl implements AdminService{
 		return true;
 	}
 	
-	@SuppressWarnings("deprecation")
 	@Transactional(propagation = Propagation.NOT_SUPPORTED, readOnly = true)
 	@Override
 	public PagerResult<AdminOpLog> queryOpLogs(OpLogQueryForm opLogQueryForm){
@@ -758,6 +777,105 @@ public class AdminServiceImpl implements AdminService{
 			
 			return opLog;
 		}
+	}
+
+	
+	/**
+	 * 查询当前应用授权的用户
+	 */
+/*	
+	@Transactional(propagation = Propagation.NOT_SUPPORTED, readOnly = true)
+	@Override
+	public PagerResult<String> queryAppUsers(String appName, int page, int pageSize){
+		
+		String sql = "SELECT COUNT( DISTINCT user_name) FROM "+adminAuthUserRoleTableName+" WHERE app_name=?";
+		int total = jdbcTemplate.queryForInt(sql, new Object[]{appName});
+		
+		Pager pager = new Pager(total, page, pageSize);
+		
+		String sql2 = "SELECT  DISTINCT user_name FROM "+adminAuthUserRoleTableName+" WHERE app_name=? LIMIT ?,?";
+		List<String> usernames = jdbcTemplate.queryForList(sql2, new Object[]{appName,pager.getStart(),pager.getPageSize()}, new int[]{java.sql.Types.VARCHAR,java.sql.Types.INTEGER,java.sql.Types.INTEGER}, String.class);
+
+		PagerResult<String> result = new PagerResult<String>();
+		result.setPager(pager);
+		result.setResult(usernames);
+		
+		return result;
+		
+
+	
+		
+		String sql = "SELECT * FROM "+adminAuthUserRoleTableName+" WHERE app_name=?";
+		
+//		List<String> usernames = jdbcTemplate.queryForList(sql, new Object[]{appName}, new int[]{java.sql.Types.VARCHAR}, String.class);
+		List<AdminAuth> authsList = jdbcTemplate.query(sql, new Object[]{appName}, new AdminAuthRowMapper());
+		
+		List<AdminAuth> auths = new ArrayList<AdminAuth>();
+		//只保留有效的
+		for(AdminAuth auth : authsList){
+			if(getUser(auth.getUserName()) != null ){	//用户存在
+				auths.add(auth);
+			}
+		}
+		return auths;
+		
+		
+	}
+*/
+
+	@Transactional(propagation = Propagation.NOT_SUPPORTED, readOnly = true)
+	@Override
+	public List<String> queryAppRoles(String appName) throws TException {
+		
+		String sql = "SELECT role_name FROM "+adminAppRoleTableName+" WHERE app_name=?";
+		
+		List<String> rolesList = jdbcTemplate.queryForList(sql, new Object[]{appName}, new int[]{java.sql.Types.VARCHAR}, String.class);
+		
+		return rolesList;
+	}
+	
+	@Transactional(propagation = Propagation.NOT_SUPPORTED, readOnly = true)
+	@Override
+	public boolean checkUserExist(String userName) throws TException {
+		AdminUser user = getUser(userName);
+		if(user == null){
+			return false;
+		}
+		return true;
+	}
+	
+	/**
+	 * 查询所有的用户
+	 */
+/*	
+	@Transactional(propagation = Propagation.NOT_SUPPORTED, readOnly = true)
+	@Override
+	public PagerResult<String> queryAllUsers(int page, int pageSize){
+		
+		String sql = "SELECT COUNT(1) FROM "+adminUserTableName;
+		int total = jdbcTemplate.queryForInt(sql);
+		
+		Pager pager = new Pager(total, page, pageSize);
+		
+		String sql2 = "SELECT user_name FROM "+adminUserTableName+" LIMIT ?,?";
+		List<String> usernames = jdbcTemplate.queryForList(sql2, new Object[]{pager.getStart(),pager.getPageSize()}, new int[]{java.sql.Types.INTEGER,java.sql.Types.INTEGER}, String.class);
+
+		PagerResult<String> result = new PagerResult<String>();
+		result.setPager(pager);
+		result.setResult(usernames);
+		
+		return result;
+		
+	}
+*/
+	
+	@Override
+	public List<AdminUser> queryAllUser() throws TException {
+		
+		String sql = "SELECT * FROM "+adminUserTableName;
+		List<AdminUser> usersList = jdbcTemplate.query(sql, new AdminUserRowMapper());
+
+		return usersList;
 	}
 	
 }

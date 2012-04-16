@@ -4,6 +4,11 @@ import java.io.Serializable;
 
 import bma.common.langutil.core.ToStringUtil;
 
+/**
+ * 用户的授权（应用.角色）
+ * @author liaozhuojie
+ *
+ */
 public class AdminAuth implements Serializable{
 
 	private static final long serialVersionUID = 1L;

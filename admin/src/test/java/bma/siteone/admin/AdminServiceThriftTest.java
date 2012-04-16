@@ -12,25 +12,28 @@ import org.junit.Test;
 import org.springframework.context.support.FileSystemXmlApplicationContext;
 
 import bma.common.jdbctemplate.JdbcTemplateUtil;
-import bma.common.langutil.core.PagerResult;
 import bma.common.langutil.testcase.SpringTestcaseUtil;
 import bma.siteone.admin.po.AdminApp;
 import bma.siteone.admin.po.AdminOp;
-import bma.siteone.admin.po.AdminOpLog;
 import bma.siteone.admin.po.AdminRole;
 import bma.siteone.admin.po.AdminSync;
 import bma.siteone.admin.po.AdminUser;
 import bma.siteone.admin.po.AdminSync.RoleOp;
-import bma.siteone.admin.service.AdminService;
-import bma.siteone.admin.service.OpLogForm;
-import bma.siteone.admin.service.OpLogQueryForm;
 import bma.siteone.admin.thrift.TAdminService;
+import bma.siteone.admin.thrift.TAllUsersResult;
+import bma.siteone.admin.thrift.TAppUsersResult;
 import bma.siteone.admin.thrift.TOpLogForm;
 import bma.siteone.admin.thrift.TOpLogQueryForm;
 import bma.siteone.admin.thrift.TOpLogRessult;
 import bma.siteone.admin.thrift.TRole;
+import bma.siteone.admin.thrift.TUser;
 import bma.siteone.admin.thrift.TUserForm;
 
+/**
+ * 管理后台服务handler层AdminServiceThrift测试用例
+ * @author liaozhuojie
+ *
+ */
 public class AdminServiceThriftTest {
 
 	FileSystemXmlApplicationContext context;
@@ -54,7 +57,7 @@ public class AdminServiceThriftTest {
 		TAdminService.Iface s = context.getBean("handler", TAdminService.Iface.class);
 		
 		TUserForm userForm = new TUserForm();
-		userForm.setUserName("liaozj4");
+		userForm.setUserName("liaozj5");
 		userForm.setPassword("111111");
 		userForm.setUserDescription("desc1111");
 		
@@ -117,85 +120,57 @@ public class AdminServiceThriftTest {
 		AdminSync sync = new AdminSync();
 		
 		AdminApp adminApp = new AdminApp();
-		adminApp.setAppName("app1");
-		adminApp.setAppDescription("app desc 123123");
+		adminApp.setAppName("mms_admin");
+		adminApp.setAppDescription("mms desc");
 		sync.setAdminApp(adminApp);
 		
 		List<AdminRole> adminRoles = new ArrayList<AdminRole>();
 		//role
 		AdminRole adminRole = new AdminRole();
-		adminRole.setAppName("app1");
-		adminRole.setRoleName("liaozj1");
-		adminRole.setRoleDescription("role desc 123123");
+		adminRole.setAppName("mms_admin");
+		adminRole.setRoleName("admin");
+		adminRole.setRoleDescription("admin desc");
 		//role2
 		AdminRole adminRole2 = new AdminRole();
-		adminRole2.setAppName("app1");
-		adminRole2.setRoleName("liaozj2");
-		adminRole2.setRoleDescription("role2 desc 123123");
-		//role3
-		AdminRole adminRole3 = new AdminRole();
-		adminRole3.setAppName("app1");
-		adminRole3.setRoleName("liaozj3");
-		adminRole3.setRoleDescription("role3 desc 123123");
+		adminRole2.setAppName("mms_admin");
+		adminRole2.setRoleName("default");
+		adminRole2.setRoleDescription("default desc");
 		
 		adminRoles.add(adminRole);
 		adminRoles.add(adminRole2);
-		adminRoles.add(adminRole3);
 		sync.setAdminRoles(adminRoles);
 		
 		List<AdminOp> adminOps = new ArrayList<AdminOp>();
 		//op1
 		AdminOp adminOp = new AdminOp();
-		adminOp.setAppName("app1");
-		adminOp.setOpName("op1");
-		adminOp.setOpDescription("op1 desc 123123");
-		//op2
-		AdminOp adminOp2 = new AdminOp();
-		adminOp2.setAppName("app1");
-		adminOp2.setOpName("op2");
-		adminOp2.setOpDescription("op2 desc 123123");
-		//op3
-		AdminOp adminOp3 = new AdminOp();
-		adminOp3.setAppName("app1");
-		adminOp3.setOpName("op3");
-		adminOp3.setOpDescription("op3 desc 123123");
+		adminOp.setAppName("mms_admin");
+		adminOp.setOpName("changePassword");
+		adminOp.setOpDescription("changePassword desc");
 		
 		adminOps.add(adminOp);
-		adminOps.add(adminOp2);
-		adminOps.add(adminOp3);
 		sync.setAdminOps(adminOps);
 		
 		
 		List<RoleOp> roleOps = new ArrayList<AdminSync.RoleOp>();
 		//roleOp1
 		RoleOp roleOp = new RoleOp();
-		roleOp.setRoleName("liaozj1");
-		roleOp.setOpName("op1");
+		roleOp.setRoleName("admin");
+		roleOp.setOpName("changePassword");
 		//roleOp2
 		RoleOp roleOp2 = new RoleOp();
-		roleOp2.setRoleName("liaozj1");
-		roleOp2.setOpName("op2");		
-		//roleOp3
-		RoleOp roleOp3 = new RoleOp();
-		roleOp3.setRoleName("liaozj2");
-		roleOp3.setOpName("op3");
-		//roleOp4
-		RoleOp roleOp4 = new RoleOp();
-		roleOp4.setRoleName("liaozj3");
-		roleOp4.setOpName("op3");
+		roleOp2.setRoleName("default");
+		roleOp2.setOpName("changePassword");		
 		
 		roleOps.add(roleOp);
 		roleOps.add(roleOp2);
-		roleOps.add(roleOp3);
-		roleOps.add(roleOp4);
 		sync.setRoleOps(roleOps);
 		
-		AdminUser liaozj1 = new AdminUser();
-		liaozj1.setUserName("liaozj11");
-		liaozj1.setPassword("111111");
-		liaozj1.setUserDescription("liaozj desc 123123");
+		AdminUser admin = new AdminUser();
+		admin.setUserName("admin");
+		admin.setPassword("admin");
+		admin.setUserDescription("admin desc");
 		
-		sync.setManager(liaozj1);
+		sync.setManager(admin);
 		
 		ObjectMapper mapper = new ObjectMapper();
 		String syncContent = mapper.writeValueAsString(sync);
@@ -285,6 +260,63 @@ public class AdminServiceThriftTest {
 		TOpLogRessult r = s.queryOpLogs(opLogQueryForm);
 		System.out.println(r.getResult());
 	}
+
+/*	
+	@Test
+	public void testQueryAppUsers() throws Exception {
+		TAdminService.Iface s = context.getBean("handler", TAdminService.Iface.class);
+		
+		String appName = "mms_admin";
+		TAppUsersResult r = s.queryAppUsers(appName,2,3);
+		System.out.println(r);
+	}
+*/
 	
+	@Test
+	public void testQueryAppRoles() throws Exception {
+		TAdminService.Iface s = context.getBean("handler", TAdminService.Iface.class);
+		
+		String appName = "mms_admin";
+		List<String> rolesList = s.queryAppRoles(appName);
+		System.out.println(rolesList);
+	}
+	
+	@Test
+	public void testCheckUserExist() throws Exception {
+		TAdminService.Iface s = context.getBean("handler", TAdminService.Iface.class);
+		
+		String userName = "admin";
+		assertTrue(s.checkUserExist(userName));
+//		String userName = "xxx";
+//		assertFalse(s.checkUserExist(userName));
+		
+	}
+	
+	@Test
+	public void testGetUser() throws Exception {
+		TAdminService.Iface s = context.getBean("handler", TAdminService.Iface.class);
+		
+		String userName = "admin";
+		TUser user = s.getUser(userName);
+		System.out.println(user);
+	}
+	
+/*
+	@Test
+	public void testQueryAllUsers() throws Exception {
+		TAdminService.Iface s = context.getBean("handler", TAdminService.Iface.class);
+		
+		TAllUsersResult r = s.queryAllUsers(2,2);
+		System.out.println(r);
+	}
+*/
+	
+	@Test
+	public void testQueryAllUser() throws Exception {
+		TAdminService.Iface s = context.getBean("handler", TAdminService.Iface.class);
+		
+		List<TUser> r = s.queryAllUser();
+		System.out.println(r);
+	}
 	
 }

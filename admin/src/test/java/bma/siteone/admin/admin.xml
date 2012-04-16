@@ -14,7 +14,7 @@
 		destroy-method="close">
 		<property name="driverClass" value="com.mysql.jdbc.Driver" />
 		<property name="jdbcUrl"
-			value="jdbc:mysql://172.16.25.131:3306/duowan_admin?user=root&amp;password=root&amp;useUnicode=true&amp;characterEncoding=utf8" />
+			value="jdbc:mysql://127.0.0.1:3306/duowan_admin?user=root&amp;password=&amp;useUnicode=true&amp;characterEncoding=utf8" />
 		<property name="initialPoolSize">
 			<value>10</value>
 		</property>

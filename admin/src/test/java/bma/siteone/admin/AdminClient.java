@@ -1,7 +1,5 @@
 package bma.siteone.admin;
 
-import static org.junit.Assert.assertTrue;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -11,13 +9,7 @@ import org.apache.thrift.protocol.TProtocol;
 import org.apache.thrift.transport.TSocket;
 import org.apache.thrift.transport.TTransport;
 import org.codehaus.jackson.map.ObjectMapper;
-import org.junit.After;
-import org.junit.Before;
-import org.springframework.context.support.FileSystemXmlApplicationContext;
 
-import bma.common.jdbctemplate.JdbcTemplateUtil;
-import bma.common.langutil.testcase.SpringTestcaseUtil;
-import bma.common.thrift.ThriftServer;
 import bma.siteone.admin.po.AdminApp;
 import bma.siteone.admin.po.AdminOp;
 import bma.siteone.admin.po.AdminRole;
@@ -31,6 +23,12 @@ import bma.siteone.admin.thrift.TOpLogRessult;
 import bma.siteone.admin.thrift.TRole;
 import bma.siteone.admin.thrift.TUserForm;
 
+/**
+ * admin管理后台服务测试client
+ * 
+ * @author liaozhuojie
+ *
+ */
 public class AdminClient {
 	
 	  public static void main(String [] args) {
@@ -51,15 +49,13 @@ public class AdminClient {
 //	    	  adminClient.changePassword(client);
 //	          adminClient.resetPassword(client);
 //	    	  adminClient.checkUserPassword(client);
-//	    	  adminClient.queryRoles(client);
+	    	  adminClient.queryRoles(client);
 //	    	  adminClient.addUserAuth(client);
 //	    	  adminClient.deleteUserAuth(client);
 //	    	  adminClient.checkUserAuth(client);
 //	    	  adminClient.addOpLog(client);
 //	    	  adminClient.queryOpLogs(client);
-	    	  adminClient.syncApp(client);
-	    	  
-	    	  
+//	    	  adminClient.syncApp(client);
 	    	  
 		   } catch (Exception e) {
 				// TODO Auto-generated catch block
@@ -335,8 +331,5 @@ public class AdminClient {
 				System.out.println("syncApp [fail]");
 			}
 		}
-		
-		
-		
 		
 }

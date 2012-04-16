@@ -8,9 +8,13 @@ import org.springframework.context.support.FileSystemXmlApplicationContext;
 import bma.common.jdbctemplate.JdbcTemplateUtil;
 import bma.common.langutil.core.ObjectUtil;
 import bma.common.langutil.testcase.SpringTestcaseUtil;
-import bma.common.thrift.ThriftServer.SimpleServer;
 import bma.common.thrift.ThriftServer.ThreadPoolServer;
 
+/**
+ * admin管理后台服务端进程启动 
+ * @author liaozhuojie
+ *
+ */
 public class AdminServerTest {
 
 	FileSystemXmlApplicationContext context;
@@ -41,7 +45,7 @@ public class AdminServerTest {
 
 		s1.start();
 
-		ObjectUtil.waitFor(this, 30 * 60 * 1000);
+		ObjectUtil.waitFor(this, 30 * 60 * 1000 * 100);
 	}
 
 }

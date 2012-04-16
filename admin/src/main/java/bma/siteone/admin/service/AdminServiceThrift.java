@@ -16,6 +16,7 @@ import bma.common.langutil.core.ListUtil;
 import bma.common.langutil.core.PagerResult;
 import bma.siteone.admin.po.AdminOpLog;
 import bma.siteone.admin.po.AdminRole;
+import bma.siteone.admin.po.AdminUser;
 import bma.siteone.admin.thrift.*;
 
 public class AdminServiceThrift implements TAdminService.Iface{
@@ -33,12 +34,12 @@ public class AdminServiceThrift implements TAdminService.Iface{
 		source = new BeanCopyTool();
 		initBeanCopy(source);
 		target = new BeanCopyTool();
-		target.setSourceStruct(false);
+//		target.setSourceStruct(false);
 		initBeanCopy(target);
 	}
 	
 	protected void initBeanCopy(BeanCopyTool tool) {
-		tool.field("create_time").converter(DateFormatConverter.DATE_TIME);
+		tool.field("createTime").converter(DateFormatConverter.DATE_TIME);
 	}
 
 	public AdminService getService() {
@@ -54,7 +55,10 @@ public class AdminServiceThrift implements TAdminService.Iface{
     	if (log.isDebugEnabled()) {
 			log.debug("createUser({})",userForm);
 		}
-    	UserForm _userForm = target.newInstance(null, userForm, UserForm.class);
+    	UserForm _userForm = new UserForm();
+    	_userForm.setUserName(userForm.getUserName());
+    	_userForm.setPassword(userForm.getPassword());
+    	_userForm.setUserDescription(userForm.getUserDescription());
     	
     	try {
 			return service.createUser(_userForm);
@@ -206,4 +210,84 @@ public class AdminServiceThrift implements TAdminService.Iface{
 				}));
 		return r;
     }
+
+/*    
+	@Override
+	public TAppUsersResult queryAppUsers(String appName, int page, int pageSize) throws TException {
+    	if (log.isDebugEnabled()) {
+			log.debug("queryAppUsers({},{},{})", new Object[]{appName ,page ,pageSize});
+		}
+    	
+    	PagerResult<String> pr = service.queryAppUsers(appName,page,pageSize);
+    	
+    	TAppUsersResult result = new TAppUsersResult();
+    	
+    	result.setTotal(pr.getPager().getTotal());
+    	result.setResult(pr.getResult());
+    	return result;
+
+	}
+*/
+
+	@Override
+	public List<String> queryAppRoles(String appName) throws TException {
+    	if (log.isDebugEnabled()) {
+			log.debug("queryAppUsers({})",appName);
+		}
+    	return service.queryAppRoles(appName);
+	}
+
+	@Override
+	public boolean checkUserExist(String userName) throws TException {
+    	if (log.isDebugEnabled()) {
+			log.debug("checkUserExist({})",userName);
+		}
+    	return service.checkUserExist(userName);
+	}
+
+	@Override
+	public TUser getUser(String userName) throws TException {
+    	if (log.isDebugEnabled()) {
+			log.debug("getUser({})",userName);
+		}
+    	
+    	AdminUser adminUser =  service.getUser(userName);
+    	
+    	TUser user = target.newInstance(null, adminUser, TUser.class);
+    	
+    	return user;
+	}
+
+/*
+	@Override
+	public TAllUsersResult queryAllUsers(int page, int pageSize) throws TException {
+    	if (log.isDebugEnabled()) {
+			log.debug("queryAllUsers({},{},{})", new Object[]{page ,pageSize});
+		}
+    	
+    	PagerResult<String> pr = service.queryAllUsers(page,pageSize);
+    	
+    	TAllUsersResult result = new TAllUsersResult();
+    	
+    	result.setTotal(pr.getPager().getTotal());
+    	result.setResult(pr.getResult());
+    	return result;
+	}
+*/
+	
+	@Override
+	public List<TUser> queryAllUser() throws TException {
+		List<AdminUser> usersList = service.queryAllUser();
+		List<TUser> tusersList = new ArrayList<TUser>();
+		for(AdminUser user : usersList){
+			TUser tuser = new TUser();
+			tuser.setUserName(user.getUserName());
+			tuser.setPassword(user.getPassword());
+			tuser.setUserDescription(user.getUserDescription());
+			tuser.setCreateTime(user.getCreateTime().toLocaleString());
+			tuser.setStatus(user.getStatus());
+			tusersList.add(tuser);
+		}
+		return tusersList;
+	}
 }
