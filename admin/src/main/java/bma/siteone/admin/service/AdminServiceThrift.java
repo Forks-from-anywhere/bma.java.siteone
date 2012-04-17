@@ -186,7 +186,14 @@ public class AdminServiceThrift implements TAdminService.Iface{
     	if (log.isDebugEnabled()) {
 			log.debug("addOpLog({})",opLogForm);
 		}
-    	OpLogForm _opLogForm = target.newInstance(null, opLogForm, OpLogForm.class);
+//    	OpLogForm _opLogForm = target.newInstance(null, opLogForm, OpLogForm.class);
+    	OpLogForm _opLogForm = new OpLogForm();
+    	_opLogForm.setUserName(opLogForm.getUserName());
+    	_opLogForm.setAppName(opLogForm.getAppName());
+    	_opLogForm.setRoleName(opLogForm.getRoleName());
+    	_opLogForm.setOpName(opLogForm.getOpName());
+    	_opLogForm.setDescription(opLogForm.getDescription());
+    	
     	return service.addOpLog(_opLogForm);
     }
 

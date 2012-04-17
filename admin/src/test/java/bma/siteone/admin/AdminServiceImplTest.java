@@ -270,85 +270,112 @@ public class AdminServiceImplTest {
 
 		AdminSync sync = new AdminSync();
 		
+		//创建应用
 		AdminApp adminApp = new AdminApp();
 		adminApp.setAppName("mms_admin");
 		adminApp.setAppDescription("mms desc");
 		sync.setAdminApp(adminApp);
 		
+		//创建角色
 		List<AdminRole> adminRoles = new ArrayList<AdminRole>();
-		//role
-		AdminRole adminRole = new AdminRole();
-		adminRole.setAppName("mms_admin");
-		adminRole.setRoleName("admin");
-		adminRole.setRoleDescription("admin desc");
-		//role2
-		AdminRole adminRole2 = new AdminRole();
-		adminRole2.setAppName("mms_admin");
-		adminRole2.setRoleName("default");
-		adminRole2.setRoleDescription("default desc");
-		AdminRole adminRole3 = new AdminRole();
-		adminRole3.setAppName("mms_admin");
-		adminRole3.setRoleName("default2");
-		adminRole3.setRoleDescription("default desc");
-		
-		adminRoles.add(adminRole);
-		adminRoles.add(adminRole2);
-		adminRoles.add(adminRole3);
+		List<String> roles = new ArrayList<String>();
+		roles.add("admin");
+		roles.add("default");
+		for(String role : roles){
+			AdminRole adminRole = new AdminRole();
+			adminRole.setAppName("mms_admin");
+			adminRole.setRoleName(role);
+			adminRole.setRoleDescription(role+" desc");
+			adminRoles.add(adminRole);
+		}
 		sync.setAdminRoles(adminRoles);
 		
-		List<AdminOp> adminOps = new ArrayList<AdminOp>();
-		//op1
-		AdminOp adminOp = new AdminOp();
-		adminOp.setAppName("mms_admin");
-		adminOp.setOpName("changePassword");
-		adminOp.setOpDescription("changePassword desc");
-		adminOps.add(adminOp);
-		
-		//op_createUser
-		AdminOp adminOp_createUser = new AdminOp();
-		adminOp_createUser.setAppName("mms_admin");
-		adminOp_createUser.setOpName("createUser");
-		adminOp_createUser.setOpDescription("createUser desc");
-		adminOps.add(adminOp_createUser);
-		
-		//op_listUser
-		AdminOp op_listUser = new AdminOp();
-		op_listUser.setAppName("mms_admin");
-		op_listUser.setOpName("listUser");
-		op_listUser.setOpDescription("op_listUser desc");
-		adminOps.add(op_listUser);
-		
+		//创建操作
+		List<AdminOp> adminOps = new ArrayList<AdminOp>();	
+		List<String> ops = new ArrayList<String>();
+		ops.add("changePassword");
+		ops.add("listUser");
+		ops.add("createUser");
+		ops.add("deleteUser");
+		ops.add("resetPassword");
+		ops.add("editUser");
+		ops.add("authUser");
+		ops.add("listGroup");
+		ops.add("editGroup");
+		ops.add("deleteGroup");
+		ops.add("createGroup");
+		ops.add("listProvider");
+		ops.add("deleteProvider");
+		ops.add("editProvider");
+		ops.add("createProvider");
+		ops.add("listProgram");
+		ops.add("deleteProgram");
+		ops.add("createProgram");
+		ops.add("editProgram");
+		ops.add("authProgram");
+		for(String op : ops){
+			AdminOp adminOp = new AdminOp();
+			adminOp.setAppName("mms_admin");
+			adminOp.setOpName(op);
+			adminOp.setOpDescription(op+" desc");
+			adminOps.add(adminOp);	
+		}
 		sync.setAdminOps(adminOps);
 		
-		
+		//绑定角色的操作
 		List<RoleOp> roleOps = new ArrayList<AdminSync.RoleOp>();
-		//roleOp1
-		RoleOp roleOp = new RoleOp();
-		roleOp.setRoleName("admin");
-		roleOp.setOpName("changePassword");
-		roleOps.add(roleOp);
-		
-		//roleOp_createUser
-		RoleOp roleOp_createUser = new RoleOp();
-		roleOp_createUser.setRoleName("admin");
-		roleOp_createUser.setOpName("createUser");
-		roleOps.add(roleOp_createUser);
-		
-		//roleOp_listUser
-		RoleOp roleOp_listUser = new RoleOp();
-		roleOp_listUser.setRoleName("admin");
-		roleOp_listUser.setOpName("listUser");
-		roleOps.add(roleOp_listUser);
-		
-		//roleOp2
-		RoleOp roleOp2 = new RoleOp();
-		roleOp2.setRoleName("default");
-		roleOp2.setOpName("changePassword");		
-		roleOps.add(roleOp2);
-		
+		List<String> ops_admin = new ArrayList<String>();
+		ops_admin.add("changePassword");
+		ops_admin.add("listUser");
+		ops_admin.add("createUser");
+		ops_admin.add("deleteUser");
+		ops_admin.add("resetPassword");
+		ops_admin.add("editUser");
+		ops_admin.add("authUser");
+		ops_admin.add("listGroup");
+		ops_admin.add("editGroup");
+		ops_admin.add("deleteGroup");
+		ops_admin.add("createGroup");
+		ops_admin.add("listProvider");
+		ops_admin.add("deleteProvider");
+		ops_admin.add("editProvider");
+		ops_admin.add("createProvider");
+		ops_admin.add("listProgram");
+		ops_admin.add("deleteProgram");
+		ops_admin.add("createProgram");
+		ops_admin.add("editProgram");
+		ops_admin.add("authProgram");
+		for(String op : ops_admin){
+			RoleOp roleOp = new RoleOp();
+			roleOp.setRoleName("admin");
+			roleOp.setOpName(op);
+			roleOps.add(roleOp);
+		}
+		List<String> ops_default = new ArrayList<String>();
+		ops_default.add("changePassword");
+		ops_default.add("listGroup");
+		ops_default.add("editGroup");
+		ops_default.add("deleteGroup");
+		ops_default.add("createGroup");
+		ops_default.add("listProvider");
+		ops_default.add("deleteProvider");
+		ops_default.add("editProvider");
+		ops_default.add("createProvider");
+		ops_default.add("listProgram");
+		ops_default.add("deleteProgram");
+		ops_default.add("createProgram");
+		ops_default.add("editProgram");
+		ops_default.add("authProgram");
+		for(String op : ops_default){
+			RoleOp roleOp = new RoleOp();
+			roleOp.setRoleName("default");
+			roleOp.setOpName(op);
+			roleOps.add(roleOp);
+		}
 		
 		sync.setRoleOps(roleOps);
 		
+		//创建管理员
 		AdminUser admin = new AdminUser();
 		admin.setUserName("admin");
 		admin.setPassword("admin");
@@ -356,14 +383,15 @@ public class AdminServiceImplTest {
 		
 		sync.setManager(admin);
 		
+		//管理员授权
 		List<AdminAuth> adminAuths = new ArrayList<AdminAuth>();
-		//auth1
-		AdminAuth auth1 = new AdminAuth();
-		auth1.setAppName("mms_admin");
-		auth1.setUserName("admin");
-		auth1.setRoleName("admin");
+		//auth_admin
+		AdminAuth auth_admin = new AdminAuth();
+		auth_admin.setAppName("mms_admin");
+		auth_admin.setUserName("admin");
+		auth_admin.setRoleName("admin");
+		adminAuths.add(auth_admin);
 		
-		adminAuths.add(auth1);
 		sync.setAdminAuths(adminAuths);
 		
 		ObjectMapper mapper = new ObjectMapper();

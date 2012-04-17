@@ -20,8 +20,6 @@ import bma.siteone.admin.po.AdminSync;
 import bma.siteone.admin.po.AdminUser;
 import bma.siteone.admin.po.AdminSync.RoleOp;
 import bma.siteone.admin.thrift.TAdminService;
-import bma.siteone.admin.thrift.TAllUsersResult;
-import bma.siteone.admin.thrift.TAppUsersResult;
 import bma.siteone.admin.thrift.TOpLogForm;
 import bma.siteone.admin.thrift.TOpLogQueryForm;
 import bma.siteone.admin.thrift.TOpLogRessult;
