@@ -52,5 +52,6 @@
 		<module>matchlist</module>
     <module>comments</module>
     <module>quartz</module>
+    <module>filestore</module>
   </modules>
 </project>
