@@ -15,7 +15,7 @@
  *
  * Did you also notice that Thrift supports C style comments?
  */
-namespace php quartz
+namespace php bma.quartz.thrift
 namespace java bma.siteone.quartz.thrift
 
 struct TJobForm {

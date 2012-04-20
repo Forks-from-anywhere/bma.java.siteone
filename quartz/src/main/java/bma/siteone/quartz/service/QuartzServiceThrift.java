@@ -100,8 +100,8 @@ public class QuartzServiceThrift implements TQuartzService.Iface {
 	public String newJob(String serviceName, TJobForm job, TTriggerForm trigger)
 			throws TException {
 		if (log.isDebugEnabled()) {
-			log.debug("newJob({},{},{})",
-					new Object[] { serviceName, job, trigger });
+			log.debug("newJob({},{},{})", new Object[] { serviceName, job,
+					trigger });
 		}
 		QuartzService s = getService(serviceName);
 		try {
@@ -111,7 +111,7 @@ public class QuartzServiceThrift implements TQuartzService.Iface {
 					QuartzTriggerForm.class);
 			Date r = s.newJob(jform, form);
 			if (r == null)
-				return "";
+				return null;
 			return DateTimeUtil.formatDateTime(r);
 		} catch (SchedulerException e) {
 			throw new TException(e);
@@ -122,8 +122,8 @@ public class QuartzServiceThrift implements TQuartzService.Iface {
 	public String newTrigger(String serviceName, String jobName,
 			String jobGroup, TTriggerForm trigger) throws TException {
 		if (log.isDebugEnabled()) {
-			log.debug("newTrigger({},{},{},{})", new Object[] { serviceName, jobName,
-					jobGroup, trigger });
+			log.debug("newTrigger({},{},{},{})", new Object[] { serviceName,
+					jobName, jobGroup, trigger });
 		}
 		QuartzService s = getService(serviceName);
 		try {
@@ -131,7 +131,7 @@ public class QuartzServiceThrift implements TQuartzService.Iface {
 					QuartzTriggerForm.class);
 			Date r = s.newTrigger(jobName, jobGroup, form);
 			if (r == null)
-				return "";
+				return null;
 			return DateTimeUtil.formatDateTime(r);
 		} catch (SchedulerException e) {
 			throw new TException(e);
@@ -142,8 +142,8 @@ public class QuartzServiceThrift implements TQuartzService.Iface {
 	public boolean removeJob(String serviceName, String jobName, String jobGroup)
 			throws TException {
 		if (log.isDebugEnabled()) {
-			log.debug("removeJob({},{},{})", new Object[] { serviceName, jobName,
-					jobGroup });
+			log.debug("removeJob({},{},{})", new Object[] { serviceName,
+					jobName, jobGroup });
 		}
 		QuartzService s = getService(serviceName);
 		try {
@@ -172,32 +172,34 @@ public class QuartzServiceThrift implements TQuartzService.Iface {
 	public TJobInfo queryJob(String serviceName, String jobName, String jobGroup)
 			throws TException {
 		if (log.isDebugEnabled()) {
-			log.debug("queryJob({},{},{})", new Object[] { serviceName, jobName,
-					jobGroup });
+			log.debug("queryJob({},{},{})", new Object[] { serviceName,
+					jobName, jobGroup });
 		}
 		QuartzService s = getService(serviceName);
 		try {
 			JobDetail o = s.queryJob(jobName, jobGroup);
-			TJobInfo r = new TJobInfo();
-			if (o != null) {
-				r.setDisallowConcurrent(o.isConcurrentExectionDisallowed());
-				r.setDurability(o.isDurable());
-				r.setGroup(o.getKey().getGroup());
-				r.setName(o.getKey().getName());
-				r.setPersistAfterExecution(o.isPersistJobDataAfterExecution());
+			if (o == null)
+				return null;
 
-				JobDataMap jdm = o.getJobDataMap();
-				Map<String, String> m = new HashMap<String, String>();
-				String[] keys = jdm.getKeys();
-				for (String k : keys) {
-					if (k.equals(QuartzJobForm.KEY_TYPE))
-						continue;
-					m.put(k, jdm.getString(k));
-				}
-				r.setJobDatas(m);
-				r.setType(jdm.getString(QuartzJobForm.KEY_TYPE));
+			TJobInfo r = new TJobInfo();
+			r.setDisallowConcurrent(o.isConcurrentExectionDisallowed());
+			r.setDurability(o.isDurable());
+			r.setGroup(o.getKey().getGroup());
+			r.setName(o.getKey().getName());
+			r.setPersistAfterExecution(o.isPersistJobDataAfterExecution());
+
+			JobDataMap jdm = o.getJobDataMap();
+			Map<String, String> m = new HashMap<String, String>();
+			String[] keys = jdm.getKeys();
+			for (String k : keys) {
+				if (k.equals(QuartzJobForm.KEY_TYPE))
+					continue;
+				m.put(k, jdm.getString(k));
 			}
+			r.setJobDatas(m);
+			r.setType(jdm.getString(QuartzJobForm.KEY_TYPE));
 			return r;
+
 		} catch (SchedulerException e) {
 			throw new TException(e);
 		}
@@ -213,54 +215,56 @@ public class QuartzServiceThrift implements TQuartzService.Iface {
 		QuartzService s = getService(serviceName);
 		try {
 			Trigger o = s.queryTrigger(triggerName, triggerGroup);
+			if (o == null)
+				return null;
+
 			TTriggerInfo r = new TTriggerInfo();
-			if (o != null) {
-				r.setEndTime(DateTimeUtil.formatDateTime(o.getEndTime()));
-				r.setGroup(o.getKey().getGroup());
-				r.setName(o.getKey().getName());
-				r.setNextFireTime(DateTimeUtil.formatDateTime(o
-						.getNextFireTime()));
-				r.setPreviousFireTime(DateTimeUtil.formatDateTime(o
-						.getPreviousFireTime()));
-				ScheduleBuilder b = o.getScheduleBuilder();
-				if (b != null) {
-					r.setSchedule(b.toString());
-				}
 
-				String mf = null;
-				switch (o.getMisfireInstruction()) {
-				case SimpleTrigger.MISFIRE_INSTRUCTION_SMART_POLICY:
-					mf = "smart";
-					break;
-				case SimpleTrigger.MISFIRE_INSTRUCTION_FIRE_NOW:
-					mf = "now";
-					break;
-				case SimpleTrigger.MISFIRE_INSTRUCTION_RESCHEDULE_NEXT_WITH_EXISTING_COUNT:
-					mf = "next";
-					break;
-				case SimpleTrigger.MISFIRE_INSTRUCTION_RESCHEDULE_NEXT_WITH_REMAINING_COUNT:
-					mf = "nextRemain";
-					break;
-				case SimpleTrigger.MISFIRE_INSTRUCTION_RESCHEDULE_NOW_WITH_EXISTING_REPEAT_COUNT:
-					mf = "nowRepeat";
-					break;
-				case SimpleTrigger.MISFIRE_INSTRUCTION_RESCHEDULE_NOW_WITH_REMAINING_REPEAT_COUNT:
-					mf = "nowRemain";
-					break;
-				case SimpleTrigger.MISFIRE_INSTRUCTION_IGNORE_MISFIRE_POLICY:
-					mf = "ignore";
-					break;
-				}
-
-				switch (o.getMisfireInstruction()) {
-				case CronTrigger.MISFIRE_INSTRUCTION_DO_NOTHING:
-					mf = (mf == null ? "" : mf + " or ") + "nothing";
-					break;
-				}
-				
-				r.setMissfire(mf);
+			r.setEndTime(DateTimeUtil.formatDateTime(o.getEndTime()));
+			r.setGroup(o.getKey().getGroup());
+			r.setName(o.getKey().getName());
+			r.setNextFireTime(DateTimeUtil.formatDateTime(o.getNextFireTime()));
+			r.setPreviousFireTime(DateTimeUtil.formatDateTime(o
+					.getPreviousFireTime()));
+			ScheduleBuilder b = o.getScheduleBuilder();
+			if (b != null) {
+				r.setSchedule(b.toString());
 			}
+
+			String mf = null;
+			switch (o.getMisfireInstruction()) {
+			case SimpleTrigger.MISFIRE_INSTRUCTION_SMART_POLICY:
+				mf = "smart";
+				break;
+			case SimpleTrigger.MISFIRE_INSTRUCTION_FIRE_NOW:
+				mf = "now";
+				break;
+			case SimpleTrigger.MISFIRE_INSTRUCTION_RESCHEDULE_NEXT_WITH_EXISTING_COUNT:
+				mf = "next";
+				break;
+			case SimpleTrigger.MISFIRE_INSTRUCTION_RESCHEDULE_NEXT_WITH_REMAINING_COUNT:
+				mf = "nextRemain";
+				break;
+			case SimpleTrigger.MISFIRE_INSTRUCTION_RESCHEDULE_NOW_WITH_EXISTING_REPEAT_COUNT:
+				mf = "nowRepeat";
+				break;
+			case SimpleTrigger.MISFIRE_INSTRUCTION_RESCHEDULE_NOW_WITH_REMAINING_REPEAT_COUNT:
+				mf = "nowRemain";
+				break;
+			case SimpleTrigger.MISFIRE_INSTRUCTION_IGNORE_MISFIRE_POLICY:
+				mf = "ignore";
+				break;
+			}
+
+			switch (o.getMisfireInstruction()) {
+			case CronTrigger.MISFIRE_INSTRUCTION_DO_NOTHING:
+				mf = (mf == null ? "" : mf + " or ") + "nothing";
+				break;
+			}
+
+			r.setMissfire(mf);
 			return r;
+			
 		} catch (SchedulerException e) {
 			throw new TException(e);
 		}
