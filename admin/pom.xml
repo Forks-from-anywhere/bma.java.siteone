@@ -8,7 +8,6 @@
     <groupId>bma.java.siteone</groupId>
     <version>0.0.1-SNAPSHOT</version>
   </parent>
-  <groupId>bma.java.siteone</groupId>
   <artifactId>admin</artifactId>
   <version>1.0.0-SNAPSHOT</version>
   <name>admin</name>
