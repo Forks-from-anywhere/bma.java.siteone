@@ -272,18 +272,18 @@ public class AdminServiceImplTest {
 		
 		//创建应用
 		AdminApp adminApp = new AdminApp();
-		adminApp.setAppName("mms_admin");
-		adminApp.setAppDescription("mms desc");
+		adminApp.setAppName("duowan_admin");
+		adminApp.setAppDescription("duowan_admin desc");
 		sync.setAdminApp(adminApp);
 		
 		//创建角色
 		List<AdminRole> adminRoles = new ArrayList<AdminRole>();
 		List<String> roles = new ArrayList<String>();
 		roles.add("admin");
-		roles.add("default");
+		roles.add("editor");
 		for(String role : roles){
 			AdminRole adminRole = new AdminRole();
-			adminRole.setAppName("mms_admin");
+			adminRole.setAppName("duowan_admin");
 			adminRole.setRoleName(role);
 			adminRole.setRoleDescription(role+" desc");
 			adminRoles.add(adminRole);
@@ -300,22 +300,46 @@ public class AdminServiceImplTest {
 		ops.add("resetPassword");
 		ops.add("editUser");
 		ops.add("authUser");
-		ops.add("listGroup");
-		ops.add("editGroup");
-		ops.add("deleteGroup");
-		ops.add("createGroup");
-		ops.add("listProvider");
-		ops.add("deleteProvider");
-		ops.add("editProvider");
-		ops.add("createProvider");
-		ops.add("listProgram");
-		ops.add("deleteProgram");
-		ops.add("createProgram");
-		ops.add("editProgram");
-		ops.add("authProgram");
+		
+//		ops.add("listGroup");
+//		ops.add("editGroup");
+//		ops.add("deleteGroup");
+//		ops.add("createGroup");
+//		ops.add("listProvider");
+//		ops.add("deleteProvider");
+//		ops.add("editProvider");
+//		ops.add("createProvider");
+//		ops.add("listProgram");
+//		ops.add("deleteProgram");
+//		ops.add("createProgram");
+//		ops.add("editProgram");
+//		ops.add("authProgram");
+		
+//		ops.add("listAd");
+//		ops.add("listAdBefore");
+//		ops.add("deleteAd");
+//		ops.add("createAd");
+//		ops.add("editAd");
+		
+		ops.add("listProfile");
+		ops.add("createProfile");
+		ops.add("deleteProfile");
+		ops.add("refreshProfile");
+		ops.add("showProfile");
+		ops.add("editProfile");
+		ops.add("deleteIdcard");
+		ops.add("deleteAvatar");
+		ops.add("sync");
+		ops.add("authProfile");
+		
+		ops.add("listGame");
+		ops.add("deleteGame");
+		ops.add("editGame");
+		ops.add("createGame");
+		
 		for(String op : ops){
 			AdminOp adminOp = new AdminOp();
-			adminOp.setAppName("mms_admin");
+			adminOp.setAppName("duowan_admin");
 			adminOp.setOpName(op);
 			adminOp.setOpDescription(op+" desc");
 			adminOps.add(adminOp);	
@@ -332,46 +356,78 @@ public class AdminServiceImplTest {
 		ops_admin.add("resetPassword");
 		ops_admin.add("editUser");
 		ops_admin.add("authUser");
-		ops_admin.add("listGroup");
-		ops_admin.add("editGroup");
-		ops_admin.add("deleteGroup");
-		ops_admin.add("createGroup");
-		ops_admin.add("listProvider");
-		ops_admin.add("deleteProvider");
-		ops_admin.add("editProvider");
-		ops_admin.add("createProvider");
-		ops_admin.add("listProgram");
-		ops_admin.add("deleteProgram");
-		ops_admin.add("createProgram");
-		ops_admin.add("editProgram");
-		ops_admin.add("authProgram");
+//		ops_admin.add("listGroup");
+//		ops_admin.add("editGroup");
+//		ops_admin.add("deleteGroup");
+//		ops_admin.add("createGroup");
+//		ops_admin.add("listProvider");
+//		ops_admin.add("deleteProvider");
+//		ops_admin.add("editProvider");
+//		ops_admin.add("createProvider");
+//		ops_admin.add("listProgram");
+//		ops_admin.add("deleteProgram");
+//		ops_admin.add("createProgram");
+//		ops_admin.add("editProgram");
+//		ops_admin.add("authProgram");
+		
+//		ops_admin.add("listAd");
+//		ops_admin.add("listAdBefore");
+//		ops_admin.add("deleteAd");
+//		ops_admin.add("createAd");
+//		ops_admin.add("editAd");
+		
+		ops_admin.add("listProfile");
+		ops_admin.add("createProfile");
+		ops_admin.add("deleteProfile");
+		ops_admin.add("refreshProfile");
+		ops_admin.add("showProfile");
+		
+		ops_admin.add("editProfile");
+		ops_admin.add("deleteIdcard");
+		ops_admin.add("deleteAvatar");
+		ops_admin.add("sync");
+		ops_admin.add("authProfile");
+		
+		ops_admin.add("listGame");
+		ops_admin.add("deleteGame");
+		ops_admin.add("editGame");
+		ops_admin.add("createGame");
+		
 		for(String op : ops_admin){
 			RoleOp roleOp = new RoleOp();
 			roleOp.setRoleName("admin");
 			roleOp.setOpName(op);
 			roleOps.add(roleOp);
 		}
-		List<String> ops_default = new ArrayList<String>();
-		ops_default.add("changePassword");
-		ops_default.add("listGroup");
-		ops_default.add("editGroup");
-		ops_default.add("deleteGroup");
-		ops_default.add("createGroup");
-		ops_default.add("listProvider");
-		ops_default.add("deleteProvider");
-		ops_default.add("editProvider");
-		ops_default.add("createProvider");
-		ops_default.add("listProgram");
-		ops_default.add("deleteProgram");
-		ops_default.add("createProgram");
-		ops_default.add("editProgram");
-		ops_default.add("authProgram");
-		for(String op : ops_default){
+		
+
+		List<String> ops_editor = new ArrayList<String>();
+		ops_editor.add("changePassword");
+		
+		ops_editor.add("listProfile");
+		ops_editor.add("createProfile");
+		ops_editor.add("deleteProfile");
+		ops_editor.add("refreshProfile");
+		ops_editor.add("showProfile");
+		
+		ops_editor.add("editProfile");
+		ops_editor.add("deleteIdcard");
+		ops_editor.add("deleteAvatar");
+		ops_editor.add("sync");
+		
+		ops_editor.add("listGame");
+		ops_editor.add("deleteGame");
+		ops_editor.add("editGame");
+		ops_editor.add("createGame");
+		
+		
+		for(String op : ops_editor){
 			RoleOp roleOp = new RoleOp();
-			roleOp.setRoleName("default");
+			roleOp.setRoleName("editor");
 			roleOp.setOpName(op);
 			roleOps.add(roleOp);
 		}
+		
 		
 		sync.setRoleOps(roleOps);
 		
@@ -387,7 +443,7 @@ public class AdminServiceImplTest {
 		List<AdminAuth> adminAuths = new ArrayList<AdminAuth>();
 		//auth_admin
 		AdminAuth auth_admin = new AdminAuth();
-		auth_admin.setAppName("mms_admin");
+		auth_admin.setAppName("duowan_admin");
 		auth_admin.setUserName("admin");
 		auth_admin.setRoleName("admin");
 		adminAuths.add(auth_admin);
@@ -399,7 +455,6 @@ public class AdminServiceImplTest {
 		System.out.println(syncContent);
 		
 		assertTrue(s.syncApp(syncContent));
-//		assertFalse(s.checkUserAuth(userName,appName,opName));
 	}
 
 /*	
