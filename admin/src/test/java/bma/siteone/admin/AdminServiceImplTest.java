@@ -337,6 +337,11 @@ public class AdminServiceImplTest {
 		ops.add("editGame");
 		ops.add("createGame");
 		
+		ops.add("listChannel");
+		ops.add("deleteChannel");
+		ops.add("editChannel");
+		ops.add("createChannel");
+		
 		for(String op : ops){
 			AdminOp adminOp = new AdminOp();
 			adminOp.setAppName("duowan_admin");
@@ -393,6 +398,11 @@ public class AdminServiceImplTest {
 		ops_admin.add("editGame");
 		ops_admin.add("createGame");
 		
+		ops_admin.add("listChannel");
+		ops_admin.add("deleteChannel");
+		ops_admin.add("editChannel");
+		ops_admin.add("createChannel");
+		
 		for(String op : ops_admin){
 			RoleOp roleOp = new RoleOp();
 			roleOp.setRoleName("admin");
@@ -419,6 +429,11 @@ public class AdminServiceImplTest {
 		ops_editor.add("deleteGame");
 		ops_editor.add("editGame");
 		ops_editor.add("createGame");
+		
+		ops_editor.add("listChannel");
+		ops_editor.add("deleteChannel");
+		ops_editor.add("editChannel");
+		ops_editor.add("createChannel");
 		
 		
 		for(String op : ops_editor){
