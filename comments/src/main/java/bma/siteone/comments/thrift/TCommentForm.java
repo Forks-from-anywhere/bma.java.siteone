@@ -6,1397 +6,1267 @@
  */
 package bma.siteone.comments.thrift;
 
-import java.util.BitSet;
-import java.util.Collections;
-import java.util.EnumMap;
-import java.util.EnumSet;
-import java.util.HashMap;
-import java.util.Map;
-
-import org.apache.thrift.protocol.TTupleProtocol;
 import org.apache.thrift.scheme.IScheme;
 import org.apache.thrift.scheme.SchemeFactory;
 import org.apache.thrift.scheme.StandardScheme;
+
 import org.apache.thrift.scheme.TupleScheme;
-
-public class TCommentForm implements
-		org.apache.thrift.TBase<TCommentForm, TCommentForm._Fields>,
-		java.io.Serializable, Cloneable {
-	private static final org.apache.thrift.protocol.TStruct STRUCT_DESC = new org.apache.thrift.protocol.TStruct(
-			"TCommentForm");
-
-	private static final org.apache.thrift.protocol.TField POINT_ID_FIELD_DESC = new org.apache.thrift.protocol.TField(
-			"pointId", org.apache.thrift.protocol.TType.I32, (short) 1);
-	private static final org.apache.thrift.protocol.TField REPLY_ID_FIELD_DESC = new org.apache.thrift.protocol.TField(
-			"replyId", org.apache.thrift.protocol.TType.I32, (short) 2);
-	private static final org.apache.thrift.protocol.TField USER_NAME_FIELD_DESC = new org.apache.thrift.protocol.TField(
-			"userName", org.apache.thrift.protocol.TType.STRING, (short) 3);
-	private static final org.apache.thrift.protocol.TField USER_ID_FIELD_DESC = new org.apache.thrift.protocol.TField(
-			"userId", org.apache.thrift.protocol.TType.I32, (short) 4);
-	private static final org.apache.thrift.protocol.TField CONTENT_FIELD_DESC = new org.apache.thrift.protocol.TField(
-			"content", org.apache.thrift.protocol.TType.STRING, (short) 5);
-	private static final org.apache.thrift.protocol.TField IP_FIELD_DESC = new org.apache.thrift.protocol.TField(
-			"ip", org.apache.thrift.protocol.TType.STRING, (short) 6);
-	private static final org.apache.thrift.protocol.TField RESERVE1_FIELD_DESC = new org.apache.thrift.protocol.TField(
-			"reserve1", org.apache.thrift.protocol.TType.I32, (short) 7);
-	private static final org.apache.thrift.protocol.TField RESERVE2_FIELD_DESC = new org.apache.thrift.protocol.TField(
-			"reserve2", org.apache.thrift.protocol.TType.I32, (short) 8);
-	private static final org.apache.thrift.protocol.TField RESERVE3_FIELD_DESC = new org.apache.thrift.protocol.TField(
-			"reserve3", org.apache.thrift.protocol.TType.STRING, (short) 9);
-	private static final org.apache.thrift.protocol.TField RESERVE4_FIELD_DESC = new org.apache.thrift.protocol.TField(
-			"reserve4", org.apache.thrift.protocol.TType.STRING, (short) 10);
-
-	private static final Map<Class<? extends IScheme>, SchemeFactory> schemes = new HashMap<Class<? extends IScheme>, SchemeFactory>();
-	static {
-		schemes.put(StandardScheme.class,
-				new TCommentFormStandardSchemeFactory());
-		schemes.put(TupleScheme.class, new TCommentFormTupleSchemeFactory());
-	}
-
-	public int pointId; // required
-	public int replyId; // required
-	public String userName; // required
-	public int userId; // required
-	public String content; // required
-	public String ip; // required
-	public int reserve1; // optional
-	public int reserve2; // optional
-	public String reserve3; // optional
-	public String reserve4; // optional
-
-	/**
-	 * The set of fields this struct contains, along with convenience methods
-	 * for finding and manipulating them.
-	 */
-	public enum _Fields implements org.apache.thrift.TFieldIdEnum {
-		POINT_ID((short) 1, "pointId"), REPLY_ID((short) 2, "replyId"), USER_NAME(
-				(short) 3, "userName"), USER_ID((short) 4, "userId"), CONTENT(
-				(short) 5, "content"), IP((short) 6, "ip"), RESERVE1((short) 7,
-				"reserve1"), RESERVE2((short) 8, "reserve2"), RESERVE3(
-				(short) 9, "reserve3"), RESERVE4((short) 10, "reserve4");
-
-		private static final Map<String, _Fields> byName = new HashMap<String, _Fields>();
-
-		static {
-			for (_Fields field : EnumSet.allOf(_Fields.class)) {
-				byName.put(field.getFieldName(), field);
-			}
-		}
-
-		/**
-		 * Find the _Fields constant that matches fieldId, or null if its not
-		 * found.
-		 */
-		public static _Fields findByThriftId(int fieldId) {
-			switch (fieldId) {
-			case 1: // POINT_ID
-				return POINT_ID;
-			case 2: // REPLY_ID
-				return REPLY_ID;
-			case 3: // USER_NAME
-				return USER_NAME;
-			case 4: // USER_ID
-				return USER_ID;
-			case 5: // CONTENT
-				return CONTENT;
-			case 6: // IP
-				return IP;
-			case 7: // RESERVE1
-				return RESERVE1;
-			case 8: // RESERVE2
-				return RESERVE2;
-			case 9: // RESERVE3
-				return RESERVE3;
-			case 10: // RESERVE4
-				return RESERVE4;
-			default:
-				return null;
-			}
-		}
-
-		/**
-		 * Find the _Fields constant that matches fieldId, throwing an exception
-		 * if it is not found.
-		 */
-		public static _Fields findByThriftIdOrThrow(int fieldId) {
-			_Fields fields = findByThriftId(fieldId);
-			if (fields == null)
-				throw new IllegalArgumentException("Field " + fieldId
-						+ " doesn't exist!");
-			return fields;
-		}
-
-		/**
-		 * Find the _Fields constant that matches name, or null if its not
-		 * found.
-		 */
-		public static _Fields findByName(String name) {
-			return byName.get(name);
-		}
-
-		private final short _thriftId;
-		private final String _fieldName;
-
-		_Fields(short thriftId, String fieldName) {
-			_thriftId = thriftId;
-			_fieldName = fieldName;
-		}
-
-		@Override
-		public short getThriftFieldId() {
-			return _thriftId;
-		}
-
-		@Override
-		public String getFieldName() {
-			return _fieldName;
-		}
-	}
-
-	// isset id assignments
-	private static final int __POINTID_ISSET_ID = 0;
-	private static final int __REPLYID_ISSET_ID = 1;
-	private static final int __USERID_ISSET_ID = 2;
-	private static final int __RESERVE1_ISSET_ID = 3;
-	private static final int __RESERVE2_ISSET_ID = 4;
-	private BitSet __isset_bit_vector = new BitSet(5);
-
-	public static final Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
-	static {
-		Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(
-				_Fields.class);
-		tmpMap.put(_Fields.POINT_ID,
-				new org.apache.thrift.meta_data.FieldMetaData("pointId",
-						org.apache.thrift.TFieldRequirementType.DEFAULT,
-						new org.apache.thrift.meta_data.FieldValueMetaData(
-								org.apache.thrift.protocol.TType.I32)));
-		tmpMap.put(_Fields.REPLY_ID,
-				new org.apache.thrift.meta_data.FieldMetaData("replyId",
-						org.apache.thrift.TFieldRequirementType.DEFAULT,
-						new org.apache.thrift.meta_data.FieldValueMetaData(
-								org.apache.thrift.protocol.TType.I32)));
-		tmpMap.put(_Fields.USER_NAME,
-				new org.apache.thrift.meta_data.FieldMetaData("userName",
-						org.apache.thrift.TFieldRequirementType.DEFAULT,
-						new org.apache.thrift.meta_data.FieldValueMetaData(
-								org.apache.thrift.protocol.TType.STRING)));
-		tmpMap.put(_Fields.USER_ID,
-				new org.apache.thrift.meta_data.FieldMetaData("userId",
-						org.apache.thrift.TFieldRequirementType.DEFAULT,
-						new org.apache.thrift.meta_data.FieldValueMetaData(
-								org.apache.thrift.protocol.TType.I32)));
-		tmpMap.put(_Fields.CONTENT,
-				new org.apache.thrift.meta_data.FieldMetaData("content",
-						org.apache.thrift.TFieldRequirementType.DEFAULT,
-						new org.apache.thrift.meta_data.FieldValueMetaData(
-								org.apache.thrift.protocol.TType.STRING)));
-		tmpMap.put(_Fields.IP, new org.apache.thrift.meta_data.FieldMetaData(
-				"ip", org.apache.thrift.TFieldRequirementType.DEFAULT,
-				new org.apache.thrift.meta_data.FieldValueMetaData(
-						org.apache.thrift.protocol.TType.STRING)));
-		tmpMap.put(_Fields.RESERVE1,
-				new org.apache.thrift.meta_data.FieldMetaData("reserve1",
-						org.apache.thrift.TFieldRequirementType.OPTIONAL,
-						new org.apache.thrift.meta_data.FieldValueMetaData(
-								org.apache.thrift.protocol.TType.I32)));
-		tmpMap.put(_Fields.RESERVE2,
-				new org.apache.thrift.meta_data.FieldMetaData("reserve2",
-						org.apache.thrift.TFieldRequirementType.OPTIONAL,
-						new org.apache.thrift.meta_data.FieldValueMetaData(
-								org.apache.thrift.protocol.TType.I32)));
-		tmpMap.put(_Fields.RESERVE3,
-				new org.apache.thrift.meta_data.FieldMetaData("reserve3",
-						org.apache.thrift.TFieldRequirementType.OPTIONAL,
-						new org.apache.thrift.meta_data.FieldValueMetaData(
-								org.apache.thrift.protocol.TType.STRING)));
-		tmpMap.put(_Fields.RESERVE4,
-				new org.apache.thrift.meta_data.FieldMetaData("reserve4",
-						org.apache.thrift.TFieldRequirementType.OPTIONAL,
-						new org.apache.thrift.meta_data.FieldValueMetaData(
-								org.apache.thrift.protocol.TType.STRING)));
-		metaDataMap = Collections.unmodifiableMap(tmpMap);
-		org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(
-				TCommentForm.class, metaDataMap);
-	}
-
-	public TCommentForm() {
-		this.reserve1 = 0;
-
-		this.reserve2 = 0;
-
-	}
-
-	public TCommentForm(int pointId, int replyId, String userName, int userId,
-			String content, String ip) {
-		this();
-		this.pointId = pointId;
-		setPointIdIsSet(true);
-		this.replyId = replyId;
-		setReplyIdIsSet(true);
-		this.userName = userName;
-		this.userId = userId;
-		setUserIdIsSet(true);
-		this.content = content;
-		this.ip = ip;
-	}
-
-	/**
-	 * Performs a deep copy on <i>other</i>.
-	 */
-	public TCommentForm(TCommentForm other) {
-		__isset_bit_vector.clear();
-		__isset_bit_vector.or(other.__isset_bit_vector);
-		this.pointId = other.pointId;
-		this.replyId = other.replyId;
-		if (other.isSetUserName()) {
-			this.userName = other.userName;
-		}
-		this.userId = other.userId;
-		if (other.isSetContent()) {
-			this.content = other.content;
-		}
-		if (other.isSetIp()) {
-			this.ip = other.ip;
-		}
-		this.reserve1 = other.reserve1;
-		this.reserve2 = other.reserve2;
-		if (other.isSetReserve3()) {
-			this.reserve3 = other.reserve3;
-		}
-		if (other.isSetReserve4()) {
-			this.reserve4 = other.reserve4;
-		}
-	}
-
-	@Override
-	public TCommentForm deepCopy() {
-		return new TCommentForm(this);
-	}
-
-	@Override
-	public void clear() {
-		setPointIdIsSet(false);
-		this.pointId = 0;
-		setReplyIdIsSet(false);
-		this.replyId = 0;
-		this.userName = null;
-		setUserIdIsSet(false);
-		this.userId = 0;
-		this.content = null;
-		this.ip = null;
-		this.reserve1 = 0;
-
-		this.reserve2 = 0;
-
-		this.reserve3 = null;
-		this.reserve4 = null;
-	}
-
-	public int getPointId() {
-		return this.pointId;
-	}
-
-	public TCommentForm setPointId(int pointId) {
-		this.pointId = pointId;
-		setPointIdIsSet(true);
-		return this;
-	}
-
-	public void unsetPointId() {
-		__isset_bit_vector.clear(__POINTID_ISSET_ID);
-	}
-
-	/**
-	 * Returns true if field pointId is set (has been assigned a value) and
-	 * false otherwise
-	 */
-	public boolean isSetPointId() {
-		return __isset_bit_vector.get(__POINTID_ISSET_ID);
-	}
-
-	public void setPointIdIsSet(boolean value) {
-		__isset_bit_vector.set(__POINTID_ISSET_ID, value);
-	}
-
-	public int getReplyId() {
-		return this.replyId;
-	}
-
-	public TCommentForm setReplyId(int replyId) {
-		this.replyId = replyId;
-		setReplyIdIsSet(true);
-		return this;
-	}
-
-	public void unsetReplyId() {
-		__isset_bit_vector.clear(__REPLYID_ISSET_ID);
-	}
-
-	/**
-	 * Returns true if field replyId is set (has been assigned a value) and
-	 * false otherwise
-	 */
-	public boolean isSetReplyId() {
-		return __isset_bit_vector.get(__REPLYID_ISSET_ID);
-	}
-
-	public void setReplyIdIsSet(boolean value) {
-		__isset_bit_vector.set(__REPLYID_ISSET_ID, value);
-	}
-
-	public String getUserName() {
-		return this.userName;
-	}
-
-	public TCommentForm setUserName(String userName) {
-		this.userName = userName;
-		return this;
-	}
-
-	public void unsetUserName() {
-		this.userName = null;
-	}
-
-	/**
-	 * Returns true if field userName is set (has been assigned a value) and
-	 * false otherwise
-	 */
-	public boolean isSetUserName() {
-		return this.userName != null;
-	}
-
-	public void setUserNameIsSet(boolean value) {
-		if (!value) {
-			this.userName = null;
-		}
-	}
-
-	public int getUserId() {
-		return this.userId;
-	}
-
-	public TCommentForm setUserId(int userId) {
-		this.userId = userId;
-		setUserIdIsSet(true);
-		return this;
-	}
-
-	public void unsetUserId() {
-		__isset_bit_vector.clear(__USERID_ISSET_ID);
-	}
-
-	/**
-	 * Returns true if field userId is set (has been assigned a value) and false
-	 * otherwise
-	 */
-	public boolean isSetUserId() {
-		return __isset_bit_vector.get(__USERID_ISSET_ID);
-	}
-
-	public void setUserIdIsSet(boolean value) {
-		__isset_bit_vector.set(__USERID_ISSET_ID, value);
-	}
-
-	public String getContent() {
-		return this.content;
-	}
-
-	public TCommentForm setContent(String content) {
-		this.content = content;
-		return this;
-	}
-
-	public void unsetContent() {
-		this.content = null;
-	}
-
-	/**
-	 * Returns true if field content is set (has been assigned a value) and
-	 * false otherwise
-	 */
-	public boolean isSetContent() {
-		return this.content != null;
-	}
-
-	public void setContentIsSet(boolean value) {
-		if (!value) {
-			this.content = null;
-		}
-	}
-
-	public String getIp() {
-		return this.ip;
-	}
-
-	public TCommentForm setIp(String ip) {
-		this.ip = ip;
-		return this;
-	}
-
-	public void unsetIp() {
-		this.ip = null;
-	}
-
-	/**
-	 * Returns true if field ip is set (has been assigned a value) and false
-	 * otherwise
-	 */
-	public boolean isSetIp() {
-		return this.ip != null;
-	}
-
-	public void setIpIsSet(boolean value) {
-		if (!value) {
-			this.ip = null;
-		}
-	}
-
-	public int getReserve1() {
-		return this.reserve1;
-	}
-
-	public TCommentForm setReserve1(int reserve1) {
-		this.reserve1 = reserve1;
-		setReserve1IsSet(true);
-		return this;
-	}
-
-	public void unsetReserve1() {
-		__isset_bit_vector.clear(__RESERVE1_ISSET_ID);
-	}
-
-	/**
-	 * Returns true if field reserve1 is set (has been assigned a value) and
-	 * false otherwise
-	 */
-	public boolean isSetReserve1() {
-		return __isset_bit_vector.get(__RESERVE1_ISSET_ID);
-	}
-
-	public void setReserve1IsSet(boolean value) {
-		__isset_bit_vector.set(__RESERVE1_ISSET_ID, value);
-	}
-
-	public int getReserve2() {
-		return this.reserve2;
-	}
-
-	public TCommentForm setReserve2(int reserve2) {
-		this.reserve2 = reserve2;
-		setReserve2IsSet(true);
-		return this;
-	}
-
-	public void unsetReserve2() {
-		__isset_bit_vector.clear(__RESERVE2_ISSET_ID);
-	}
-
-	/**
-	 * Returns true if field reserve2 is set (has been assigned a value) and
-	 * false otherwise
-	 */
-	public boolean isSetReserve2() {
-		return __isset_bit_vector.get(__RESERVE2_ISSET_ID);
-	}
-
-	public void setReserve2IsSet(boolean value) {
-		__isset_bit_vector.set(__RESERVE2_ISSET_ID, value);
-	}
-
-	public String getReserve3() {
-		return this.reserve3;
-	}
-
-	public TCommentForm setReserve3(String reserve3) {
-		this.reserve3 = reserve3;
-		return this;
-	}
-
-	public void unsetReserve3() {
-		this.reserve3 = null;
-	}
-
-	/**
-	 * Returns true if field reserve3 is set (has been assigned a value) and
-	 * false otherwise
-	 */
-	public boolean isSetReserve3() {
-		return this.reserve3 != null;
-	}
-
-	public void setReserve3IsSet(boolean value) {
-		if (!value) {
-			this.reserve3 = null;
-		}
-	}
-
-	public String getReserve4() {
-		return this.reserve4;
-	}
-
-	public TCommentForm setReserve4(String reserve4) {
-		this.reserve4 = reserve4;
-		return this;
-	}
-
-	public void unsetReserve4() {
-		this.reserve4 = null;
-	}
-
-	/**
-	 * Returns true if field reserve4 is set (has been assigned a value) and
-	 * false otherwise
-	 */
-	public boolean isSetReserve4() {
-		return this.reserve4 != null;
-	}
-
-	public void setReserve4IsSet(boolean value) {
-		if (!value) {
-			this.reserve4 = null;
-		}
-	}
-
-	@Override
-	public void setFieldValue(_Fields field, Object value) {
-		switch (field) {
-		case POINT_ID:
-			if (value == null) {
-				unsetPointId();
-			} else {
-				setPointId((Integer) value);
-			}
-			break;
-
-		case REPLY_ID:
-			if (value == null) {
-				unsetReplyId();
-			} else {
-				setReplyId((Integer) value);
-			}
-			break;
-
-		case USER_NAME:
-			if (value == null) {
-				unsetUserName();
-			} else {
-				setUserName((String) value);
-			}
-			break;
-
-		case USER_ID:
-			if (value == null) {
-				unsetUserId();
-			} else {
-				setUserId((Integer) value);
-			}
-			break;
-
-		case CONTENT:
-			if (value == null) {
-				unsetContent();
-			} else {
-				setContent((String) value);
-			}
-			break;
-
-		case IP:
-			if (value == null) {
-				unsetIp();
-			} else {
-				setIp((String) value);
-			}
-			break;
-
-		case RESERVE1:
-			if (value == null) {
-				unsetReserve1();
-			} else {
-				setReserve1((Integer) value);
-			}
-			break;
-
-		case RESERVE2:
-			if (value == null) {
-				unsetReserve2();
-			} else {
-				setReserve2((Integer) value);
-			}
-			break;
-
-		case RESERVE3:
-			if (value == null) {
-				unsetReserve3();
-			} else {
-				setReserve3((String) value);
-			}
-			break;
-
-		case RESERVE4:
-			if (value == null) {
-				unsetReserve4();
-			} else {
-				setReserve4((String) value);
-			}
-			break;
-
-		}
-	}
-
-	@Override
-	public Object getFieldValue(_Fields field) {
-		switch (field) {
-		case POINT_ID:
-			return Integer.valueOf(getPointId());
-
-		case REPLY_ID:
-			return Integer.valueOf(getReplyId());
-
-		case USER_NAME:
-			return getUserName();
-
-		case USER_ID:
-			return Integer.valueOf(getUserId());
-
-		case CONTENT:
-			return getContent();
-
-		case IP:
-			return getIp();
-
-		case RESERVE1:
-			return Integer.valueOf(getReserve1());
-
-		case RESERVE2:
-			return Integer.valueOf(getReserve2());
-
-		case RESERVE3:
-			return getReserve3();
-
-		case RESERVE4:
-			return getReserve4();
-
-		}
-		throw new IllegalStateException();
-	}
-
-	/**
-	 * Returns true if field corresponding to fieldID is set (has been assigned
-	 * a value) and false otherwise
-	 */
-	@Override
-	public boolean isSet(_Fields field) {
-		if (field == null) {
-			throw new IllegalArgumentException();
-		}
-
-		switch (field) {
-		case POINT_ID:
-			return isSetPointId();
-		case REPLY_ID:
-			return isSetReplyId();
-		case USER_NAME:
-			return isSetUserName();
-		case USER_ID:
-			return isSetUserId();
-		case CONTENT:
-			return isSetContent();
-		case IP:
-			return isSetIp();
-		case RESERVE1:
-			return isSetReserve1();
-		case RESERVE2:
-			return isSetReserve2();
-		case RESERVE3:
-			return isSetReserve3();
-		case RESERVE4:
-			return isSetReserve4();
-		}
-		throw new IllegalStateException();
-	}
-
-	@Override
-	public boolean equals(Object that) {
-		if (that == null)
-			return false;
-		if (that instanceof TCommentForm)
-			return this.equals((TCommentForm) that);
-		return false;
-	}
-
-	public boolean equals(TCommentForm that) {
-		if (that == null)
-			return false;
-
-		boolean this_present_pointId = true;
-		boolean that_present_pointId = true;
-		if (this_present_pointId || that_present_pointId) {
-			if (!(this_present_pointId && that_present_pointId))
-				return false;
-			if (this.pointId != that.pointId)
-				return false;
-		}
-
-		boolean this_present_replyId = true;
-		boolean that_present_replyId = true;
-		if (this_present_replyId || that_present_replyId) {
-			if (!(this_present_replyId && that_present_replyId))
-				return false;
-			if (this.replyId != that.replyId)
-				return false;
-		}
-
-		boolean this_present_userName = true && this.isSetUserName();
-		boolean that_present_userName = true && that.isSetUserName();
-		if (this_present_userName || that_present_userName) {
-			if (!(this_present_userName && that_present_userName))
-				return false;
-			if (!this.userName.equals(that.userName))
-				return false;
-		}
-
-		boolean this_present_userId = true;
-		boolean that_present_userId = true;
-		if (this_present_userId || that_present_userId) {
-			if (!(this_present_userId && that_present_userId))
-				return false;
-			if (this.userId != that.userId)
-				return false;
-		}
-
-		boolean this_present_content = true && this.isSetContent();
-		boolean that_present_content = true && that.isSetContent();
-		if (this_present_content || that_present_content) {
-			if (!(this_present_content && that_present_content))
-				return false;
-			if (!this.content.equals(that.content))
-				return false;
-		}
-
-		boolean this_present_ip = true && this.isSetIp();
-		boolean that_present_ip = true && that.isSetIp();
-		if (this_present_ip || that_present_ip) {
-			if (!(this_present_ip && that_present_ip))
-				return false;
-			if (!this.ip.equals(that.ip))
-				return false;
-		}
-
-		boolean this_present_reserve1 = true && this.isSetReserve1();
-		boolean that_present_reserve1 = true && that.isSetReserve1();
-		if (this_present_reserve1 || that_present_reserve1) {
-			if (!(this_present_reserve1 && that_present_reserve1))
-				return false;
-			if (this.reserve1 != that.reserve1)
-				return false;
-		}
-
-		boolean this_present_reserve2 = true && this.isSetReserve2();
-		boolean that_present_reserve2 = true && that.isSetReserve2();
-		if (this_present_reserve2 || that_present_reserve2) {
-			if (!(this_present_reserve2 && that_present_reserve2))
-				return false;
-			if (this.reserve2 != that.reserve2)
-				return false;
-		}
-
-		boolean this_present_reserve3 = true && this.isSetReserve3();
-		boolean that_present_reserve3 = true && that.isSetReserve3();
-		if (this_present_reserve3 || that_present_reserve3) {
-			if (!(this_present_reserve3 && that_present_reserve3))
-				return false;
-			if (!this.reserve3.equals(that.reserve3))
-				return false;
-		}
-
-		boolean this_present_reserve4 = true && this.isSetReserve4();
-		boolean that_present_reserve4 = true && that.isSetReserve4();
-		if (this_present_reserve4 || that_present_reserve4) {
-			if (!(this_present_reserve4 && that_present_reserve4))
-				return false;
-			if (!this.reserve4.equals(that.reserve4))
-				return false;
-		}
-
-		return true;
-	}
-
-	@Override
-	public int hashCode() {
-		return 0;
-	}
-
-	@Override
-	public int compareTo(TCommentForm other) {
-		if (!getClass().equals(other.getClass())) {
-			return getClass().getName().compareTo(other.getClass().getName());
-		}
-
-		int lastComparison = 0;
-		TCommentForm typedOther = other;
-
-		lastComparison = Boolean.valueOf(isSetPointId()).compareTo(
-				typedOther.isSetPointId());
-		if (lastComparison != 0) {
-			return lastComparison;
-		}
-		if (isSetPointId()) {
-			lastComparison = org.apache.thrift.TBaseHelper.compareTo(
-					this.pointId, typedOther.pointId);
-			if (lastComparison != 0) {
-				return lastComparison;
-			}
-		}
-		lastComparison = Boolean.valueOf(isSetReplyId()).compareTo(
-				typedOther.isSetReplyId());
-		if (lastComparison != 0) {
-			return lastComparison;
-		}
-		if (isSetReplyId()) {
-			lastComparison = org.apache.thrift.TBaseHelper.compareTo(
-					this.replyId, typedOther.replyId);
-			if (lastComparison != 0) {
-				return lastComparison;
-			}
-		}
-		lastComparison = Boolean.valueOf(isSetUserName()).compareTo(
-				typedOther.isSetUserName());
-		if (lastComparison != 0) {
-			return lastComparison;
-		}
-		if (isSetUserName()) {
-			lastComparison = org.apache.thrift.TBaseHelper.compareTo(
-					this.userName, typedOther.userName);
-			if (lastComparison != 0) {
-				return lastComparison;
-			}
-		}
-		lastComparison = Boolean.valueOf(isSetUserId()).compareTo(
-				typedOther.isSetUserId());
-		if (lastComparison != 0) {
-			return lastComparison;
-		}
-		if (isSetUserId()) {
-			lastComparison = org.apache.thrift.TBaseHelper.compareTo(
-					this.userId, typedOther.userId);
-			if (lastComparison != 0) {
-				return lastComparison;
-			}
-		}
-		lastComparison = Boolean.valueOf(isSetContent()).compareTo(
-				typedOther.isSetContent());
-		if (lastComparison != 0) {
-			return lastComparison;
-		}
-		if (isSetContent()) {
-			lastComparison = org.apache.thrift.TBaseHelper.compareTo(
-					this.content, typedOther.content);
-			if (lastComparison != 0) {
-				return lastComparison;
-			}
-		}
-		lastComparison = Boolean.valueOf(isSetIp()).compareTo(
-				typedOther.isSetIp());
-		if (lastComparison != 0) {
-			return lastComparison;
-		}
-		if (isSetIp()) {
-			lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.ip,
-					typedOther.ip);
-			if (lastComparison != 0) {
-				return lastComparison;
-			}
-		}
-		lastComparison = Boolean.valueOf(isSetReserve1()).compareTo(
-				typedOther.isSetReserve1());
-		if (lastComparison != 0) {
-			return lastComparison;
-		}
-		if (isSetReserve1()) {
-			lastComparison = org.apache.thrift.TBaseHelper.compareTo(
-					this.reserve1, typedOther.reserve1);
-			if (lastComparison != 0) {
-				return lastComparison;
-			}
-		}
-		lastComparison = Boolean.valueOf(isSetReserve2()).compareTo(
-				typedOther.isSetReserve2());
-		if (lastComparison != 0) {
-			return lastComparison;
-		}
-		if (isSetReserve2()) {
-			lastComparison = org.apache.thrift.TBaseHelper.compareTo(
-					this.reserve2, typedOther.reserve2);
-			if (lastComparison != 0) {
-				return lastComparison;
-			}
-		}
-		lastComparison = Boolean.valueOf(isSetReserve3()).compareTo(
-				typedOther.isSetReserve3());
-		if (lastComparison != 0) {
-			return lastComparison;
-		}
-		if (isSetReserve3()) {
-			lastComparison = org.apache.thrift.TBaseHelper.compareTo(
-					this.reserve3, typedOther.reserve3);
-			if (lastComparison != 0) {
-				return lastComparison;
-			}
-		}
-		lastComparison = Boolean.valueOf(isSetReserve4()).compareTo(
-				typedOther.isSetReserve4());
-		if (lastComparison != 0) {
-			return lastComparison;
-		}
-		if (isSetReserve4()) {
-			lastComparison = org.apache.thrift.TBaseHelper.compareTo(
-					this.reserve4, typedOther.reserve4);
-			if (lastComparison != 0) {
-				return lastComparison;
-			}
-		}
-		return 0;
-	}
-
-	@Override
-	public _Fields fieldForId(int fieldId) {
-		return _Fields.findByThriftId(fieldId);
-	}
-
-	@Override
-	public void read(org.apache.thrift.protocol.TProtocol iprot)
-			throws org.apache.thrift.TException {
-		schemes.get(iprot.getScheme()).getScheme().read(iprot, this);
-	}
-
-	@Override
-	public void write(org.apache.thrift.protocol.TProtocol oprot)
-			throws org.apache.thrift.TException {
-		schemes.get(oprot.getScheme()).getScheme().write(oprot, this);
-	}
-
-	@Override
-	public String toString() {
-		StringBuilder sb = new StringBuilder("TCommentForm(");
-		boolean first = true;
-
-		sb.append("pointId:");
-		sb.append(this.pointId);
-		first = false;
-		if (!first)
-			sb.append(", ");
-		sb.append("replyId:");
-		sb.append(this.replyId);
-		first = false;
-		if (!first)
-			sb.append(", ");
-		sb.append("userName:");
-		if (this.userName == null) {
-			sb.append("null");
-		} else {
-			sb.append(this.userName);
-		}
-		first = false;
-		if (!first)
-			sb.append(", ");
-		sb.append("userId:");
-		sb.append(this.userId);
-		first = false;
-		if (!first)
-			sb.append(", ");
-		sb.append("content:");
-		if (this.content == null) {
-			sb.append("null");
-		} else {
-			sb.append(this.content);
-		}
-		first = false;
-		if (!first)
-			sb.append(", ");
-		sb.append("ip:");
-		if (this.ip == null) {
-			sb.append("null");
-		} else {
-			sb.append(this.ip);
-		}
-		first = false;
-		if (isSetReserve1()) {
-			if (!first)
-				sb.append(", ");
-			sb.append("reserve1:");
-			sb.append(this.reserve1);
-			first = false;
-		}
-		if (isSetReserve2()) {
-			if (!first)
-				sb.append(", ");
-			sb.append("reserve2:");
-			sb.append(this.reserve2);
-			first = false;
-		}
-		if (isSetReserve3()) {
-			if (!first)
-				sb.append(", ");
-			sb.append("reserve3:");
-			if (this.reserve3 == null) {
-				sb.append("null");
-			} else {
-				sb.append(this.reserve3);
-			}
-			first = false;
-		}
-		if (isSetReserve4()) {
-			if (!first)
-				sb.append(", ");
-			sb.append("reserve4:");
-			if (this.reserve4 == null) {
-				sb.append("null");
-			} else {
-				sb.append(this.reserve4);
-			}
-			first = false;
-		}
-		sb.append(")");
-		return sb.toString();
-	}
-
-	public void validate() throws org.apache.thrift.TException {
-		// check for required fields
-	}
-
-	private void writeObject(java.io.ObjectOutputStream out)
-			throws java.io.IOException {
-		try {
-			write(new org.apache.thrift.protocol.TCompactProtocol(
-					new org.apache.thrift.transport.TIOStreamTransport(out)));
-		} catch (org.apache.thrift.TException te) {
-			throw new java.io.IOException(te);
-		}
-	}
-
-	private void readObject(java.io.ObjectInputStream in)
-			throws java.io.IOException, ClassNotFoundException {
-		try {
-			// it doesn't seem like you should have to do this, but java
-			// serialization is wacky, and doesn't call the default constructor.
-			__isset_bit_vector = new BitSet(1);
-			read(new org.apache.thrift.protocol.TCompactProtocol(
-					new org.apache.thrift.transport.TIOStreamTransport(in)));
-		} catch (org.apache.thrift.TException te) {
-			throw new java.io.IOException(te);
-		}
-	}
-
-	private static class TCommentFormStandardSchemeFactory implements
-			SchemeFactory {
-		@Override
-		public TCommentFormStandardScheme getScheme() {
-			return new TCommentFormStandardScheme();
-		}
-	}
-
-	private static class TCommentFormStandardScheme extends
-			StandardScheme<TCommentForm> {
-
-		@Override
-		public void read(org.apache.thrift.protocol.TProtocol iprot,
-				TCommentForm struct) throws org.apache.thrift.TException {
-			org.apache.thrift.protocol.TField schemeField;
-			iprot.readStructBegin();
-			while (true) {
-				schemeField = iprot.readFieldBegin();
-				if (schemeField.type == org.apache.thrift.protocol.TType.STOP) {
-					break;
-				}
-				switch (schemeField.id) {
-				case 1: // POINT_ID
-					if (schemeField.type == org.apache.thrift.protocol.TType.I32) {
-						struct.pointId = iprot.readI32();
-						struct.setPointIdIsSet(true);
-					} else {
-						org.apache.thrift.protocol.TProtocolUtil.skip(iprot,
-								schemeField.type);
-					}
-					break;
-				case 2: // REPLY_ID
-					if (schemeField.type == org.apache.thrift.protocol.TType.I32) {
-						struct.replyId = iprot.readI32();
-						struct.setReplyIdIsSet(true);
-					} else {
-						org.apache.thrift.protocol.TProtocolUtil.skip(iprot,
-								schemeField.type);
-					}
-					break;
-				case 3: // USER_NAME
-					if (schemeField.type == org.apache.thrift.protocol.TType.STRING) {
-						struct.userName = iprot.readString();
-						struct.setUserNameIsSet(true);
-					} else {
-						org.apache.thrift.protocol.TProtocolUtil.skip(iprot,
-								schemeField.type);
-					}
-					break;
-				case 4: // USER_ID
-					if (schemeField.type == org.apache.thrift.protocol.TType.I32) {
-						struct.userId = iprot.readI32();
-						struct.setUserIdIsSet(true);
-					} else {
-						org.apache.thrift.protocol.TProtocolUtil.skip(iprot,
-								schemeField.type);
-					}
-					break;
-				case 5: // CONTENT
-					if (schemeField.type == org.apache.thrift.protocol.TType.STRING) {
-						struct.content = iprot.readString();
-						struct.setContentIsSet(true);
-					} else {
-						org.apache.thrift.protocol.TProtocolUtil.skip(iprot,
-								schemeField.type);
-					}
-					break;
-				case 6: // IP
-					if (schemeField.type == org.apache.thrift.protocol.TType.STRING) {
-						struct.ip = iprot.readString();
-						struct.setIpIsSet(true);
-					} else {
-						org.apache.thrift.protocol.TProtocolUtil.skip(iprot,
-								schemeField.type);
-					}
-					break;
-				case 7: // RESERVE1
-					if (schemeField.type == org.apache.thrift.protocol.TType.I32) {
-						struct.reserve1 = iprot.readI32();
-						struct.setReserve1IsSet(true);
-					} else {
-						org.apache.thrift.protocol.TProtocolUtil.skip(iprot,
-								schemeField.type);
-					}
-					break;
-				case 8: // RESERVE2
-					if (schemeField.type == org.apache.thrift.protocol.TType.I32) {
-						struct.reserve2 = iprot.readI32();
-						struct.setReserve2IsSet(true);
-					} else {
-						org.apache.thrift.protocol.TProtocolUtil.skip(iprot,
-								schemeField.type);
-					}
-					break;
-				case 9: // RESERVE3
-					if (schemeField.type == org.apache.thrift.protocol.TType.STRING) {
-						struct.reserve3 = iprot.readString();
-						struct.setReserve3IsSet(true);
-					} else {
-						org.apache.thrift.protocol.TProtocolUtil.skip(iprot,
-								schemeField.type);
-					}
-					break;
-				case 10: // RESERVE4
-					if (schemeField.type == org.apache.thrift.protocol.TType.STRING) {
-						struct.reserve4 = iprot.readString();
-						struct.setReserve4IsSet(true);
-					} else {
-						org.apache.thrift.protocol.TProtocolUtil.skip(iprot,
-								schemeField.type);
-					}
-					break;
-				default:
-					org.apache.thrift.protocol.TProtocolUtil.skip(iprot,
-							schemeField.type);
-				}
-				iprot.readFieldEnd();
-			}
-			iprot.readStructEnd();
-
-			// check for required fields of primitive type, which can't be
-			// checked in the validate method
-			struct.validate();
-		}
-
-		@Override
-		public void write(org.apache.thrift.protocol.TProtocol oprot,
-				TCommentForm struct) throws org.apache.thrift.TException {
-			struct.validate();
-
-			oprot.writeStructBegin(STRUCT_DESC);
-			oprot.writeFieldBegin(POINT_ID_FIELD_DESC);
-			oprot.writeI32(struct.pointId);
-			oprot.writeFieldEnd();
-			oprot.writeFieldBegin(REPLY_ID_FIELD_DESC);
-			oprot.writeI32(struct.replyId);
-			oprot.writeFieldEnd();
-			if (struct.userName != null) {
-				oprot.writeFieldBegin(USER_NAME_FIELD_DESC);
-				oprot.writeString(struct.userName);
-				oprot.writeFieldEnd();
-			}
-			oprot.writeFieldBegin(USER_ID_FIELD_DESC);
-			oprot.writeI32(struct.userId);
-			oprot.writeFieldEnd();
-			if (struct.content != null) {
-				oprot.writeFieldBegin(CONTENT_FIELD_DESC);
-				oprot.writeString(struct.content);
-				oprot.writeFieldEnd();
-			}
-			if (struct.ip != null) {
-				oprot.writeFieldBegin(IP_FIELD_DESC);
-				oprot.writeString(struct.ip);
-				oprot.writeFieldEnd();
-			}
-			if (struct.isSetReserve1()) {
-				oprot.writeFieldBegin(RESERVE1_FIELD_DESC);
-				oprot.writeI32(struct.reserve1);
-				oprot.writeFieldEnd();
-			}
-			if (struct.isSetReserve2()) {
-				oprot.writeFieldBegin(RESERVE2_FIELD_DESC);
-				oprot.writeI32(struct.reserve2);
-				oprot.writeFieldEnd();
-			}
-			if (struct.reserve3 != null) {
-				if (struct.isSetReserve3()) {
-					oprot.writeFieldBegin(RESERVE3_FIELD_DESC);
-					oprot.writeString(struct.reserve3);
-					oprot.writeFieldEnd();
-				}
-			}
-			if (struct.reserve4 != null) {
-				if (struct.isSetReserve4()) {
-					oprot.writeFieldBegin(RESERVE4_FIELD_DESC);
-					oprot.writeString(struct.reserve4);
-					oprot.writeFieldEnd();
-				}
-			}
-			oprot.writeFieldStop();
-			oprot.writeStructEnd();
-		}
-
-	}
-
-	private static class TCommentFormTupleSchemeFactory implements
-			SchemeFactory {
-		@Override
-		public TCommentFormTupleScheme getScheme() {
-			return new TCommentFormTupleScheme();
-		}
-	}
-
-	private static class TCommentFormTupleScheme extends
-			TupleScheme<TCommentForm> {
-
-		@Override
-		public void write(org.apache.thrift.protocol.TProtocol prot,
-				TCommentForm struct) throws org.apache.thrift.TException {
-			TTupleProtocol oprot = (TTupleProtocol) prot;
-			BitSet optionals = new BitSet();
-			if (struct.isSetPointId()) {
-				optionals.set(0);
-			}
-			if (struct.isSetReplyId()) {
-				optionals.set(1);
-			}
-			if (struct.isSetUserName()) {
-				optionals.set(2);
-			}
-			if (struct.isSetUserId()) {
-				optionals.set(3);
-			}
-			if (struct.isSetContent()) {
-				optionals.set(4);
-			}
-			if (struct.isSetIp()) {
-				optionals.set(5);
-			}
-			if (struct.isSetReserve1()) {
-				optionals.set(6);
-			}
-			if (struct.isSetReserve2()) {
-				optionals.set(7);
-			}
-			if (struct.isSetReserve3()) {
-				optionals.set(8);
-			}
-			if (struct.isSetReserve4()) {
-				optionals.set(9);
-			}
-			oprot.writeBitSet(optionals, 10);
-			if (struct.isSetPointId()) {
-				oprot.writeI32(struct.pointId);
-			}
-			if (struct.isSetReplyId()) {
-				oprot.writeI32(struct.replyId);
-			}
-			if (struct.isSetUserName()) {
-				oprot.writeString(struct.userName);
-			}
-			if (struct.isSetUserId()) {
-				oprot.writeI32(struct.userId);
-			}
-			if (struct.isSetContent()) {
-				oprot.writeString(struct.content);
-			}
-			if (struct.isSetIp()) {
-				oprot.writeString(struct.ip);
-			}
-			if (struct.isSetReserve1()) {
-				oprot.writeI32(struct.reserve1);
-			}
-			if (struct.isSetReserve2()) {
-				oprot.writeI32(struct.reserve2);
-			}
-			if (struct.isSetReserve3()) {
-				oprot.writeString(struct.reserve3);
-			}
-			if (struct.isSetReserve4()) {
-				oprot.writeString(struct.reserve4);
-			}
-		}
-
-		@Override
-		public void read(org.apache.thrift.protocol.TProtocol prot,
-				TCommentForm struct) throws org.apache.thrift.TException {
-			TTupleProtocol iprot = (TTupleProtocol) prot;
-			BitSet incoming = iprot.readBitSet(10);
-			if (incoming.get(0)) {
-				struct.pointId = iprot.readI32();
-				struct.setPointIdIsSet(true);
-			}
-			if (incoming.get(1)) {
-				struct.replyId = iprot.readI32();
-				struct.setReplyIdIsSet(true);
-			}
-			if (incoming.get(2)) {
-				struct.userName = iprot.readString();
-				struct.setUserNameIsSet(true);
-			}
-			if (incoming.get(3)) {
-				struct.userId = iprot.readI32();
-				struct.setUserIdIsSet(true);
-			}
-			if (incoming.get(4)) {
-				struct.content = iprot.readString();
-				struct.setContentIsSet(true);
-			}
-			if (incoming.get(5)) {
-				struct.ip = iprot.readString();
-				struct.setIpIsSet(true);
-			}
-			if (incoming.get(6)) {
-				struct.reserve1 = iprot.readI32();
-				struct.setReserve1IsSet(true);
-			}
-			if (incoming.get(7)) {
-				struct.reserve2 = iprot.readI32();
-				struct.setReserve2IsSet(true);
-			}
-			if (incoming.get(8)) {
-				struct.reserve3 = iprot.readString();
-				struct.setReserve3IsSet(true);
-			}
-			if (incoming.get(9)) {
-				struct.reserve4 = iprot.readString();
-				struct.setReserve4IsSet(true);
-			}
-		}
-	}
+import org.apache.thrift.protocol.TTupleProtocol;
+import java.util.List;
+import java.util.ArrayList;
+import java.util.Map;
+import java.util.HashMap;
+import java.util.EnumMap;
+import java.util.Set;
+import java.util.HashSet;
+import java.util.EnumSet;
+import java.util.Collections;
+import java.util.BitSet;
+import java.nio.ByteBuffer;
+import java.util.Arrays;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+public class TCommentForm implements org.apache.thrift.TBase<TCommentForm, TCommentForm._Fields>, java.io.Serializable, Cloneable {
+  private static final org.apache.thrift.protocol.TStruct STRUCT_DESC = new org.apache.thrift.protocol.TStruct("TCommentForm");
+
+  private static final org.apache.thrift.protocol.TField POINT_ID_FIELD_DESC = new org.apache.thrift.protocol.TField("pointId", org.apache.thrift.protocol.TType.I32, (short)1);
+  private static final org.apache.thrift.protocol.TField REPLY_ID_FIELD_DESC = new org.apache.thrift.protocol.TField("replyId", org.apache.thrift.protocol.TType.I32, (short)2);
+  private static final org.apache.thrift.protocol.TField USER_NAME_FIELD_DESC = new org.apache.thrift.protocol.TField("userName", org.apache.thrift.protocol.TType.STRING, (short)3);
+  private static final org.apache.thrift.protocol.TField USER_ID_FIELD_DESC = new org.apache.thrift.protocol.TField("userId", org.apache.thrift.protocol.TType.I32, (short)4);
+  private static final org.apache.thrift.protocol.TField CONTENT_FIELD_DESC = new org.apache.thrift.protocol.TField("content", org.apache.thrift.protocol.TType.STRING, (short)5);
+  private static final org.apache.thrift.protocol.TField IP_FIELD_DESC = new org.apache.thrift.protocol.TField("ip", org.apache.thrift.protocol.TType.STRING, (short)6);
+  private static final org.apache.thrift.protocol.TField RESERVE1_FIELD_DESC = new org.apache.thrift.protocol.TField("reserve1", org.apache.thrift.protocol.TType.I32, (short)7);
+  private static final org.apache.thrift.protocol.TField RESERVE2_FIELD_DESC = new org.apache.thrift.protocol.TField("reserve2", org.apache.thrift.protocol.TType.I32, (short)8);
+  private static final org.apache.thrift.protocol.TField RESERVE3_FIELD_DESC = new org.apache.thrift.protocol.TField("reserve3", org.apache.thrift.protocol.TType.STRING, (short)9);
+  private static final org.apache.thrift.protocol.TField RESERVE4_FIELD_DESC = new org.apache.thrift.protocol.TField("reserve4", org.apache.thrift.protocol.TType.STRING, (short)10);
+
+  private static final Map<Class<? extends IScheme>, SchemeFactory> schemes = new HashMap<Class<? extends IScheme>, SchemeFactory>();
+  static {
+    schemes.put(StandardScheme.class, new TCommentFormStandardSchemeFactory());
+    schemes.put(TupleScheme.class, new TCommentFormTupleSchemeFactory());
+  }
+
+  public int pointId; // optional
+  public int replyId; // optional
+  public String userName; // optional
+  public int userId; // optional
+  public String content; // optional
+  public String ip; // optional
+  public int reserve1; // optional
+  public int reserve2; // optional
+  public String reserve3; // optional
+  public String reserve4; // optional
+
+  /** The set of fields this struct contains, along with convenience methods for finding and manipulating them. */
+  public enum _Fields implements org.apache.thrift.TFieldIdEnum {
+    POINT_ID((short)1, "pointId"),
+    REPLY_ID((short)2, "replyId"),
+    USER_NAME((short)3, "userName"),
+    USER_ID((short)4, "userId"),
+    CONTENT((short)5, "content"),
+    IP((short)6, "ip"),
+    RESERVE1((short)7, "reserve1"),
+    RESERVE2((short)8, "reserve2"),
+    RESERVE3((short)9, "reserve3"),
+    RESERVE4((short)10, "reserve4");
+
+    private static final Map<String, _Fields> byName = new HashMap<String, _Fields>();
+
+    static {
+      for (_Fields field : EnumSet.allOf(_Fields.class)) {
+        byName.put(field.getFieldName(), field);
+      }
+    }
+
+    /**
+     * Find the _Fields constant that matches fieldId, or null if its not found.
+     */
+    public static _Fields findByThriftId(int fieldId) {
+      switch(fieldId) {
+        case 1: // POINT_ID
+          return POINT_ID;
+        case 2: // REPLY_ID
+          return REPLY_ID;
+        case 3: // USER_NAME
+          return USER_NAME;
+        case 4: // USER_ID
+          return USER_ID;
+        case 5: // CONTENT
+          return CONTENT;
+        case 6: // IP
+          return IP;
+        case 7: // RESERVE1
+          return RESERVE1;
+        case 8: // RESERVE2
+          return RESERVE2;
+        case 9: // RESERVE3
+          return RESERVE3;
+        case 10: // RESERVE4
+          return RESERVE4;
+        default:
+          return null;
+      }
+    }
+
+    /**
+     * Find the _Fields constant that matches fieldId, throwing an exception
+     * if it is not found.
+     */
+    public static _Fields findByThriftIdOrThrow(int fieldId) {
+      _Fields fields = findByThriftId(fieldId);
+      if (fields == null) throw new IllegalArgumentException("Field " + fieldId + " doesn't exist!");
+      return fields;
+    }
+
+    /**
+     * Find the _Fields constant that matches name, or null if its not found.
+     */
+    public static _Fields findByName(String name) {
+      return byName.get(name);
+    }
+
+    private final short _thriftId;
+    private final String _fieldName;
+
+    _Fields(short thriftId, String fieldName) {
+      _thriftId = thriftId;
+      _fieldName = fieldName;
+    }
+
+    public short getThriftFieldId() {
+      return _thriftId;
+    }
+
+    public String getFieldName() {
+      return _fieldName;
+    }
+  }
+
+  // isset id assignments
+  private static final int __POINTID_ISSET_ID = 0;
+  private static final int __REPLYID_ISSET_ID = 1;
+  private static final int __USERID_ISSET_ID = 2;
+  private static final int __RESERVE1_ISSET_ID = 3;
+  private static final int __RESERVE2_ISSET_ID = 4;
+  private BitSet __isset_bit_vector = new BitSet(5);
+  private _Fields optionals[] = {_Fields.POINT_ID,_Fields.REPLY_ID,_Fields.USER_NAME,_Fields.USER_ID,_Fields.CONTENT,_Fields.IP,_Fields.RESERVE1,_Fields.RESERVE2,_Fields.RESERVE3,_Fields.RESERVE4};
+  public static final Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
+  static {
+    Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
+    tmpMap.put(_Fields.POINT_ID, new org.apache.thrift.meta_data.FieldMetaData("pointId", org.apache.thrift.TFieldRequirementType.OPTIONAL, 
+        new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
+    tmpMap.put(_Fields.REPLY_ID, new org.apache.thrift.meta_data.FieldMetaData("replyId", org.apache.thrift.TFieldRequirementType.OPTIONAL, 
+        new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
+    tmpMap.put(_Fields.USER_NAME, new org.apache.thrift.meta_data.FieldMetaData("userName", org.apache.thrift.TFieldRequirementType.OPTIONAL, 
+        new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.STRING)));
+    tmpMap.put(_Fields.USER_ID, new org.apache.thrift.meta_data.FieldMetaData("userId", org.apache.thrift.TFieldRequirementType.OPTIONAL, 
+        new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
+    tmpMap.put(_Fields.CONTENT, new org.apache.thrift.meta_data.FieldMetaData("content", org.apache.thrift.TFieldRequirementType.OPTIONAL, 
+        new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.STRING)));
+    tmpMap.put(_Fields.IP, new org.apache.thrift.meta_data.FieldMetaData("ip", org.apache.thrift.TFieldRequirementType.OPTIONAL, 
+        new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.STRING)));
+    tmpMap.put(_Fields.RESERVE1, new org.apache.thrift.meta_data.FieldMetaData("reserve1", org.apache.thrift.TFieldRequirementType.OPTIONAL, 
+        new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
+    tmpMap.put(_Fields.RESERVE2, new org.apache.thrift.meta_data.FieldMetaData("reserve2", org.apache.thrift.TFieldRequirementType.OPTIONAL, 
+        new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
+    tmpMap.put(_Fields.RESERVE3, new org.apache.thrift.meta_data.FieldMetaData("reserve3", org.apache.thrift.TFieldRequirementType.OPTIONAL, 
+        new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.STRING)));
+    tmpMap.put(_Fields.RESERVE4, new org.apache.thrift.meta_data.FieldMetaData("reserve4", org.apache.thrift.TFieldRequirementType.OPTIONAL, 
+        new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.STRING)));
+    metaDataMap = Collections.unmodifiableMap(tmpMap);
+    org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(TCommentForm.class, metaDataMap);
+  }
+
+  public TCommentForm() {
+    this.reserve1 = 0;
+
+    this.reserve2 = 0;
+
+  }
+
+  /**
+   * Performs a deep copy on <i>other</i>.
+   */
+  public TCommentForm(TCommentForm other) {
+    __isset_bit_vector.clear();
+    __isset_bit_vector.or(other.__isset_bit_vector);
+    this.pointId = other.pointId;
+    this.replyId = other.replyId;
+    if (other.isSetUserName()) {
+      this.userName = other.userName;
+    }
+    this.userId = other.userId;
+    if (other.isSetContent()) {
+      this.content = other.content;
+    }
+    if (other.isSetIp()) {
+      this.ip = other.ip;
+    }
+    this.reserve1 = other.reserve1;
+    this.reserve2 = other.reserve2;
+    if (other.isSetReserve3()) {
+      this.reserve3 = other.reserve3;
+    }
+    if (other.isSetReserve4()) {
+      this.reserve4 = other.reserve4;
+    }
+  }
+
+  public TCommentForm deepCopy() {
+    return new TCommentForm(this);
+  }
+
+  @Override
+  public void clear() {
+    setPointIdIsSet(false);
+    this.pointId = 0;
+    setReplyIdIsSet(false);
+    this.replyId = 0;
+    this.userName = null;
+    setUserIdIsSet(false);
+    this.userId = 0;
+    this.content = null;
+    this.ip = null;
+    this.reserve1 = 0;
+
+    this.reserve2 = 0;
+
+    this.reserve3 = null;
+    this.reserve4 = null;
+  }
+
+  public int getPointId() {
+    return this.pointId;
+  }
+
+  public TCommentForm setPointId(int pointId) {
+    this.pointId = pointId;
+    setPointIdIsSet(true);
+    return this;
+  }
+
+  public void unsetPointId() {
+    __isset_bit_vector.clear(__POINTID_ISSET_ID);
+  }
+
+  /** Returns true if field pointId is set (has been assigned a value) and false otherwise */
+  public boolean isSetPointId() {
+    return __isset_bit_vector.get(__POINTID_ISSET_ID);
+  }
+
+  public void setPointIdIsSet(boolean value) {
+    __isset_bit_vector.set(__POINTID_ISSET_ID, value);
+  }
+
+  public int getReplyId() {
+    return this.replyId;
+  }
+
+  public TCommentForm setReplyId(int replyId) {
+    this.replyId = replyId;
+    setReplyIdIsSet(true);
+    return this;
+  }
+
+  public void unsetReplyId() {
+    __isset_bit_vector.clear(__REPLYID_ISSET_ID);
+  }
+
+  /** Returns true if field replyId is set (has been assigned a value) and false otherwise */
+  public boolean isSetReplyId() {
+    return __isset_bit_vector.get(__REPLYID_ISSET_ID);
+  }
+
+  public void setReplyIdIsSet(boolean value) {
+    __isset_bit_vector.set(__REPLYID_ISSET_ID, value);
+  }
+
+  public String getUserName() {
+    return this.userName;
+  }
+
+  public TCommentForm setUserName(String userName) {
+    this.userName = userName;
+    return this;
+  }
+
+  public void unsetUserName() {
+    this.userName = null;
+  }
+
+  /** Returns true if field userName is set (has been assigned a value) and false otherwise */
+  public boolean isSetUserName() {
+    return this.userName != null;
+  }
+
+  public void setUserNameIsSet(boolean value) {
+    if (!value) {
+      this.userName = null;
+    }
+  }
+
+  public int getUserId() {
+    return this.userId;
+  }
+
+  public TCommentForm setUserId(int userId) {
+    this.userId = userId;
+    setUserIdIsSet(true);
+    return this;
+  }
+
+  public void unsetUserId() {
+    __isset_bit_vector.clear(__USERID_ISSET_ID);
+  }
+
+  /** Returns true if field userId is set (has been assigned a value) and false otherwise */
+  public boolean isSetUserId() {
+    return __isset_bit_vector.get(__USERID_ISSET_ID);
+  }
+
+  public void setUserIdIsSet(boolean value) {
+    __isset_bit_vector.set(__USERID_ISSET_ID, value);
+  }
+
+  public String getContent() {
+    return this.content;
+  }
+
+  public TCommentForm setContent(String content) {
+    this.content = content;
+    return this;
+  }
+
+  public void unsetContent() {
+    this.content = null;
+  }
+
+  /** Returns true if field content is set (has been assigned a value) and false otherwise */
+  public boolean isSetContent() {
+    return this.content != null;
+  }
+
+  public void setContentIsSet(boolean value) {
+    if (!value) {
+      this.content = null;
+    }
+  }
+
+  public String getIp() {
+    return this.ip;
+  }
+
+  public TCommentForm setIp(String ip) {
+    this.ip = ip;
+    return this;
+  }
+
+  public void unsetIp() {
+    this.ip = null;
+  }
+
+  /** Returns true if field ip is set (has been assigned a value) and false otherwise */
+  public boolean isSetIp() {
+    return this.ip != null;
+  }
+
+  public void setIpIsSet(boolean value) {
+    if (!value) {
+      this.ip = null;
+    }
+  }
+
+  public int getReserve1() {
+    return this.reserve1;
+  }
+
+  public TCommentForm setReserve1(int reserve1) {
+    this.reserve1 = reserve1;
+    setReserve1IsSet(true);
+    return this;
+  }
+
+  public void unsetReserve1() {
+    __isset_bit_vector.clear(__RESERVE1_ISSET_ID);
+  }
+
+  /** Returns true if field reserve1 is set (has been assigned a value) and false otherwise */
+  public boolean isSetReserve1() {
+    return __isset_bit_vector.get(__RESERVE1_ISSET_ID);
+  }
+
+  public void setReserve1IsSet(boolean value) {
+    __isset_bit_vector.set(__RESERVE1_ISSET_ID, value);
+  }
+
+  public int getReserve2() {
+    return this.reserve2;
+  }
+
+  public TCommentForm setReserve2(int reserve2) {
+    this.reserve2 = reserve2;
+    setReserve2IsSet(true);
+    return this;
+  }
+
+  public void unsetReserve2() {
+    __isset_bit_vector.clear(__RESERVE2_ISSET_ID);
+  }
+
+  /** Returns true if field reserve2 is set (has been assigned a value) and false otherwise */
+  public boolean isSetReserve2() {
+    return __isset_bit_vector.get(__RESERVE2_ISSET_ID);
+  }
+
+  public void setReserve2IsSet(boolean value) {
+    __isset_bit_vector.set(__RESERVE2_ISSET_ID, value);
+  }
+
+  public String getReserve3() {
+    return this.reserve3;
+  }
+
+  public TCommentForm setReserve3(String reserve3) {
+    this.reserve3 = reserve3;
+    return this;
+  }
+
+  public void unsetReserve3() {
+    this.reserve3 = null;
+  }
+
+  /** Returns true if field reserve3 is set (has been assigned a value) and false otherwise */
+  public boolean isSetReserve3() {
+    return this.reserve3 != null;
+  }
+
+  public void setReserve3IsSet(boolean value) {
+    if (!value) {
+      this.reserve3 = null;
+    }
+  }
+
+  public String getReserve4() {
+    return this.reserve4;
+  }
+
+  public TCommentForm setReserve4(String reserve4) {
+    this.reserve4 = reserve4;
+    return this;
+  }
+
+  public void unsetReserve4() {
+    this.reserve4 = null;
+  }
+
+  /** Returns true if field reserve4 is set (has been assigned a value) and false otherwise */
+  public boolean isSetReserve4() {
+    return this.reserve4 != null;
+  }
+
+  public void setReserve4IsSet(boolean value) {
+    if (!value) {
+      this.reserve4 = null;
+    }
+  }
+
+  public void setFieldValue(_Fields field, Object value) {
+    switch (field) {
+    case POINT_ID:
+      if (value == null) {
+        unsetPointId();
+      } else {
+        setPointId((Integer)value);
+      }
+      break;
+
+    case REPLY_ID:
+      if (value == null) {
+        unsetReplyId();
+      } else {
+        setReplyId((Integer)value);
+      }
+      break;
+
+    case USER_NAME:
+      if (value == null) {
+        unsetUserName();
+      } else {
+        setUserName((String)value);
+      }
+      break;
+
+    case USER_ID:
+      if (value == null) {
+        unsetUserId();
+      } else {
+        setUserId((Integer)value);
+      }
+      break;
+
+    case CONTENT:
+      if (value == null) {
+        unsetContent();
+      } else {
+        setContent((String)value);
+      }
+      break;
+
+    case IP:
+      if (value == null) {
+        unsetIp();
+      } else {
+        setIp((String)value);
+      }
+      break;
+
+    case RESERVE1:
+      if (value == null) {
+        unsetReserve1();
+      } else {
+        setReserve1((Integer)value);
+      }
+      break;
+
+    case RESERVE2:
+      if (value == null) {
+        unsetReserve2();
+      } else {
+        setReserve2((Integer)value);
+      }
+      break;
+
+    case RESERVE3:
+      if (value == null) {
+        unsetReserve3();
+      } else {
+        setReserve3((String)value);
+      }
+      break;
+
+    case RESERVE4:
+      if (value == null) {
+        unsetReserve4();
+      } else {
+        setReserve4((String)value);
+      }
+      break;
+
+    }
+  }
+
+  public Object getFieldValue(_Fields field) {
+    switch (field) {
+    case POINT_ID:
+      return Integer.valueOf(getPointId());
+
+    case REPLY_ID:
+      return Integer.valueOf(getReplyId());
+
+    case USER_NAME:
+      return getUserName();
+
+    case USER_ID:
+      return Integer.valueOf(getUserId());
+
+    case CONTENT:
+      return getContent();
+
+    case IP:
+      return getIp();
+
+    case RESERVE1:
+      return Integer.valueOf(getReserve1());
+
+    case RESERVE2:
+      return Integer.valueOf(getReserve2());
+
+    case RESERVE3:
+      return getReserve3();
+
+    case RESERVE4:
+      return getReserve4();
+
+    }
+    throw new IllegalStateException();
+  }
+
+  /** Returns true if field corresponding to fieldID is set (has been assigned a value) and false otherwise */
+  public boolean isSet(_Fields field) {
+    if (field == null) {
+      throw new IllegalArgumentException();
+    }
+
+    switch (field) {
+    case POINT_ID:
+      return isSetPointId();
+    case REPLY_ID:
+      return isSetReplyId();
+    case USER_NAME:
+      return isSetUserName();
+    case USER_ID:
+      return isSetUserId();
+    case CONTENT:
+      return isSetContent();
+    case IP:
+      return isSetIp();
+    case RESERVE1:
+      return isSetReserve1();
+    case RESERVE2:
+      return isSetReserve2();
+    case RESERVE3:
+      return isSetReserve3();
+    case RESERVE4:
+      return isSetReserve4();
+    }
+    throw new IllegalStateException();
+  }
+
+  @Override
+  public boolean equals(Object that) {
+    if (that == null)
+      return false;
+    if (that instanceof TCommentForm)
+      return this.equals((TCommentForm)that);
+    return false;
+  }
+
+  public boolean equals(TCommentForm that) {
+    if (that == null)
+      return false;
+
+    boolean this_present_pointId = true && this.isSetPointId();
+    boolean that_present_pointId = true && that.isSetPointId();
+    if (this_present_pointId || that_present_pointId) {
+      if (!(this_present_pointId && that_present_pointId))
+        return false;
+      if (this.pointId != that.pointId)
+        return false;
+    }
+
+    boolean this_present_replyId = true && this.isSetReplyId();
+    boolean that_present_replyId = true && that.isSetReplyId();
+    if (this_present_replyId || that_present_replyId) {
+      if (!(this_present_replyId && that_present_replyId))
+        return false;
+      if (this.replyId != that.replyId)
+        return false;
+    }
+
+    boolean this_present_userName = true && this.isSetUserName();
+    boolean that_present_userName = true && that.isSetUserName();
+    if (this_present_userName || that_present_userName) {
+      if (!(this_present_userName && that_present_userName))
+        return false;
+      if (!this.userName.equals(that.userName))
+        return false;
+    }
+
+    boolean this_present_userId = true && this.isSetUserId();
+    boolean that_present_userId = true && that.isSetUserId();
+    if (this_present_userId || that_present_userId) {
+      if (!(this_present_userId && that_present_userId))
+        return false;
+      if (this.userId != that.userId)
+        return false;
+    }
+
+    boolean this_present_content = true && this.isSetContent();
+    boolean that_present_content = true && that.isSetContent();
+    if (this_present_content || that_present_content) {
+      if (!(this_present_content && that_present_content))
+        return false;
+      if (!this.content.equals(that.content))
+        return false;
+    }
+
+    boolean this_present_ip = true && this.isSetIp();
+    boolean that_present_ip = true && that.isSetIp();
+    if (this_present_ip || that_present_ip) {
+      if (!(this_present_ip && that_present_ip))
+        return false;
+      if (!this.ip.equals(that.ip))
+        return false;
+    }
+
+    boolean this_present_reserve1 = true && this.isSetReserve1();
+    boolean that_present_reserve1 = true && that.isSetReserve1();
+    if (this_present_reserve1 || that_present_reserve1) {
+      if (!(this_present_reserve1 && that_present_reserve1))
+        return false;
+      if (this.reserve1 != that.reserve1)
+        return false;
+    }
+
+    boolean this_present_reserve2 = true && this.isSetReserve2();
+    boolean that_present_reserve2 = true && that.isSetReserve2();
+    if (this_present_reserve2 || that_present_reserve2) {
+      if (!(this_present_reserve2 && that_present_reserve2))
+        return false;
+      if (this.reserve2 != that.reserve2)
+        return false;
+    }
+
+    boolean this_present_reserve3 = true && this.isSetReserve3();
+    boolean that_present_reserve3 = true && that.isSetReserve3();
+    if (this_present_reserve3 || that_present_reserve3) {
+      if (!(this_present_reserve3 && that_present_reserve3))
+        return false;
+      if (!this.reserve3.equals(that.reserve3))
+        return false;
+    }
+
+    boolean this_present_reserve4 = true && this.isSetReserve4();
+    boolean that_present_reserve4 = true && that.isSetReserve4();
+    if (this_present_reserve4 || that_present_reserve4) {
+      if (!(this_present_reserve4 && that_present_reserve4))
+        return false;
+      if (!this.reserve4.equals(that.reserve4))
+        return false;
+    }
+
+    return true;
+  }
+
+  @Override
+  public int hashCode() {
+    return 0;
+  }
+
+  public int compareTo(TCommentForm other) {
+    if (!getClass().equals(other.getClass())) {
+      return getClass().getName().compareTo(other.getClass().getName());
+    }
+
+    int lastComparison = 0;
+    TCommentForm typedOther = (TCommentForm)other;
+
+    lastComparison = Boolean.valueOf(isSetPointId()).compareTo(typedOther.isSetPointId());
+    if (lastComparison != 0) {
+      return lastComparison;
+    }
+    if (isSetPointId()) {
+      lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.pointId, typedOther.pointId);
+      if (lastComparison != 0) {
+        return lastComparison;
+      }
+    }
+    lastComparison = Boolean.valueOf(isSetReplyId()).compareTo(typedOther.isSetReplyId());
+    if (lastComparison != 0) {
+      return lastComparison;
+    }
+    if (isSetReplyId()) {
+      lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.replyId, typedOther.replyId);
+      if (lastComparison != 0) {
+        return lastComparison;
+      }
+    }
+    lastComparison = Boolean.valueOf(isSetUserName()).compareTo(typedOther.isSetUserName());
+    if (lastComparison != 0) {
+      return lastComparison;
+    }
+    if (isSetUserName()) {
+      lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.userName, typedOther.userName);
+      if (lastComparison != 0) {
+        return lastComparison;
+      }
+    }
+    lastComparison = Boolean.valueOf(isSetUserId()).compareTo(typedOther.isSetUserId());
+    if (lastComparison != 0) {
+      return lastComparison;
+    }
+    if (isSetUserId()) {
+      lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.userId, typedOther.userId);
+      if (lastComparison != 0) {
+        return lastComparison;
+      }
+    }
+    lastComparison = Boolean.valueOf(isSetContent()).compareTo(typedOther.isSetContent());
+    if (lastComparison != 0) {
+      return lastComparison;
+    }
+    if (isSetContent()) {
+      lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.content, typedOther.content);
+      if (lastComparison != 0) {
+        return lastComparison;
+      }
+    }
+    lastComparison = Boolean.valueOf(isSetIp()).compareTo(typedOther.isSetIp());
+    if (lastComparison != 0) {
+      return lastComparison;
+    }
+    if (isSetIp()) {
+      lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.ip, typedOther.ip);
+      if (lastComparison != 0) {
+        return lastComparison;
+      }
+    }
+    lastComparison = Boolean.valueOf(isSetReserve1()).compareTo(typedOther.isSetReserve1());
+    if (lastComparison != 0) {
+      return lastComparison;
+    }
+    if (isSetReserve1()) {
+      lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.reserve1, typedOther.reserve1);
+      if (lastComparison != 0) {
+        return lastComparison;
+      }
+    }
+    lastComparison = Boolean.valueOf(isSetReserve2()).compareTo(typedOther.isSetReserve2());
+    if (lastComparison != 0) {
+      return lastComparison;
+    }
+    if (isSetReserve2()) {
+      lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.reserve2, typedOther.reserve2);
+      if (lastComparison != 0) {
+        return lastComparison;
+      }
+    }
+    lastComparison = Boolean.valueOf(isSetReserve3()).compareTo(typedOther.isSetReserve3());
+    if (lastComparison != 0) {
+      return lastComparison;
+    }
+    if (isSetReserve3()) {
+      lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.reserve3, typedOther.reserve3);
+      if (lastComparison != 0) {
+        return lastComparison;
+      }
+    }
+    lastComparison = Boolean.valueOf(isSetReserve4()).compareTo(typedOther.isSetReserve4());
+    if (lastComparison != 0) {
+      return lastComparison;
+    }
+    if (isSetReserve4()) {
+      lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.reserve4, typedOther.reserve4);
+      if (lastComparison != 0) {
+        return lastComparison;
+      }
+    }
+    return 0;
+  }
+
+  public _Fields fieldForId(int fieldId) {
+    return _Fields.findByThriftId(fieldId);
+  }
+
+  public void read(org.apache.thrift.protocol.TProtocol iprot) throws org.apache.thrift.TException {
+    schemes.get(iprot.getScheme()).getScheme().read(iprot, this);
+  }
+
+  public void write(org.apache.thrift.protocol.TProtocol oprot) throws org.apache.thrift.TException {
+    schemes.get(oprot.getScheme()).getScheme().write(oprot, this);
+  }
+
+  @Override
+  public String toString() {
+    StringBuilder sb = new StringBuilder("TCommentForm(");
+    boolean first = true;
+
+    if (isSetPointId()) {
+      sb.append("pointId:");
+      sb.append(this.pointId);
+      first = false;
+    }
+    if (isSetReplyId()) {
+      if (!first) sb.append(", ");
+      sb.append("replyId:");
+      sb.append(this.replyId);
+      first = false;
+    }
+    if (isSetUserName()) {
+      if (!first) sb.append(", ");
+      sb.append("userName:");
+      if (this.userName == null) {
+        sb.append("null");
+      } else {
+        sb.append(this.userName);
+      }
+      first = false;
+    }
+    if (isSetUserId()) {
+      if (!first) sb.append(", ");
+      sb.append("userId:");
+      sb.append(this.userId);
+      first = false;
+    }
+    if (isSetContent()) {
+      if (!first) sb.append(", ");
+      sb.append("content:");
+      if (this.content == null) {
+        sb.append("null");
+      } else {
+        sb.append(this.content);
+      }
+      first = false;
+    }
+    if (isSetIp()) {
+      if (!first) sb.append(", ");
+      sb.append("ip:");
+      if (this.ip == null) {
+        sb.append("null");
+      } else {
+        sb.append(this.ip);
+      }
+      first = false;
+    }
+    if (isSetReserve1()) {
+      if (!first) sb.append(", ");
+      sb.append("reserve1:");
+      sb.append(this.reserve1);
+      first = false;
+    }
+    if (isSetReserve2()) {
+      if (!first) sb.append(", ");
+      sb.append("reserve2:");
+      sb.append(this.reserve2);
+      first = false;
+    }
+    if (isSetReserve3()) {
+      if (!first) sb.append(", ");
+      sb.append("reserve3:");
+      if (this.reserve3 == null) {
+        sb.append("null");
+      } else {
+        sb.append(this.reserve3);
+      }
+      first = false;
+    }
+    if (isSetReserve4()) {
+      if (!first) sb.append(", ");
+      sb.append("reserve4:");
+      if (this.reserve4 == null) {
+        sb.append("null");
+      } else {
+        sb.append(this.reserve4);
+      }
+      first = false;
+    }
+    sb.append(")");
+    return sb.toString();
+  }
+
+  public void validate() throws org.apache.thrift.TException {
+    // check for required fields
+  }
+
+  private void writeObject(java.io.ObjectOutputStream out) throws java.io.IOException {
+    try {
+      write(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(out)));
+    } catch (org.apache.thrift.TException te) {
+      throw new java.io.IOException(te);
+    }
+  }
+
+  private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, ClassNotFoundException {
+    try {
+      // it doesn't seem like you should have to do this, but java serialization is wacky, and doesn't call the default constructor.
+      __isset_bit_vector = new BitSet(1);
+      read(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(in)));
+    } catch (org.apache.thrift.TException te) {
+      throw new java.io.IOException(te);
+    }
+  }
+
+  private static class TCommentFormStandardSchemeFactory implements SchemeFactory {
+    public TCommentFormStandardScheme getScheme() {
+      return new TCommentFormStandardScheme();
+    }
+  }
+
+  private static class TCommentFormStandardScheme extends StandardScheme<TCommentForm> {
+
+    public void read(org.apache.thrift.protocol.TProtocol iprot, TCommentForm struct) throws org.apache.thrift.TException {
+      org.apache.thrift.protocol.TField schemeField;
+      iprot.readStructBegin();
+      while (true)
+      {
+        schemeField = iprot.readFieldBegin();
+        if (schemeField.type == org.apache.thrift.protocol.TType.STOP) { 
+          break;
+        }
+        switch (schemeField.id) {
+          case 1: // POINT_ID
+            if (schemeField.type == org.apache.thrift.protocol.TType.I32) {
+              struct.pointId = iprot.readI32();
+              struct.setPointIdIsSet(true);
+            } else { 
+              org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
+            }
+            break;
+          case 2: // REPLY_ID
+            if (schemeField.type == org.apache.thrift.protocol.TType.I32) {
+              struct.replyId = iprot.readI32();
+              struct.setReplyIdIsSet(true);
+            } else { 
+              org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
+            }
+            break;
+          case 3: // USER_NAME
+            if (schemeField.type == org.apache.thrift.protocol.TType.STRING) {
+              struct.userName = iprot.readString();
+              struct.setUserNameIsSet(true);
+            } else { 
+              org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
+            }
+            break;
+          case 4: // USER_ID
+            if (schemeField.type == org.apache.thrift.protocol.TType.I32) {
+              struct.userId = iprot.readI32();
+              struct.setUserIdIsSet(true);
+            } else { 
+              org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
+            }
+            break;
+          case 5: // CONTENT
+            if (schemeField.type == org.apache.thrift.protocol.TType.STRING) {
+              struct.content = iprot.readString();
+              struct.setContentIsSet(true);
+            } else { 
+              org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
+            }
+            break;
+          case 6: // IP
+            if (schemeField.type == org.apache.thrift.protocol.TType.STRING) {
+              struct.ip = iprot.readString();
+              struct.setIpIsSet(true);
+            } else { 
+              org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
+            }
+            break;
+          case 7: // RESERVE1
+            if (schemeField.type == org.apache.thrift.protocol.TType.I32) {
+              struct.reserve1 = iprot.readI32();
+              struct.setReserve1IsSet(true);
+            } else { 
+              org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
+            }
+            break;
+          case 8: // RESERVE2
+            if (schemeField.type == org.apache.thrift.protocol.TType.I32) {
+              struct.reserve2 = iprot.readI32();
+              struct.setReserve2IsSet(true);
+            } else { 
+              org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
+            }
+            break;
+          case 9: // RESERVE3
+            if (schemeField.type == org.apache.thrift.protocol.TType.STRING) {
+              struct.reserve3 = iprot.readString();
+              struct.setReserve3IsSet(true);
+            } else { 
+              org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
+            }
+            break;
+          case 10: // RESERVE4
+            if (schemeField.type == org.apache.thrift.protocol.TType.STRING) {
+              struct.reserve4 = iprot.readString();
+              struct.setReserve4IsSet(true);
+            } else { 
+              org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
+            }
+            break;
+          default:
+            org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
+        }
+        iprot.readFieldEnd();
+      }
+      iprot.readStructEnd();
+
+      // check for required fields of primitive type, which can't be checked in the validate method
+      struct.validate();
+    }
+
+    public void write(org.apache.thrift.protocol.TProtocol oprot, TCommentForm struct) throws org.apache.thrift.TException {
+      struct.validate();
+
+      oprot.writeStructBegin(STRUCT_DESC);
+      if (struct.isSetPointId()) {
+        oprot.writeFieldBegin(POINT_ID_FIELD_DESC);
+        oprot.writeI32(struct.pointId);
+        oprot.writeFieldEnd();
+      }
+      if (struct.isSetReplyId()) {
+        oprot.writeFieldBegin(REPLY_ID_FIELD_DESC);
+        oprot.writeI32(struct.replyId);
+        oprot.writeFieldEnd();
+      }
+      if (struct.userName != null) {
+        if (struct.isSetUserName()) {
+          oprot.writeFieldBegin(USER_NAME_FIELD_DESC);
+          oprot.writeString(struct.userName);
+          oprot.writeFieldEnd();
+        }
+      }
+      if (struct.isSetUserId()) {
+        oprot.writeFieldBegin(USER_ID_FIELD_DESC);
+        oprot.writeI32(struct.userId);
+        oprot.writeFieldEnd();
+      }
+      if (struct.content != null) {
+        if (struct.isSetContent()) {
+          oprot.writeFieldBegin(CONTENT_FIELD_DESC);
+          oprot.writeString(struct.content);
+          oprot.writeFieldEnd();
+        }
+      }
+      if (struct.ip != null) {
+        if (struct.isSetIp()) {
+          oprot.writeFieldBegin(IP_FIELD_DESC);
+          oprot.writeString(struct.ip);
+          oprot.writeFieldEnd();
+        }
+      }
+      if (struct.isSetReserve1()) {
+        oprot.writeFieldBegin(RESERVE1_FIELD_DESC);
+        oprot.writeI32(struct.reserve1);
+        oprot.writeFieldEnd();
+      }
+      if (struct.isSetReserve2()) {
+        oprot.writeFieldBegin(RESERVE2_FIELD_DESC);
+        oprot.writeI32(struct.reserve2);
+        oprot.writeFieldEnd();
+      }
+      if (struct.reserve3 != null) {
+        if (struct.isSetReserve3()) {
+          oprot.writeFieldBegin(RESERVE3_FIELD_DESC);
+          oprot.writeString(struct.reserve3);
+          oprot.writeFieldEnd();
+        }
+      }
+      if (struct.reserve4 != null) {
+        if (struct.isSetReserve4()) {
+          oprot.writeFieldBegin(RESERVE4_FIELD_DESC);
+          oprot.writeString(struct.reserve4);
+          oprot.writeFieldEnd();
+        }
+      }
+      oprot.writeFieldStop();
+      oprot.writeStructEnd();
+    }
+
+  }
+
+  private static class TCommentFormTupleSchemeFactory implements SchemeFactory {
+    public TCommentFormTupleScheme getScheme() {
+      return new TCommentFormTupleScheme();
+    }
+  }
+
+  private static class TCommentFormTupleScheme extends TupleScheme<TCommentForm> {
+
+    @Override
+    public void write(org.apache.thrift.protocol.TProtocol prot, TCommentForm struct) throws org.apache.thrift.TException {
+      TTupleProtocol oprot = (TTupleProtocol) prot;
+      BitSet optionals = new BitSet();
+      if (struct.isSetPointId()) {
+        optionals.set(0);
+      }
+      if (struct.isSetReplyId()) {
+        optionals.set(1);
+      }
+      if (struct.isSetUserName()) {
+        optionals.set(2);
+      }
+      if (struct.isSetUserId()) {
+        optionals.set(3);
+      }
+      if (struct.isSetContent()) {
+        optionals.set(4);
+      }
+      if (struct.isSetIp()) {
+        optionals.set(5);
+      }
+      if (struct.isSetReserve1()) {
+        optionals.set(6);
+      }
+      if (struct.isSetReserve2()) {
+        optionals.set(7);
+      }
+      if (struct.isSetReserve3()) {
+        optionals.set(8);
+      }
+      if (struct.isSetReserve4()) {
+        optionals.set(9);
+      }
+      oprot.writeBitSet(optionals, 10);
+      if (struct.isSetPointId()) {
+        oprot.writeI32(struct.pointId);
+      }
+      if (struct.isSetReplyId()) {
+        oprot.writeI32(struct.replyId);
+      }
+      if (struct.isSetUserName()) {
+        oprot.writeString(struct.userName);
+      }
+      if (struct.isSetUserId()) {
+        oprot.writeI32(struct.userId);
+      }
+      if (struct.isSetContent()) {
+        oprot.writeString(struct.content);
+      }
+      if (struct.isSetIp()) {
+        oprot.writeString(struct.ip);
+      }
+      if (struct.isSetReserve1()) {
+        oprot.writeI32(struct.reserve1);
+      }
+      if (struct.isSetReserve2()) {
+        oprot.writeI32(struct.reserve2);
+      }
+      if (struct.isSetReserve3()) {
+        oprot.writeString(struct.reserve3);
+      }
+      if (struct.isSetReserve4()) {
+        oprot.writeString(struct.reserve4);
+      }
+    }
+
+    @Override
+    public void read(org.apache.thrift.protocol.TProtocol prot, TCommentForm struct) throws org.apache.thrift.TException {
+      TTupleProtocol iprot = (TTupleProtocol) prot;
+      BitSet incoming = iprot.readBitSet(10);
+      if (incoming.get(0)) {
+        struct.pointId = iprot.readI32();
+        struct.setPointIdIsSet(true);
+      }
+      if (incoming.get(1)) {
+        struct.replyId = iprot.readI32();
+        struct.setReplyIdIsSet(true);
+      }
+      if (incoming.get(2)) {
+        struct.userName = iprot.readString();
+        struct.setUserNameIsSet(true);
+      }
+      if (incoming.get(3)) {
+        struct.userId = iprot.readI32();
+        struct.setUserIdIsSet(true);
+      }
+      if (incoming.get(4)) {
+        struct.content = iprot.readString();
+        struct.setContentIsSet(true);
+      }
+      if (incoming.get(5)) {
+        struct.ip = iprot.readString();
+        struct.setIpIsSet(true);
+      }
+      if (incoming.get(6)) {
+        struct.reserve1 = iprot.readI32();
+        struct.setReserve1IsSet(true);
+      }
+      if (incoming.get(7)) {
+        struct.reserve2 = iprot.readI32();
+        struct.setReserve2IsSet(true);
+      }
+      if (incoming.get(8)) {
+        struct.reserve3 = iprot.readString();
+        struct.setReserve3IsSet(true);
+      }
+      if (incoming.get(9)) {
+        struct.reserve4 = iprot.readString();
+        struct.setReserve4IsSet(true);
+      }
+    }
+  }
 
 }
+

@@ -1,5 +1,7 @@
 package bma.siteone.comments.service;
 
+import java.util.List;
+
 import bma.common.langutil.core.PagerResult;
 import bma.siteone.comments.po.CommentInfo;
 import bma.siteone.comments.po.CommentPoint;
@@ -20,6 +22,16 @@ public interface CommentsService {
 	 * @return
 	 */
 	public int createComment(CommentForm form, CommentPointForm pointForm);
+
+	/**
+	 * 更新评论
+	 * 
+	 * @param id
+	 * @param form
+	 * @param fields
+	 * @return
+	 */
+	public boolean updateComment(int id, CommentForm form, List<String> fields);
 
 	/**
 	 * 删除评论
@@ -46,43 +58,6 @@ public interface CommentsService {
 	 * @return
 	 */
 	public PagerResult<CommentInfo> searchComment(SearchCommentForm form);
-
-	/**
-	 * 获得评论点的有效的评论
-	 * 
-	 * @param pointId
-	 * @param page
-	 * @param pageSize
-	 * @return
-	 */
-	public PagerResult<CommentInfo> listComment(int pointId, int page,
-			int pageSize);
-
-	/**
-	 * 支持评论
-	 * 
-	 * @param id
-	 * @param oppose
-	 * @return
-	 */
-	public boolean supportComment(int id, boolean oppose);
-
-	/**
-	 * 审核内容
-	 * 
-	 * @param id
-	 * @param bad
-	 * @return
-	 */
-	public boolean authComment(int id, boolean pass);
-
-	/**
-	 * 举报评论
-	 * 
-	 * @param id
-	 * @param bad
-	 */
-	public boolean reportComment(int id, boolean hide);
 
 	/**
 	 * 获得评论点
@@ -135,12 +110,4 @@ public interface CommentsService {
 	 */
 	public PagerResult<CommentPoint> searchCommentPoint(
 			SearchCommentPointForm form);
-
-	/**
-	 * 获得评论点的首页展示数据
-	 * 
-	 * @param name
-	 * @return
-	 */
-	public CommentHome getHome(String name, int pageSize);
 }

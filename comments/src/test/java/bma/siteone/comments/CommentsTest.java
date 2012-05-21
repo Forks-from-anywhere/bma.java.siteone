@@ -1,5 +1,8 @@
 package bma.siteone.comments;
 
+import java.util.LinkedList;
+import java.util.List;
+
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -143,6 +146,23 @@ public class CommentsTest {
 	}
 
 	@Test
+	public void testComment_Update() throws Exception {
+		CommentsService s = context.getBean("service", CommentsService.class);
+
+		int id = 13;
+
+		CommentForm f2 = new CommentForm();
+		f2.setContent("我是评论内容");
+		f2.setUserId(0);
+		f2.setUserName("昵称");
+
+		List<String> fs = new LinkedList<String>();
+		fs.add("content");
+		fs.add("hide_flag");
+		System.out.println(s.updateComment(id, f2, fs));
+	}
+
+	@Test
 	public void testComment_Delete() throws Exception {
 		CommentsService s = context.getBean("service", CommentsService.class);
 
@@ -150,21 +170,12 @@ public class CommentsTest {
 	}
 
 	@Test
-	public void testComment_List() throws Exception {
-		CommentsService s = context.getBean("service", CommentsService.class);
-
-		int cp = 13;
-		Object o = s.listComment(cp, 1, 10);
-		System.out.println(o);
-	}
-
-	@Test
 	public void testComment_Search() throws Exception {
 		CommentsService s = context.getBean("service", CommentsService.class);
 
 		SearchCommentForm form = new SearchCommentForm();
-		form.setContent("我是");
-		form.setPointId(15);
+		// form.setContent("我是");
+		// form.setPointId(15);
 		// form.setPoint("name1");
 		form.setPage(1);
 		form.setPageSize(10);
@@ -173,39 +184,4 @@ public class CommentsTest {
 		System.out.println(o);
 	}
 
-	@Test
-	public void testComment_Support() throws Exception {
-		CommentsService s = context.getBean("service", CommentsService.class);
-
-		int id = 4;
-		System.out.println(s.supportComment(id, false));
-		System.out.println(s.getComment(id));
-	}
-
-	@Test
-	public void testComment_Auth() throws Exception {
-		CommentsService s = context.getBean("service", CommentsService.class);
-
-		int id = 4;
-		System.out.println(s.authComment(id, true));
-		System.out.println(s.getComment(id));
-	}
-
-	@Test
-	public void testComment_Report() throws Exception {
-		CommentsService s = context.getBean("service", CommentsService.class);
-
-		int id = 4;
-		System.out.println(s.reportComment(id, false));
-		System.out.println(s.getComment(id));
-	}
-
-	@Test
-	public void testCommentPoint_GetHome() throws Exception {
-		CommentsService s = context.getBean("service", CommentsService.class);
-		Object o = s.getHome("selective_3", 10);
-		System.out.println(o);
-		// o = s.getHome("name6", 15);
-		// System.out.println(o);
-	}
 }

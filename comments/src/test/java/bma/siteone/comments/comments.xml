@@ -51,11 +51,10 @@
 		<constructor-arg value="100"/>
 	</bean>
 	<bean id="service" class="bma.siteone.comments.service.CommentsServiceImpl">
-		<property name="autoPublish" value="true"/>
 		<property name="jdbcTemplate" ref="jdbcTemplate" />
 		<property name="commentCache" ref="cache"/>
 		<property name="commentPointCache" ref="cache"/>
-		<property name="commentHomeCache" ref="cache"/>
+		<property name="commentPointNameCache" ref="cache"/>
 	</bean>
 
 	<!-- thrift -->

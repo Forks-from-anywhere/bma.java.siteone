@@ -17,9 +17,15 @@ import java.util.ArrayList;
 import java.util.Map;
 import java.util.HashMap;
 import java.util.EnumMap;
+import java.util.Set;
+import java.util.HashSet;
 import java.util.EnumSet;
 import java.util.Collections;
 import java.util.BitSet;
+import java.nio.ByteBuffer;
+import java.util.Arrays;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class TCommentPointSearchResult implements org.apache.thrift.TBase<TCommentPointSearchResult, TCommentPointSearchResult._Fields>, java.io.Serializable, Cloneable {
   private static final org.apache.thrift.protocol.TStruct STRUCT_DESC = new org.apache.thrift.protocol.TStruct("TCommentPointSearchResult");
@@ -88,13 +94,11 @@ public class TCommentPointSearchResult implements org.apache.thrift.TBase<TComme
       _fieldName = fieldName;
     }
 
-    @Override
-	public short getThriftFieldId() {
+    public short getThriftFieldId() {
       return _thriftId;
     }
 
-    @Override
-	public String getFieldName() {
+    public String getFieldName() {
       return _fieldName;
     }
   }
@@ -143,8 +147,7 @@ public class TCommentPointSearchResult implements org.apache.thrift.TBase<TComme
     }
   }
 
-  @Override
-public TCommentPointSearchResult deepCopy() {
+  public TCommentPointSearchResult deepCopy() {
     return new TCommentPointSearchResult(this);
   }
 
@@ -217,8 +220,7 @@ public TCommentPointSearchResult deepCopy() {
     }
   }
 
-  @Override
-public void setFieldValue(_Fields field, Object value) {
+  public void setFieldValue(_Fields field, Object value) {
     switch (field) {
     case TOTAL:
       if (value == null) {
@@ -239,8 +241,7 @@ public void setFieldValue(_Fields field, Object value) {
     }
   }
 
-  @Override
-public Object getFieldValue(_Fields field) {
+  public Object getFieldValue(_Fields field) {
     switch (field) {
     case TOTAL:
       return Integer.valueOf(getTotal());
@@ -253,8 +254,7 @@ public Object getFieldValue(_Fields field) {
   }
 
   /** Returns true if field corresponding to fieldID is set (has been assigned a value) and false otherwise */
-  @Override
-public boolean isSet(_Fields field) {
+  public boolean isSet(_Fields field) {
     if (field == null) {
       throw new IllegalArgumentException();
     }
@@ -307,14 +307,13 @@ public boolean isSet(_Fields field) {
     return 0;
   }
 
-  @Override
-public int compareTo(TCommentPointSearchResult other) {
+  public int compareTo(TCommentPointSearchResult other) {
     if (!getClass().equals(other.getClass())) {
       return getClass().getName().compareTo(other.getClass().getName());
     }
 
     int lastComparison = 0;
-    TCommentPointSearchResult typedOther = other;
+    TCommentPointSearchResult typedOther = (TCommentPointSearchResult)other;
 
     lastComparison = Boolean.valueOf(isSetTotal()).compareTo(typedOther.isSetTotal());
     if (lastComparison != 0) {
@@ -339,18 +338,15 @@ public int compareTo(TCommentPointSearchResult other) {
     return 0;
   }
 
-  @Override
-public _Fields fieldForId(int fieldId) {
+  public _Fields fieldForId(int fieldId) {
     return _Fields.findByThriftId(fieldId);
   }
 
-  @Override
-public void read(org.apache.thrift.protocol.TProtocol iprot) throws org.apache.thrift.TException {
+  public void read(org.apache.thrift.protocol.TProtocol iprot) throws org.apache.thrift.TException {
     schemes.get(iprot.getScheme()).getScheme().read(iprot, this);
   }
 
-  @Override
-public void write(org.apache.thrift.protocol.TProtocol oprot) throws org.apache.thrift.TException {
+  public void write(org.apache.thrift.protocol.TProtocol oprot) throws org.apache.thrift.TException {
     schemes.get(oprot.getScheme()).getScheme().write(oprot, this);
   }
 
@@ -397,16 +393,14 @@ public void write(org.apache.thrift.protocol.TProtocol oprot) throws org.apache.
   }
 
   private static class TCommentPointSearchResultStandardSchemeFactory implements SchemeFactory {
-    @Override
-	public TCommentPointSearchResultStandardScheme getScheme() {
+    public TCommentPointSearchResultStandardScheme getScheme() {
       return new TCommentPointSearchResultStandardScheme();
     }
   }
 
   private static class TCommentPointSearchResultStandardScheme extends StandardScheme<TCommentPointSearchResult> {
 
-    @Override
-	public void read(org.apache.thrift.protocol.TProtocol iprot, TCommentPointSearchResult struct) throws org.apache.thrift.TException {
+    public void read(org.apache.thrift.protocol.TProtocol iprot, TCommentPointSearchResult struct) throws org.apache.thrift.TException {
       org.apache.thrift.protocol.TField schemeField;
       iprot.readStructBegin();
       while (true)
@@ -454,8 +448,7 @@ public void write(org.apache.thrift.protocol.TProtocol oprot) throws org.apache.
       struct.validate();
     }
 
-    @Override
-	public void write(org.apache.thrift.protocol.TProtocol oprot, TCommentPointSearchResult struct) throws org.apache.thrift.TException {
+    public void write(org.apache.thrift.protocol.TProtocol oprot, TCommentPointSearchResult struct) throws org.apache.thrift.TException {
       struct.validate();
 
       oprot.writeStructBegin(STRUCT_DESC);
@@ -481,8 +474,7 @@ public void write(org.apache.thrift.protocol.TProtocol oprot) throws org.apache.
   }
 
   private static class TCommentPointSearchResultTupleSchemeFactory implements SchemeFactory {
-    @Override
-	public TCommentPointSearchResultTupleScheme getScheme() {
+    public TCommentPointSearchResultTupleScheme getScheme() {
       return new TCommentPointSearchResultTupleScheme();
     }
   }

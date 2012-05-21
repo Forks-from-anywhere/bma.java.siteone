@@ -1,5 +1,7 @@
 package bma.siteone.comments.service;
 
+import java.util.List;
+
 import org.apache.thrift.TException;
 
 import bma.common.langutil.bean.copy.BeanCopyTool;
@@ -10,7 +12,6 @@ import bma.common.langutil.core.PagerResult;
 import bma.siteone.comments.po.CommentInfo;
 import bma.siteone.comments.po.CommentPoint;
 import bma.siteone.comments.thrift.TCommentForm;
-import bma.siteone.comments.thrift.TCommentHome;
 import bma.siteone.comments.thrift.TCommentInfo;
 import bma.siteone.comments.thrift.TCommentPoint;
 import bma.siteone.comments.thrift.TCommentPointForm;
@@ -66,6 +67,17 @@ public class CommentsServiceThrift implements TCommentsService.Iface {
 	}
 
 	@Override
+	public boolean updateComment(int id, TCommentForm info,
+			List<String> fieldNames) throws TException {
+		if (log.isDebugEnabled()) {
+			log.debug("updateComment({},{},{})", new Object[] { id, info,
+					fieldNames });
+		}
+		CommentForm fObj = target.newInstance(null, info, CommentForm.class);
+		return service.updateComment(id, fObj, fieldNames);
+	}
+
+	@Override
 	public boolean deleteComment(int id) throws TException {
 		if (log.isDebugEnabled()) {
 			log.debug("deleteComment({},{})", id);
@@ -105,46 +117,6 @@ public class CommentsServiceThrift implements TCommentsService.Iface {
 		r.setTotal(pr.getPager().getTotal());
 		r.setResult(ListUtil.toList(pr.getResult(), new CommentCast()));
 		return r;
-	}
-
-	@Override
-	public TCommentSearchResult listComment(int pointId, int page, int pageSize)
-			throws TException {
-		if (log.isDebugEnabled()) {
-			log.debug("listComment({},{},{})", new Object[] { pointId, page,
-					pageSize });
-		}
-		PagerResult<CommentInfo> pr = service.listComment(pointId, page,
-				pageSize);
-
-		TCommentSearchResult r = new TCommentSearchResult();
-		r.setTotal(pr.getPager().getTotal());
-		r.setResult(ListUtil.toList(pr.getResult(), new CommentCast()));
-		return r;
-	}
-
-	@Override
-	public boolean supportComment(int id, boolean oppose) throws TException {
-		if (log.isDebugEnabled()) {
-			log.debug("supportComment({},{})", id, oppose);
-		}
-		return service.supportComment(id, oppose);
-	}
-
-	@Override
-	public boolean authComment(int id, boolean authDone) throws TException {
-		if (log.isDebugEnabled()) {
-			log.debug("authComment({},{})", id, authDone);
-		}
-		return service.authComment(id, authDone);
-	}
-
-	@Override
-	public boolean reportComment(int id, boolean hide) throws TException {
-		if (log.isDebugEnabled()) {
-			log.debug("reportComment({},{})", id, hide);
-		}
-		return service.reportComment(id, hide);
 	}
 
 	@Override
@@ -217,37 +189,6 @@ public class CommentsServiceThrift implements TCommentsService.Iface {
 					public TCommentPoint apply(CommentPoint input) {
 						return source.newInstance(null, input,
 								TCommentPoint.class);
-					}
-				}));
-		return r;
-	}
-
-	@Override
-	public TCommentHome getHome(String point, int pageSize) throws TException {
-		if (log.isDebugEnabled()) {
-			log.debug("getHome({},{})", point, pageSize);
-		}
-		CommentHome home = service.getHome(point, pageSize);
-		TCommentHome r = new TCommentHome();
-		if (home == null) {
-			return r;
-		}
-		if (!home.isValid()) {
-			return r;
-		}
-		CommentPoint cp = home.sure();
-		r.setPoint(source.newInstance(null, cp, TCommentPoint.class));
-		r.setTotal(home.getTotal());
-		r.setResult(ListUtil.toList(home.getComments(),
-				new Function<Integer, TCommentInfo>() {
-					@Override
-					public TCommentInfo apply(Integer input) {
-						CommentInfo info = service.getComment(input);
-						if (info != null) {
-							return source.newInstance(null, info,
-									TCommentInfo.class);
-						}
-						return null;
 					}
 				}));
 		return r;

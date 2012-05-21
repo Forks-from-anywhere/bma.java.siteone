@@ -22,6 +22,16 @@ public class CommentInfoShared {
 
 	private String reserve4 = "";
 
+	private int status;
+
+	private int support;
+
+	private int oppose;
+
+	private int needAuth;
+
+	private int hideFlag;
+
 	public CommentInfoShared() {
 		super();
 	}
@@ -110,4 +120,43 @@ public class CommentInfoShared {
 		this.replyId = replyId;
 	}
 
+	public int getOppose() {
+		return this.oppose;
+	}
+
+	public void setOppose(int oppose) {
+		this.oppose = oppose;
+	}
+
+	public int getSupport() {
+		return this.support;
+	}
+
+	public void setSupport(int support) {
+		this.support = support;
+	}
+
+	public int getNeedAuth() {
+		return this.needAuth;
+	}
+
+	public void setNeedAuth(int badComment) {
+		this.needAuth = badComment;
+	}
+
+	public int getHideFlag() {
+		return this.hideFlag;
+	}
+
+	public void setHideFlag(int hideFlag) {
+		this.hideFlag = hideFlag;
+	}
+
+	public int getStatus() {
+		return status;
+	}
+
+	public void setStatus(int status) {
+		this.status = status;
+	}
 }

@@ -17,11 +17,10 @@ import org.springframework.transaction.annotation.Transactional;
 import bma.common.jdbctemplate.JdbcTemplateHelper;
 import bma.common.langutil.cache.ICache;
 import bma.common.langutil.core.DateTimeUtil;
-import bma.common.langutil.core.Function;
-import bma.common.langutil.core.ListUtil;
 import bma.common.langutil.core.ObjectUtil;
 import bma.common.langutil.core.Pager;
 import bma.common.langutil.core.PagerResult;
+import bma.common.langutil.core.StringUtil;
 import bma.common.langutil.core.ValueUtil;
 import bma.common.langutil.jdbc.CommonFieldValues;
 import bma.common.langutil.jdbc.JdbcTypeMapper;
@@ -48,14 +47,18 @@ public class CommentsServiceImpl implements CommentsService {
 	private transient JdbcTemplateHelper helper;
 	private JdbcTemplate jdbcTemplate;
 
-	/**
-	 * 评论自动发布
-	 */
-	private boolean autoPublish = false;
-
 	private ICache<Integer, CommentInfo> commentCache;
 	private ICache<Integer, CommentPoint> commentPointCache;
-	private ICache<String, CommentHome> commentHomeCache;
+	private ICache<String, Integer> commentPointNameCache;
+
+	public ICache<String, Integer> getCommentPointNameCache() {
+		return commentPointNameCache;
+	}
+
+	public void setCommentPointNameCache(
+			ICache<String, Integer> commentPointNameCache) {
+		this.commentPointNameCache = commentPointNameCache;
+	}
 
 	public String getCommentPointTableName() {
 		return commentPointTableName;
@@ -82,14 +85,6 @@ public class CommentsServiceImpl implements CommentsService {
 		this.helper = new JdbcTemplateHelper(jdbcTemplate);
 	}
 
-	public boolean isAutoPublish() {
-		return this.autoPublish;
-	}
-
-	public void setAutoPublish(boolean autoPublish) {
-		this.autoPublish = autoPublish;
-	}
-
 	public ICache<Integer, CommentInfo> getCommentCache() {
 		return commentCache;
 	}
@@ -105,14 +100,6 @@ public class CommentsServiceImpl implements CommentsService {
 	public void setCommentPointCache(
 			ICache<Integer, CommentPoint> commentPointCache) {
 		this.commentPointCache = commentPointCache;
-	}
-
-	public ICache<String, CommentHome> getCommentHomeCache() {
-		return commentHomeCache;
-	}
-
-	public void setCommentHomeCache(ICache<String, CommentHome> commentHomeCache) {
-		this.commentHomeCache = commentHomeCache;
 	}
 
 	public class CommentRowMapper implements RowMapper<CommentInfo> {
@@ -163,9 +150,9 @@ public class CommentsServiceImpl implements CommentsService {
 		fvs.addString("user_name", form.getUserName());
 		fvs.addString("content", form.getContent());
 		fvs.addString("ip", form.getIp());
-		fvs.addConstInt("status", CommentInfo.ST_NORMAL);
-		fvs.addConstInt("need_auth", 1);
-		fvs.addConstInt("hide_flag", autoPublish ? 0 : 1);
+		fvs.addInt("status", form.getStatus());
+		fvs.addInt("need_auth", form.getNeedAuth());
+		fvs.addInt("hide_flag", form.getHideFlag());
 		fvs.addInt("reserve1", form.getReserve1());
 		fvs.addInt("reserve2", form.getReserve2());
 		if (ValueUtil.notEmpty(form.getReserve3())) {
@@ -179,6 +166,64 @@ public class CommentsServiceImpl implements CommentsService {
 		Number id = helper.executeInsert(commentTableName, fvs, "id");
 		addComment(commentPointId, 1);
 		return id.intValue();
+	}
+
+	protected boolean isUpdate(String name, List<String> fields) {
+		if (fields == null)
+			return true;
+		for (String s : fields) {
+			if (StringUtil.equalsIgnoreCase(name, s))
+				return true;
+		}
+		return false;
+	}
+
+	@Transactional(propagation = Propagation.REQUIRED)
+	@Override
+	public boolean updateComment(int id, CommentForm form, List<String> fields) {
+		CommentInfo comment = getComment(id);
+		if (comment == null) {
+			return false;
+		}
+		// TODO
+		CommonFieldValues fvs = new CommonFieldValues();
+		if (isUpdate("content", fields)) {
+			fvs.addString("content", form.getContent());
+		}
+		if (isUpdate("status", fields)) {
+			fvs.addInt("status", form.getStatus());
+		}
+		if (isUpdate("need_auth", fields)) {
+			fvs.addInt("need_auth", form.getNeedAuth());
+		}
+		if (isUpdate("hide_flag", fields)) {
+			fvs.addInt("hide_flag", form.getHideFlag());
+		}
+		if (isUpdate("reserve1", fields)) {
+			fvs.addInt("reserve1", form.getReserve1());
+		}
+		if (isUpdate("reserve2", fields)) {
+			fvs.addInt("reserve2", form.getReserve2());
+		}
+		if (isUpdate("reserve3", fields)) {
+			fvs.addString("reserve3", form.getReserve3());
+		}
+		if (isUpdate("reserve4", fields)) {
+			fvs.addString("reserve4", form.getReserve4());
+		}
+
+		if(fvs.empty())return false;
+		
+		CommonFieldValues tj = new CommonFieldValues();
+		tj.addInt("id", id);
+
+		boolean r = helper.executeUpdate(commentTableName, fvs, tj) == 1;
+		if (r) {
+			clearCommentCache(id);
+			// clearPointCache(commentPoint.getName());
+			// clearPointCache(point);
+		}
+		return r;
 	}
 
 	@Transactional(propagation = Propagation.REQUIRED)
@@ -211,18 +256,6 @@ public class CommentsServiceImpl implements CommentsService {
 			commentCache.put(id, info);
 		}
 		return info;
-	}
-
-	@Transactional(propagation = Propagation.NOT_SUPPORTED, readOnly = true)
-	@Override
-	public PagerResult<CommentInfo> listComment(int pointId, int page,
-			int pageSize) {
-		SearchCommentForm form = new SearchCommentForm();
-		form.setPointId(pointId);
-		form.setHide(0);
-		form.setPage(page);
-		form.setPageSize(pageSize);
-		return searchComment(form);
 	}
 
 	@Transactional(propagation = Propagation.NOT_SUPPORTED, readOnly = true)
@@ -347,59 +380,6 @@ public class CommentsServiceImpl implements CommentsService {
 
 	}
 
-	@Transactional(propagation = Propagation.REQUIRED)
-	@Override
-	public boolean supportComment(int id, boolean oppose) {
-		String sql = null;
-		if (oppose) {
-			sql = "UPDATE " + commentTableName
-					+ " SET oppose = oppose +1 WHERE id = ?";
-		} else {
-			sql = "UPDATE " + commentTableName
-					+ " SET support = support +1 WHERE id = ?";
-		}
-		int c = jdbcTemplate.update(sql, id);
-		if (c > 0) {
-			clearCommentCache(id);
-		}
-		return c > 0;
-	}
-
-	@Transactional(propagation = Propagation.REQUIRED)
-	@Override
-	public boolean authComment(int id, boolean pass) {
-		CommentInfo info = getComment(id);
-		if (info == null) {
-			return false;
-		}
-		String sql = "UPDATE " + commentTableName
-				+ " SET need_auth = 0, hide_flag = ? WHERE id = ?";
-		int c = jdbcTemplate.update(sql, pass ? 0 : 1, id);
-		if (c > 0) {
-			clearCommentCache(id);
-			clearPointCache(info.getPointId());
-		}
-		return c > 0;
-	}
-
-	@Transactional(propagation = Propagation.REQUIRED)
-	@Override
-	public boolean reportComment(int id, boolean hide) {
-		CommentInfo info = getComment(id);
-		if (info == null) {
-			return false;
-		}
-		String sql = null;
-		sql = "UPDATE " + commentTableName + " SET need_auth = 1"
-				+ (hide ? ", hide_flag = 1" : "") + " WHERE id = ?";
-		int c = jdbcTemplate.update(sql, id);
-		if (c > 0) {
-			clearCommentCache(id);
-			clearPointCache(info.getPointId());
-		}
-		return c > 0;
-	}
-
 	public class CommentPointRowMapper implements RowMapper<CommentPoint> {
 
 		public CommentPoint mapRow(ResultSet rs, int index) throws SQLException {
@@ -436,7 +416,6 @@ public class CommentsServiceImpl implements CommentsService {
 				new CommentPointRowMapper());
 		if (info != null) {
 			commentPointCache.put(id, info);
-			setHomeCache(info.getName(), info);
 		}
 		return info;
 	}
@@ -444,13 +423,8 @@ public class CommentsServiceImpl implements CommentsService {
 	@Transactional(propagation = Propagation.NOT_SUPPORTED, readOnly = true)
 	@Override
 	public CommentPoint getCommentPoint(String name) {
-		CommentHome home = commentHomeCache.get(name);
-		if (home != null) {
-			return home.sure();
-		}
 		CommentPoint info = helper.selectOne(commentPointTableName, "name",
 				name, new CommentPointRowMapper());
-		setHomeCache(name, info == null ? CommentHome.NULL : info);
 		if (info != null) {
 			commentPointCache.put(info.getId(), info);
 		}
@@ -460,7 +434,6 @@ public class CommentsServiceImpl implements CommentsService {
 	@Transactional(propagation = Propagation.REQUIRED)
 	@Override
 	public int createCommentPoint(CommentPointForm form) {
-		String point = form.getName();
 		CommonFieldValues fvs = new CommonFieldValues();
 		fvs.addString("name", form.getName());
 		fvs.addString("url", form.getUrl());
@@ -480,7 +453,6 @@ public class CommentsServiceImpl implements CommentsService {
 
 		Number id = (Number) helper.executeInsert(commentPointTableName, fvs,
 				"id");
-		clearPointCache(point);
 		return id.intValue();
 	}
 
@@ -516,8 +488,7 @@ public class CommentsServiceImpl implements CommentsService {
 
 		boolean r = helper.executeUpdate(commentPointTableName, fvs, tj) == 1;
 		if (r) {
-			clearPointCache(commentPoint.getName());
-			clearPointCache(point);
+			clearPointCache(commentPoint.getId());
 		}
 		return r;
 	}
@@ -585,46 +556,10 @@ public class CommentsServiceImpl implements CommentsService {
 		}
 	}
 
-	@Transactional(propagation = Propagation.NOT_SUPPORTED, readOnly = true)
-	@Override
-	public CommentHome getHome(String name, int pageSize) {
-		CommentHome home = commentHomeCache.get(name);
-		if (home == null) {
-			getCommentPoint(name);
-			home = commentHomeCache.get(name);
-			if (home == null) {
-				return null;
-			}
-		}
-		if (!home.isValid()) {
-			return null;
-		}
-		if (!home.match(pageSize)) {
-			PagerResult<CommentInfo> pr = listComment(home.getPoint().getId(),
-					1, pageSize);
-			home.setTotal(pr.getPager().getTotal());
-			home.setComments(ListUtil.toList(pr.getResult(),
-					new Function<CommentInfo, Integer>() {
-						@Override
-						public Integer apply(CommentInfo input) {
-							return input.getId();
-						}
-					}));
-		}
-		return home;
-	}
-
 	public void clearPointCache(int id) {
 		CommentPoint cp = commentPointCache.remove(id);
 		if (cp != null) {
-			commentHomeCache.remove(cp.getName());
-		}
-	}
-
-	public void clearPointCache(String name) {
-		CommentHome home = commentHomeCache.remove(name);
-		if (home != null && home.getPoint() != null) {
-			commentPointCache.remove(home.getPoint().getId());
+			commentPointNameCache.remove(cp.getName());
 		}
 	}
 
@@ -636,12 +571,4 @@ public class CommentsServiceImpl implements CommentsService {
 		commentCache.clear();
 	}
 
-	public void setHomeCache(String name, CommentPoint cp) {
-		CommentHome home = commentHomeCache.get(name);
-		if (home == null) {
-			home = new CommentHome();
-			commentHomeCache.put(name, home);
-		}
-		home.setPoint(cp);
-	}
 }
