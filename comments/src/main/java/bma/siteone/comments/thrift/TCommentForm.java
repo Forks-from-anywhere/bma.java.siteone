@@ -40,6 +40,11 @@ public class TCommentForm implements org.apache.thrift.TBase<TCommentForm, TComm
   private static final org.apache.thrift.protocol.TField RESERVE2_FIELD_DESC = new org.apache.thrift.protocol.TField("reserve2", org.apache.thrift.protocol.TType.I32, (short)8);
   private static final org.apache.thrift.protocol.TField RESERVE3_FIELD_DESC = new org.apache.thrift.protocol.TField("reserve3", org.apache.thrift.protocol.TType.STRING, (short)9);
   private static final org.apache.thrift.protocol.TField RESERVE4_FIELD_DESC = new org.apache.thrift.protocol.TField("reserve4", org.apache.thrift.protocol.TType.STRING, (short)10);
+  private static final org.apache.thrift.protocol.TField STATUS_FIELD_DESC = new org.apache.thrift.protocol.TField("status", org.apache.thrift.protocol.TType.I32, (short)11);
+  private static final org.apache.thrift.protocol.TField SUPPORT_FIELD_DESC = new org.apache.thrift.protocol.TField("support", org.apache.thrift.protocol.TType.I32, (short)12);
+  private static final org.apache.thrift.protocol.TField OPPOSE_FIELD_DESC = new org.apache.thrift.protocol.TField("oppose", org.apache.thrift.protocol.TType.I32, (short)13);
+  private static final org.apache.thrift.protocol.TField NEED_AUTH_FIELD_DESC = new org.apache.thrift.protocol.TField("needAuth", org.apache.thrift.protocol.TType.I32, (short)14);
+  private static final org.apache.thrift.protocol.TField HIDE_FLAG_FIELD_DESC = new org.apache.thrift.protocol.TField("hideFlag", org.apache.thrift.protocol.TType.I32, (short)15);
 
   private static final Map<Class<? extends IScheme>, SchemeFactory> schemes = new HashMap<Class<? extends IScheme>, SchemeFactory>();
   static {
@@ -57,6 +62,11 @@ public class TCommentForm implements org.apache.thrift.TBase<TCommentForm, TComm
   public int reserve2; // optional
   public String reserve3; // optional
   public String reserve4; // optional
+  public int status; // optional
+  public int support; // optional
+  public int oppose; // optional
+  public int needAuth; // optional
+  public int hideFlag; // optional
 
   /** The set of fields this struct contains, along with convenience methods for finding and manipulating them. */
   public enum _Fields implements org.apache.thrift.TFieldIdEnum {
@@ -69,7 +79,12 @@ public class TCommentForm implements org.apache.thrift.TBase<TCommentForm, TComm
     RESERVE1((short)7, "reserve1"),
     RESERVE2((short)8, "reserve2"),
     RESERVE3((short)9, "reserve3"),
-    RESERVE4((short)10, "reserve4");
+    RESERVE4((short)10, "reserve4"),
+    STATUS((short)11, "status"),
+    SUPPORT((short)12, "support"),
+    OPPOSE((short)13, "oppose"),
+    NEED_AUTH((short)14, "needAuth"),
+    HIDE_FLAG((short)15, "hideFlag");
 
     private static final Map<String, _Fields> byName = new HashMap<String, _Fields>();
 
@@ -104,6 +119,16 @@ public class TCommentForm implements org.apache.thrift.TBase<TCommentForm, TComm
           return RESERVE3;
         case 10: // RESERVE4
           return RESERVE4;
+        case 11: // STATUS
+          return STATUS;
+        case 12: // SUPPORT
+          return SUPPORT;
+        case 13: // OPPOSE
+          return OPPOSE;
+        case 14: // NEED_AUTH
+          return NEED_AUTH;
+        case 15: // HIDE_FLAG
+          return HIDE_FLAG;
         default:
           return null;
       }
@@ -149,8 +174,13 @@ public class TCommentForm implements org.apache.thrift.TBase<TCommentForm, TComm
   private static final int __USERID_ISSET_ID = 2;
   private static final int __RESERVE1_ISSET_ID = 3;
   private static final int __RESERVE2_ISSET_ID = 4;
-  private BitSet __isset_bit_vector = new BitSet(5);
-  private _Fields optionals[] = {_Fields.POINT_ID,_Fields.REPLY_ID,_Fields.USER_NAME,_Fields.USER_ID,_Fields.CONTENT,_Fields.IP,_Fields.RESERVE1,_Fields.RESERVE2,_Fields.RESERVE3,_Fields.RESERVE4};
+  private static final int __STATUS_ISSET_ID = 5;
+  private static final int __SUPPORT_ISSET_ID = 6;
+  private static final int __OPPOSE_ISSET_ID = 7;
+  private static final int __NEEDAUTH_ISSET_ID = 8;
+  private static final int __HIDEFLAG_ISSET_ID = 9;
+  private BitSet __isset_bit_vector = new BitSet(10);
+  private _Fields optionals[] = {_Fields.POINT_ID,_Fields.REPLY_ID,_Fields.USER_NAME,_Fields.USER_ID,_Fields.CONTENT,_Fields.IP,_Fields.RESERVE1,_Fields.RESERVE2,_Fields.RESERVE3,_Fields.RESERVE4,_Fields.STATUS,_Fields.SUPPORT,_Fields.OPPOSE,_Fields.NEED_AUTH,_Fields.HIDE_FLAG};
   public static final Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
   static {
     Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
@@ -174,6 +204,16 @@ public class TCommentForm implements org.apache.thrift.TBase<TCommentForm, TComm
         new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.STRING)));
     tmpMap.put(_Fields.RESERVE4, new org.apache.thrift.meta_data.FieldMetaData("reserve4", org.apache.thrift.TFieldRequirementType.OPTIONAL, 
         new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.STRING)));
+    tmpMap.put(_Fields.STATUS, new org.apache.thrift.meta_data.FieldMetaData("status", org.apache.thrift.TFieldRequirementType.OPTIONAL, 
+        new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
+    tmpMap.put(_Fields.SUPPORT, new org.apache.thrift.meta_data.FieldMetaData("support", org.apache.thrift.TFieldRequirementType.OPTIONAL, 
+        new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
+    tmpMap.put(_Fields.OPPOSE, new org.apache.thrift.meta_data.FieldMetaData("oppose", org.apache.thrift.TFieldRequirementType.OPTIONAL, 
+        new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
+    tmpMap.put(_Fields.NEED_AUTH, new org.apache.thrift.meta_data.FieldMetaData("needAuth", org.apache.thrift.TFieldRequirementType.OPTIONAL, 
+        new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
+    tmpMap.put(_Fields.HIDE_FLAG, new org.apache.thrift.meta_data.FieldMetaData("hideFlag", org.apache.thrift.TFieldRequirementType.OPTIONAL, 
+        new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
     metaDataMap = Collections.unmodifiableMap(tmpMap);
     org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(TCommentForm.class, metaDataMap);
   }
@@ -211,6 +251,11 @@ public class TCommentForm implements org.apache.thrift.TBase<TCommentForm, TComm
     if (other.isSetReserve4()) {
       this.reserve4 = other.reserve4;
     }
+    this.status = other.status;
+    this.support = other.support;
+    this.oppose = other.oppose;
+    this.needAuth = other.needAuth;
+    this.hideFlag = other.hideFlag;
   }
 
   public TCommentForm deepCopy() {
@@ -234,6 +279,16 @@ public class TCommentForm implements org.apache.thrift.TBase<TCommentForm, TComm
 
     this.reserve3 = null;
     this.reserve4 = null;
+    setStatusIsSet(false);
+    this.status = 0;
+    setSupportIsSet(false);
+    this.support = 0;
+    setOpposeIsSet(false);
+    this.oppose = 0;
+    setNeedAuthIsSet(false);
+    this.needAuth = 0;
+    setHideFlagIsSet(false);
+    this.hideFlag = 0;
   }
 
   public int getPointId() {
@@ -471,6 +526,121 @@ public class TCommentForm implements org.apache.thrift.TBase<TCommentForm, TComm
     }
   }
 
+  public int getStatus() {
+    return this.status;
+  }
+
+  public TCommentForm setStatus(int status) {
+    this.status = status;
+    setStatusIsSet(true);
+    return this;
+  }
+
+  public void unsetStatus() {
+    __isset_bit_vector.clear(__STATUS_ISSET_ID);
+  }
+
+  /** Returns true if field status is set (has been assigned a value) and false otherwise */
+  public boolean isSetStatus() {
+    return __isset_bit_vector.get(__STATUS_ISSET_ID);
+  }
+
+  public void setStatusIsSet(boolean value) {
+    __isset_bit_vector.set(__STATUS_ISSET_ID, value);
+  }
+
+  public int getSupport() {
+    return this.support;
+  }
+
+  public TCommentForm setSupport(int support) {
+    this.support = support;
+    setSupportIsSet(true);
+    return this;
+  }
+
+  public void unsetSupport() {
+    __isset_bit_vector.clear(__SUPPORT_ISSET_ID);
+  }
+
+  /** Returns true if field support is set (has been assigned a value) and false otherwise */
+  public boolean isSetSupport() {
+    return __isset_bit_vector.get(__SUPPORT_ISSET_ID);
+  }
+
+  public void setSupportIsSet(boolean value) {
+    __isset_bit_vector.set(__SUPPORT_ISSET_ID, value);
+  }
+
+  public int getOppose() {
+    return this.oppose;
+  }
+
+  public TCommentForm setOppose(int oppose) {
+    this.oppose = oppose;
+    setOpposeIsSet(true);
+    return this;
+  }
+
+  public void unsetOppose() {
+    __isset_bit_vector.clear(__OPPOSE_ISSET_ID);
+  }
+
+  /** Returns true if field oppose is set (has been assigned a value) and false otherwise */
+  public boolean isSetOppose() {
+    return __isset_bit_vector.get(__OPPOSE_ISSET_ID);
+  }
+
+  public void setOpposeIsSet(boolean value) {
+    __isset_bit_vector.set(__OPPOSE_ISSET_ID, value);
+  }
+
+  public int getNeedAuth() {
+    return this.needAuth;
+  }
+
+  public TCommentForm setNeedAuth(int needAuth) {
+    this.needAuth = needAuth;
+    setNeedAuthIsSet(true);
+    return this;
+  }
+
+  public void unsetNeedAuth() {
+    __isset_bit_vector.clear(__NEEDAUTH_ISSET_ID);
+  }
+
+  /** Returns true if field needAuth is set (has been assigned a value) and false otherwise */
+  public boolean isSetNeedAuth() {
+    return __isset_bit_vector.get(__NEEDAUTH_ISSET_ID);
+  }
+
+  public void setNeedAuthIsSet(boolean value) {
+    __isset_bit_vector.set(__NEEDAUTH_ISSET_ID, value);
+  }
+
+  public int getHideFlag() {
+    return this.hideFlag;
+  }
+
+  public TCommentForm setHideFlag(int hideFlag) {
+    this.hideFlag = hideFlag;
+    setHideFlagIsSet(true);
+    return this;
+  }
+
+  public void unsetHideFlag() {
+    __isset_bit_vector.clear(__HIDEFLAG_ISSET_ID);
+  }
+
+  /** Returns true if field hideFlag is set (has been assigned a value) and false otherwise */
+  public boolean isSetHideFlag() {
+    return __isset_bit_vector.get(__HIDEFLAG_ISSET_ID);
+  }
+
+  public void setHideFlagIsSet(boolean value) {
+    __isset_bit_vector.set(__HIDEFLAG_ISSET_ID, value);
+  }
+
   public void setFieldValue(_Fields field, Object value) {
     switch (field) {
     case POINT_ID:
@@ -553,6 +723,46 @@ public class TCommentForm implements org.apache.thrift.TBase<TCommentForm, TComm
       }
       break;
 
+    case STATUS:
+      if (value == null) {
+        unsetStatus();
+      } else {
+        setStatus((Integer)value);
+      }
+      break;
+
+    case SUPPORT:
+      if (value == null) {
+        unsetSupport();
+      } else {
+        setSupport((Integer)value);
+      }
+      break;
+
+    case OPPOSE:
+      if (value == null) {
+        unsetOppose();
+      } else {
+        setOppose((Integer)value);
+      }
+      break;
+
+    case NEED_AUTH:
+      if (value == null) {
+        unsetNeedAuth();
+      } else {
+        setNeedAuth((Integer)value);
+      }
+      break;
+
+    case HIDE_FLAG:
+      if (value == null) {
+        unsetHideFlag();
+      } else {
+        setHideFlag((Integer)value);
+      }
+      break;
+
     }
   }
 
@@ -588,6 +798,21 @@ public class TCommentForm implements org.apache.thrift.TBase<TCommentForm, TComm
     case RESERVE4:
       return getReserve4();
 
+    case STATUS:
+      return Integer.valueOf(getStatus());
+
+    case SUPPORT:
+      return Integer.valueOf(getSupport());
+
+    case OPPOSE:
+      return Integer.valueOf(getOppose());
+
+    case NEED_AUTH:
+      return Integer.valueOf(getNeedAuth());
+
+    case HIDE_FLAG:
+      return Integer.valueOf(getHideFlag());
+
     }
     throw new IllegalStateException();
   }
@@ -619,6 +844,16 @@ public class TCommentForm implements org.apache.thrift.TBase<TCommentForm, TComm
       return isSetReserve3();
     case RESERVE4:
       return isSetReserve4();
+    case STATUS:
+      return isSetStatus();
+    case SUPPORT:
+      return isSetSupport();
+    case OPPOSE:
+      return isSetOppose();
+    case NEED_AUTH:
+      return isSetNeedAuth();
+    case HIDE_FLAG:
+      return isSetHideFlag();
     }
     throw new IllegalStateException();
   }
@@ -723,6 +958,51 @@ public class TCommentForm implements org.apache.thrift.TBase<TCommentForm, TComm
       if (!(this_present_reserve4 && that_present_reserve4))
         return false;
       if (!this.reserve4.equals(that.reserve4))
+        return false;
+    }
+
+    boolean this_present_status = true && this.isSetStatus();
+    boolean that_present_status = true && that.isSetStatus();
+    if (this_present_status || that_present_status) {
+      if (!(this_present_status && that_present_status))
+        return false;
+      if (this.status != that.status)
+        return false;
+    }
+
+    boolean this_present_support = true && this.isSetSupport();
+    boolean that_present_support = true && that.isSetSupport();
+    if (this_present_support || that_present_support) {
+      if (!(this_present_support && that_present_support))
+        return false;
+      if (this.support != that.support)
+        return false;
+    }
+
+    boolean this_present_oppose = true && this.isSetOppose();
+    boolean that_present_oppose = true && that.isSetOppose();
+    if (this_present_oppose || that_present_oppose) {
+      if (!(this_present_oppose && that_present_oppose))
+        return false;
+      if (this.oppose != that.oppose)
+        return false;
+    }
+
+    boolean this_present_needAuth = true && this.isSetNeedAuth();
+    boolean that_present_needAuth = true && that.isSetNeedAuth();
+    if (this_present_needAuth || that_present_needAuth) {
+      if (!(this_present_needAuth && that_present_needAuth))
+        return false;
+      if (this.needAuth != that.needAuth)
+        return false;
+    }
+
+    boolean this_present_hideFlag = true && this.isSetHideFlag();
+    boolean that_present_hideFlag = true && that.isSetHideFlag();
+    if (this_present_hideFlag || that_present_hideFlag) {
+      if (!(this_present_hideFlag && that_present_hideFlag))
+        return false;
+      if (this.hideFlag != that.hideFlag)
         return false;
     }
 
@@ -842,6 +1122,56 @@ public class TCommentForm implements org.apache.thrift.TBase<TCommentForm, TComm
         return lastComparison;
       }
     }
+    lastComparison = Boolean.valueOf(isSetStatus()).compareTo(typedOther.isSetStatus());
+    if (lastComparison != 0) {
+      return lastComparison;
+    }
+    if (isSetStatus()) {
+      lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.status, typedOther.status);
+      if (lastComparison != 0) {
+        return lastComparison;
+      }
+    }
+    lastComparison = Boolean.valueOf(isSetSupport()).compareTo(typedOther.isSetSupport());
+    if (lastComparison != 0) {
+      return lastComparison;
+    }
+    if (isSetSupport()) {
+      lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.support, typedOther.support);
+      if (lastComparison != 0) {
+        return lastComparison;
+      }
+    }
+    lastComparison = Boolean.valueOf(isSetOppose()).compareTo(typedOther.isSetOppose());
+    if (lastComparison != 0) {
+      return lastComparison;
+    }
+    if (isSetOppose()) {
+      lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.oppose, typedOther.oppose);
+      if (lastComparison != 0) {
+        return lastComparison;
+      }
+    }
+    lastComparison = Boolean.valueOf(isSetNeedAuth()).compareTo(typedOther.isSetNeedAuth());
+    if (lastComparison != 0) {
+      return lastComparison;
+    }
+    if (isSetNeedAuth()) {
+      lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.needAuth, typedOther.needAuth);
+      if (lastComparison != 0) {
+        return lastComparison;
+      }
+    }
+    lastComparison = Boolean.valueOf(isSetHideFlag()).compareTo(typedOther.isSetHideFlag());
+    if (lastComparison != 0) {
+      return lastComparison;
+    }
+    if (isSetHideFlag()) {
+      lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.hideFlag, typedOther.hideFlag);
+      if (lastComparison != 0) {
+        return lastComparison;
+      }
+    }
     return 0;
   }
 
@@ -939,6 +1269,36 @@ public class TCommentForm implements org.apache.thrift.TBase<TCommentForm, TComm
       } else {
         sb.append(this.reserve4);
       }
+      first = false;
+    }
+    if (isSetStatus()) {
+      if (!first) sb.append(", ");
+      sb.append("status:");
+      sb.append(this.status);
+      first = false;
+    }
+    if (isSetSupport()) {
+      if (!first) sb.append(", ");
+      sb.append("support:");
+      sb.append(this.support);
+      first = false;
+    }
+    if (isSetOppose()) {
+      if (!first) sb.append(", ");
+      sb.append("oppose:");
+      sb.append(this.oppose);
+      first = false;
+    }
+    if (isSetNeedAuth()) {
+      if (!first) sb.append(", ");
+      sb.append("needAuth:");
+      sb.append(this.needAuth);
+      first = false;
+    }
+    if (isSetHideFlag()) {
+      if (!first) sb.append(", ");
+      sb.append("hideFlag:");
+      sb.append(this.hideFlag);
       first = false;
     }
     sb.append(")");
@@ -1065,6 +1425,46 @@ public class TCommentForm implements org.apache.thrift.TBase<TCommentForm, TComm
               org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
             }
             break;
+          case 11: // STATUS
+            if (schemeField.type == org.apache.thrift.protocol.TType.I32) {
+              struct.status = iprot.readI32();
+              struct.setStatusIsSet(true);
+            } else { 
+              org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
+            }
+            break;
+          case 12: // SUPPORT
+            if (schemeField.type == org.apache.thrift.protocol.TType.I32) {
+              struct.support = iprot.readI32();
+              struct.setSupportIsSet(true);
+            } else { 
+              org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
+            }
+            break;
+          case 13: // OPPOSE
+            if (schemeField.type == org.apache.thrift.protocol.TType.I32) {
+              struct.oppose = iprot.readI32();
+              struct.setOpposeIsSet(true);
+            } else { 
+              org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
+            }
+            break;
+          case 14: // NEED_AUTH
+            if (schemeField.type == org.apache.thrift.protocol.TType.I32) {
+              struct.needAuth = iprot.readI32();
+              struct.setNeedAuthIsSet(true);
+            } else { 
+              org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
+            }
+            break;
+          case 15: // HIDE_FLAG
+            if (schemeField.type == org.apache.thrift.protocol.TType.I32) {
+              struct.hideFlag = iprot.readI32();
+              struct.setHideFlagIsSet(true);
+            } else { 
+              org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
+            }
+            break;
           default:
             org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
         }
@@ -1140,6 +1540,31 @@ public class TCommentForm implements org.apache.thrift.TBase<TCommentForm, TComm
           oprot.writeFieldEnd();
         }
       }
+      if (struct.isSetStatus()) {
+        oprot.writeFieldBegin(STATUS_FIELD_DESC);
+        oprot.writeI32(struct.status);
+        oprot.writeFieldEnd();
+      }
+      if (struct.isSetSupport()) {
+        oprot.writeFieldBegin(SUPPORT_FIELD_DESC);
+        oprot.writeI32(struct.support);
+        oprot.writeFieldEnd();
+      }
+      if (struct.isSetOppose()) {
+        oprot.writeFieldBegin(OPPOSE_FIELD_DESC);
+        oprot.writeI32(struct.oppose);
+        oprot.writeFieldEnd();
+      }
+      if (struct.isSetNeedAuth()) {
+        oprot.writeFieldBegin(NEED_AUTH_FIELD_DESC);
+        oprot.writeI32(struct.needAuth);
+        oprot.writeFieldEnd();
+      }
+      if (struct.isSetHideFlag()) {
+        oprot.writeFieldBegin(HIDE_FLAG_FIELD_DESC);
+        oprot.writeI32(struct.hideFlag);
+        oprot.writeFieldEnd();
+      }
       oprot.writeFieldStop();
       oprot.writeStructEnd();
     }
@@ -1188,7 +1613,22 @@ public class TCommentForm implements org.apache.thrift.TBase<TCommentForm, TComm
       if (struct.isSetReserve4()) {
         optionals.set(9);
       }
-      oprot.writeBitSet(optionals, 10);
+      if (struct.isSetStatus()) {
+        optionals.set(10);
+      }
+      if (struct.isSetSupport()) {
+        optionals.set(11);
+      }
+      if (struct.isSetOppose()) {
+        optionals.set(12);
+      }
+      if (struct.isSetNeedAuth()) {
+        optionals.set(13);
+      }
+      if (struct.isSetHideFlag()) {
+        optionals.set(14);
+      }
+      oprot.writeBitSet(optionals, 15);
       if (struct.isSetPointId()) {
         oprot.writeI32(struct.pointId);
       }
@@ -1219,12 +1659,27 @@ public class TCommentForm implements org.apache.thrift.TBase<TCommentForm, TComm
       if (struct.isSetReserve4()) {
         oprot.writeString(struct.reserve4);
       }
+      if (struct.isSetStatus()) {
+        oprot.writeI32(struct.status);
+      }
+      if (struct.isSetSupport()) {
+        oprot.writeI32(struct.support);
+      }
+      if (struct.isSetOppose()) {
+        oprot.writeI32(struct.oppose);
+      }
+      if (struct.isSetNeedAuth()) {
+        oprot.writeI32(struct.needAuth);
+      }
+      if (struct.isSetHideFlag()) {
+        oprot.writeI32(struct.hideFlag);
+      }
     }
 
     @Override
     public void read(org.apache.thrift.protocol.TProtocol prot, TCommentForm struct) throws org.apache.thrift.TException {
       TTupleProtocol iprot = (TTupleProtocol) prot;
-      BitSet incoming = iprot.readBitSet(10);
+      BitSet incoming = iprot.readBitSet(15);
       if (incoming.get(0)) {
         struct.pointId = iprot.readI32();
         struct.setPointIdIsSet(true);
@@ -1264,6 +1719,26 @@ public class TCommentForm implements org.apache.thrift.TBase<TCommentForm, TComm
       if (incoming.get(9)) {
         struct.reserve4 = iprot.readString();
         struct.setReserve4IsSet(true);
+      }
+      if (incoming.get(10)) {
+        struct.status = iprot.readI32();
+        struct.setStatusIsSet(true);
+      }
+      if (incoming.get(11)) {
+        struct.support = iprot.readI32();
+        struct.setSupportIsSet(true);
+      }
+      if (incoming.get(12)) {
+        struct.oppose = iprot.readI32();
+        struct.setOpposeIsSet(true);
+      }
+      if (incoming.get(13)) {
+        struct.needAuth = iprot.readI32();
+        struct.setNeedAuthIsSet(true);
+      }
+      if (incoming.get(14)) {
+        struct.hideFlag = iprot.readI32();
+        struct.setHideFlagIsSet(true);
       }
     }
   }
