@@ -53,6 +53,8 @@ public class TCommentsService {
 
     public TCommentPointSearchResult searchCommentPoint(TSearchCommentPointForm form) throws org.apache.thrift.TException;
 
+    public void clearCache(TCacheForm form) throws org.apache.thrift.TException;
+
   }
 
   public interface AsyncIface {
@@ -78,6 +80,8 @@ public class TCommentsService {
     public void getCommentPointByName(String name, org.apache.thrift.async.AsyncMethodCallback<AsyncClient.getCommentPointByName_call> resultHandler) throws org.apache.thrift.TException;
 
     public void searchCommentPoint(TSearchCommentPointForm form, org.apache.thrift.async.AsyncMethodCallback<AsyncClient.searchCommentPoint_call> resultHandler) throws org.apache.thrift.TException;
+
+    public void clearCache(TCacheForm form, org.apache.thrift.async.AsyncMethodCallback<AsyncClient.clearCache_call> resultHandler) throws org.apache.thrift.TException;
 
   }
 
@@ -356,6 +360,26 @@ public class TCommentsService {
         return result.success;
       }
       throw new org.apache.thrift.TApplicationException(org.apache.thrift.TApplicationException.MISSING_RESULT, "searchCommentPoint failed: unknown result");
+    }
+
+    public void clearCache(TCacheForm form) throws org.apache.thrift.TException
+    {
+      send_clearCache(form);
+      recv_clearCache();
+    }
+
+    public void send_clearCache(TCacheForm form) throws org.apache.thrift.TException
+    {
+      clearCache_args args = new clearCache_args();
+      args.setForm(form);
+      sendBase("clearCache", args);
+    }
+
+    public void recv_clearCache() throws org.apache.thrift.TException
+    {
+      clearCache_result result = new clearCache_result();
+      receiveBase(result, "clearCache");
+      return;
     }
 
   }
@@ -740,6 +764,38 @@ public class TCommentsService {
       }
     }
 
+    public void clearCache(TCacheForm form, org.apache.thrift.async.AsyncMethodCallback<clearCache_call> resultHandler) throws org.apache.thrift.TException {
+      checkReady();
+      clearCache_call method_call = new clearCache_call(form, resultHandler, this, ___protocolFactory, ___transport);
+      this.___currentMethod = method_call;
+      ___manager.call(method_call);
+    }
+
+    public static class clearCache_call extends org.apache.thrift.async.TAsyncMethodCall {
+      private TCacheForm form;
+      public clearCache_call(TCacheForm form, org.apache.thrift.async.AsyncMethodCallback<clearCache_call> resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws org.apache.thrift.TException {
+        super(client, protocolFactory, transport, resultHandler, false);
+        this.form = form;
+      }
+
+      public void write_args(org.apache.thrift.protocol.TProtocol prot) throws org.apache.thrift.TException {
+        prot.writeMessageBegin(new org.apache.thrift.protocol.TMessage("clearCache", org.apache.thrift.protocol.TMessageType.CALL, 0));
+        clearCache_args args = new clearCache_args();
+        args.setForm(form);
+        args.write(prot);
+        prot.writeMessageEnd();
+      }
+
+      public void getResult() throws org.apache.thrift.TException {
+        if (getState() != org.apache.thrift.async.TAsyncMethodCall.State.RESPONSE_READ) {
+          throw new IllegalStateException("Method call not finished!");
+        }
+        org.apache.thrift.transport.TMemoryInputTransport memoryTransport = new org.apache.thrift.transport.TMemoryInputTransport(getFrameBuffer().array());
+        org.apache.thrift.protocol.TProtocol prot = client.getProtocolFactory().getProtocol(memoryTransport);
+        (new Client(prot)).recv_clearCache();
+      }
+    }
+
   }
 
   public static class Processor<I extends Iface> extends org.apache.thrift.TBaseProcessor<I> implements org.apache.thrift.TProcessor {
@@ -764,6 +820,7 @@ public class TCommentsService {
       processMap.put("getCommentPoint", new getCommentPoint());
       processMap.put("getCommentPointByName", new getCommentPointByName());
       processMap.put("searchCommentPoint", new searchCommentPoint());
+      processMap.put("clearCache", new clearCache());
       return processMap;
     }
 
@@ -945,6 +1002,22 @@ public class TCommentsService {
       protected searchCommentPoint_result getResult(I iface, searchCommentPoint_args args) throws org.apache.thrift.TException {
         searchCommentPoint_result result = new searchCommentPoint_result();
         result.success = iface.searchCommentPoint(args.form);
+        return result;
+      }
+    }
+
+    private static class clearCache<I extends Iface> extends org.apache.thrift.ProcessFunction<I, clearCache_args> {
+      public clearCache() {
+        super("clearCache");
+      }
+
+      protected clearCache_args getEmptyArgsInstance() {
+        return new clearCache_args();
+      }
+
+      protected clearCache_result getResult(I iface, clearCache_args args) throws org.apache.thrift.TException {
+        clearCache_result result = new clearCache_result();
+        iface.clearCache(args.form);
         return result;
       }
     }
@@ -9164,6 +9237,606 @@ public class TCommentsService {
           struct.success.read(iprot);
           struct.setSuccessIsSet(true);
         }
+      }
+    }
+
+  }
+
+  public static class clearCache_args implements org.apache.thrift.TBase<clearCache_args, clearCache_args._Fields>, java.io.Serializable, Cloneable   {
+    private static final org.apache.thrift.protocol.TStruct STRUCT_DESC = new org.apache.thrift.protocol.TStruct("clearCache_args");
+
+    private static final org.apache.thrift.protocol.TField FORM_FIELD_DESC = new org.apache.thrift.protocol.TField("form", org.apache.thrift.protocol.TType.STRUCT, (short)1);
+
+    private static final Map<Class<? extends IScheme>, SchemeFactory> schemes = new HashMap<Class<? extends IScheme>, SchemeFactory>();
+    static {
+      schemes.put(StandardScheme.class, new clearCache_argsStandardSchemeFactory());
+      schemes.put(TupleScheme.class, new clearCache_argsTupleSchemeFactory());
+    }
+
+    public TCacheForm form; // required
+
+    /** The set of fields this struct contains, along with convenience methods for finding and manipulating them. */
+    public enum _Fields implements org.apache.thrift.TFieldIdEnum {
+      FORM((short)1, "form");
+
+      private static final Map<String, _Fields> byName = new HashMap<String, _Fields>();
+
+      static {
+        for (_Fields field : EnumSet.allOf(_Fields.class)) {
+          byName.put(field.getFieldName(), field);
+        }
+      }
+
+      /**
+       * Find the _Fields constant that matches fieldId, or null if its not found.
+       */
+      public static _Fields findByThriftId(int fieldId) {
+        switch(fieldId) {
+          case 1: // FORM
+            return FORM;
+          default:
+            return null;
+        }
+      }
+
+      /**
+       * Find the _Fields constant that matches fieldId, throwing an exception
+       * if it is not found.
+       */
+      public static _Fields findByThriftIdOrThrow(int fieldId) {
+        _Fields fields = findByThriftId(fieldId);
+        if (fields == null) throw new IllegalArgumentException("Field " + fieldId + " doesn't exist!");
+        return fields;
+      }
+
+      /**
+       * Find the _Fields constant that matches name, or null if its not found.
+       */
+      public static _Fields findByName(String name) {
+        return byName.get(name);
+      }
+
+      private final short _thriftId;
+      private final String _fieldName;
+
+      _Fields(short thriftId, String fieldName) {
+        _thriftId = thriftId;
+        _fieldName = fieldName;
+      }
+
+      public short getThriftFieldId() {
+        return _thriftId;
+      }
+
+      public String getFieldName() {
+        return _fieldName;
+      }
+    }
+
+    // isset id assignments
+    public static final Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
+    static {
+      Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
+      tmpMap.put(_Fields.FORM, new org.apache.thrift.meta_data.FieldMetaData("form", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+          new org.apache.thrift.meta_data.StructMetaData(org.apache.thrift.protocol.TType.STRUCT, TCacheForm.class)));
+      metaDataMap = Collections.unmodifiableMap(tmpMap);
+      org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(clearCache_args.class, metaDataMap);
+    }
+
+    public clearCache_args() {
+    }
+
+    public clearCache_args(
+      TCacheForm form)
+    {
+      this();
+      this.form = form;
+    }
+
+    /**
+     * Performs a deep copy on <i>other</i>.
+     */
+    public clearCache_args(clearCache_args other) {
+      if (other.isSetForm()) {
+        this.form = new TCacheForm(other.form);
+      }
+    }
+
+    public clearCache_args deepCopy() {
+      return new clearCache_args(this);
+    }
+
+    @Override
+    public void clear() {
+      this.form = null;
+    }
+
+    public TCacheForm getForm() {
+      return this.form;
+    }
+
+    public clearCache_args setForm(TCacheForm form) {
+      this.form = form;
+      return this;
+    }
+
+    public void unsetForm() {
+      this.form = null;
+    }
+
+    /** Returns true if field form is set (has been assigned a value) and false otherwise */
+    public boolean isSetForm() {
+      return this.form != null;
+    }
+
+    public void setFormIsSet(boolean value) {
+      if (!value) {
+        this.form = null;
+      }
+    }
+
+    public void setFieldValue(_Fields field, Object value) {
+      switch (field) {
+      case FORM:
+        if (value == null) {
+          unsetForm();
+        } else {
+          setForm((TCacheForm)value);
+        }
+        break;
+
+      }
+    }
+
+    public Object getFieldValue(_Fields field) {
+      switch (field) {
+      case FORM:
+        return getForm();
+
+      }
+      throw new IllegalStateException();
+    }
+
+    /** Returns true if field corresponding to fieldID is set (has been assigned a value) and false otherwise */
+    public boolean isSet(_Fields field) {
+      if (field == null) {
+        throw new IllegalArgumentException();
+      }
+
+      switch (field) {
+      case FORM:
+        return isSetForm();
+      }
+      throw new IllegalStateException();
+    }
+
+    @Override
+    public boolean equals(Object that) {
+      if (that == null)
+        return false;
+      if (that instanceof clearCache_args)
+        return this.equals((clearCache_args)that);
+      return false;
+    }
+
+    public boolean equals(clearCache_args that) {
+      if (that == null)
+        return false;
+
+      boolean this_present_form = true && this.isSetForm();
+      boolean that_present_form = true && that.isSetForm();
+      if (this_present_form || that_present_form) {
+        if (!(this_present_form && that_present_form))
+          return false;
+        if (!this.form.equals(that.form))
+          return false;
+      }
+
+      return true;
+    }
+
+    @Override
+    public int hashCode() {
+      return 0;
+    }
+
+    public int compareTo(clearCache_args other) {
+      if (!getClass().equals(other.getClass())) {
+        return getClass().getName().compareTo(other.getClass().getName());
+      }
+
+      int lastComparison = 0;
+      clearCache_args typedOther = (clearCache_args)other;
+
+      lastComparison = Boolean.valueOf(isSetForm()).compareTo(typedOther.isSetForm());
+      if (lastComparison != 0) {
+        return lastComparison;
+      }
+      if (isSetForm()) {
+        lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.form, typedOther.form);
+        if (lastComparison != 0) {
+          return lastComparison;
+        }
+      }
+      return 0;
+    }
+
+    public _Fields fieldForId(int fieldId) {
+      return _Fields.findByThriftId(fieldId);
+    }
+
+    public void read(org.apache.thrift.protocol.TProtocol iprot) throws org.apache.thrift.TException {
+      schemes.get(iprot.getScheme()).getScheme().read(iprot, this);
+    }
+
+    public void write(org.apache.thrift.protocol.TProtocol oprot) throws org.apache.thrift.TException {
+      schemes.get(oprot.getScheme()).getScheme().write(oprot, this);
+    }
+
+    @Override
+    public String toString() {
+      StringBuilder sb = new StringBuilder("clearCache_args(");
+      boolean first = true;
+
+      sb.append("form:");
+      if (this.form == null) {
+        sb.append("null");
+      } else {
+        sb.append(this.form);
+      }
+      first = false;
+      sb.append(")");
+      return sb.toString();
+    }
+
+    public void validate() throws org.apache.thrift.TException {
+      // check for required fields
+    }
+
+    private void writeObject(java.io.ObjectOutputStream out) throws java.io.IOException {
+      try {
+        write(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(out)));
+      } catch (org.apache.thrift.TException te) {
+        throw new java.io.IOException(te);
+      }
+    }
+
+    private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, ClassNotFoundException {
+      try {
+        read(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(in)));
+      } catch (org.apache.thrift.TException te) {
+        throw new java.io.IOException(te);
+      }
+    }
+
+    private static class clearCache_argsStandardSchemeFactory implements SchemeFactory {
+      public clearCache_argsStandardScheme getScheme() {
+        return new clearCache_argsStandardScheme();
+      }
+    }
+
+    private static class clearCache_argsStandardScheme extends StandardScheme<clearCache_args> {
+
+      public void read(org.apache.thrift.protocol.TProtocol iprot, clearCache_args struct) throws org.apache.thrift.TException {
+        org.apache.thrift.protocol.TField schemeField;
+        iprot.readStructBegin();
+        while (true)
+        {
+          schemeField = iprot.readFieldBegin();
+          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) { 
+            break;
+          }
+          switch (schemeField.id) {
+            case 1: // FORM
+              if (schemeField.type == org.apache.thrift.protocol.TType.STRUCT) {
+                struct.form = new TCacheForm();
+                struct.form.read(iprot);
+                struct.setFormIsSet(true);
+              } else { 
+                org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
+              }
+              break;
+            default:
+              org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
+          }
+          iprot.readFieldEnd();
+        }
+        iprot.readStructEnd();
+
+        // check for required fields of primitive type, which can't be checked in the validate method
+        struct.validate();
+      }
+
+      public void write(org.apache.thrift.protocol.TProtocol oprot, clearCache_args struct) throws org.apache.thrift.TException {
+        struct.validate();
+
+        oprot.writeStructBegin(STRUCT_DESC);
+        if (struct.form != null) {
+          oprot.writeFieldBegin(FORM_FIELD_DESC);
+          struct.form.write(oprot);
+          oprot.writeFieldEnd();
+        }
+        oprot.writeFieldStop();
+        oprot.writeStructEnd();
+      }
+
+    }
+
+    private static class clearCache_argsTupleSchemeFactory implements SchemeFactory {
+      public clearCache_argsTupleScheme getScheme() {
+        return new clearCache_argsTupleScheme();
+      }
+    }
+
+    private static class clearCache_argsTupleScheme extends TupleScheme<clearCache_args> {
+
+      @Override
+      public void write(org.apache.thrift.protocol.TProtocol prot, clearCache_args struct) throws org.apache.thrift.TException {
+        TTupleProtocol oprot = (TTupleProtocol) prot;
+        BitSet optionals = new BitSet();
+        if (struct.isSetForm()) {
+          optionals.set(0);
+        }
+        oprot.writeBitSet(optionals, 1);
+        if (struct.isSetForm()) {
+          struct.form.write(oprot);
+        }
+      }
+
+      @Override
+      public void read(org.apache.thrift.protocol.TProtocol prot, clearCache_args struct) throws org.apache.thrift.TException {
+        TTupleProtocol iprot = (TTupleProtocol) prot;
+        BitSet incoming = iprot.readBitSet(1);
+        if (incoming.get(0)) {
+          struct.form = new TCacheForm();
+          struct.form.read(iprot);
+          struct.setFormIsSet(true);
+        }
+      }
+    }
+
+  }
+
+  public static class clearCache_result implements org.apache.thrift.TBase<clearCache_result, clearCache_result._Fields>, java.io.Serializable, Cloneable   {
+    private static final org.apache.thrift.protocol.TStruct STRUCT_DESC = new org.apache.thrift.protocol.TStruct("clearCache_result");
+
+
+    private static final Map<Class<? extends IScheme>, SchemeFactory> schemes = new HashMap<Class<? extends IScheme>, SchemeFactory>();
+    static {
+      schemes.put(StandardScheme.class, new clearCache_resultStandardSchemeFactory());
+      schemes.put(TupleScheme.class, new clearCache_resultTupleSchemeFactory());
+    }
+
+
+    /** The set of fields this struct contains, along with convenience methods for finding and manipulating them. */
+    public enum _Fields implements org.apache.thrift.TFieldIdEnum {
+;
+
+      private static final Map<String, _Fields> byName = new HashMap<String, _Fields>();
+
+      static {
+        for (_Fields field : EnumSet.allOf(_Fields.class)) {
+          byName.put(field.getFieldName(), field);
+        }
+      }
+
+      /**
+       * Find the _Fields constant that matches fieldId, or null if its not found.
+       */
+      public static _Fields findByThriftId(int fieldId) {
+        switch(fieldId) {
+          default:
+            return null;
+        }
+      }
+
+      /**
+       * Find the _Fields constant that matches fieldId, throwing an exception
+       * if it is not found.
+       */
+      public static _Fields findByThriftIdOrThrow(int fieldId) {
+        _Fields fields = findByThriftId(fieldId);
+        if (fields == null) throw new IllegalArgumentException("Field " + fieldId + " doesn't exist!");
+        return fields;
+      }
+
+      /**
+       * Find the _Fields constant that matches name, or null if its not found.
+       */
+      public static _Fields findByName(String name) {
+        return byName.get(name);
+      }
+
+      private final short _thriftId;
+      private final String _fieldName;
+
+      _Fields(short thriftId, String fieldName) {
+        _thriftId = thriftId;
+        _fieldName = fieldName;
+      }
+
+      public short getThriftFieldId() {
+        return _thriftId;
+      }
+
+      public String getFieldName() {
+        return _fieldName;
+      }
+    }
+    public static final Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
+    static {
+      Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
+      metaDataMap = Collections.unmodifiableMap(tmpMap);
+      org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(clearCache_result.class, metaDataMap);
+    }
+
+    public clearCache_result() {
+    }
+
+    /**
+     * Performs a deep copy on <i>other</i>.
+     */
+    public clearCache_result(clearCache_result other) {
+    }
+
+    public clearCache_result deepCopy() {
+      return new clearCache_result(this);
+    }
+
+    @Override
+    public void clear() {
+    }
+
+    public void setFieldValue(_Fields field, Object value) {
+      switch (field) {
+      }
+    }
+
+    public Object getFieldValue(_Fields field) {
+      switch (field) {
+      }
+      throw new IllegalStateException();
+    }
+
+    /** Returns true if field corresponding to fieldID is set (has been assigned a value) and false otherwise */
+    public boolean isSet(_Fields field) {
+      if (field == null) {
+        throw new IllegalArgumentException();
+      }
+
+      switch (field) {
+      }
+      throw new IllegalStateException();
+    }
+
+    @Override
+    public boolean equals(Object that) {
+      if (that == null)
+        return false;
+      if (that instanceof clearCache_result)
+        return this.equals((clearCache_result)that);
+      return false;
+    }
+
+    public boolean equals(clearCache_result that) {
+      if (that == null)
+        return false;
+
+      return true;
+    }
+
+    @Override
+    public int hashCode() {
+      return 0;
+    }
+
+    public int compareTo(clearCache_result other) {
+      if (!getClass().equals(other.getClass())) {
+        return getClass().getName().compareTo(other.getClass().getName());
+      }
+
+      int lastComparison = 0;
+      clearCache_result typedOther = (clearCache_result)other;
+
+      return 0;
+    }
+
+    public _Fields fieldForId(int fieldId) {
+      return _Fields.findByThriftId(fieldId);
+    }
+
+    public void read(org.apache.thrift.protocol.TProtocol iprot) throws org.apache.thrift.TException {
+      schemes.get(iprot.getScheme()).getScheme().read(iprot, this);
+    }
+
+    public void write(org.apache.thrift.protocol.TProtocol oprot) throws org.apache.thrift.TException {
+      schemes.get(oprot.getScheme()).getScheme().write(oprot, this);
+      }
+
+    @Override
+    public String toString() {
+      StringBuilder sb = new StringBuilder("clearCache_result(");
+      boolean first = true;
+
+      sb.append(")");
+      return sb.toString();
+    }
+
+    public void validate() throws org.apache.thrift.TException {
+      // check for required fields
+    }
+
+    private void writeObject(java.io.ObjectOutputStream out) throws java.io.IOException {
+      try {
+        write(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(out)));
+      } catch (org.apache.thrift.TException te) {
+        throw new java.io.IOException(te);
+      }
+    }
+
+    private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, ClassNotFoundException {
+      try {
+        read(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(in)));
+      } catch (org.apache.thrift.TException te) {
+        throw new java.io.IOException(te);
+      }
+    }
+
+    private static class clearCache_resultStandardSchemeFactory implements SchemeFactory {
+      public clearCache_resultStandardScheme getScheme() {
+        return new clearCache_resultStandardScheme();
+      }
+    }
+
+    private static class clearCache_resultStandardScheme extends StandardScheme<clearCache_result> {
+
+      public void read(org.apache.thrift.protocol.TProtocol iprot, clearCache_result struct) throws org.apache.thrift.TException {
+        org.apache.thrift.protocol.TField schemeField;
+        iprot.readStructBegin();
+        while (true)
+        {
+          schemeField = iprot.readFieldBegin();
+          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) { 
+            break;
+          }
+          switch (schemeField.id) {
+            default:
+              org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
+          }
+          iprot.readFieldEnd();
+        }
+        iprot.readStructEnd();
+
+        // check for required fields of primitive type, which can't be checked in the validate method
+        struct.validate();
+      }
+
+      public void write(org.apache.thrift.protocol.TProtocol oprot, clearCache_result struct) throws org.apache.thrift.TException {
+        struct.validate();
+
+        oprot.writeStructBegin(STRUCT_DESC);
+        oprot.writeFieldStop();
+        oprot.writeStructEnd();
+      }
+
+    }
+
+    private static class clearCache_resultTupleSchemeFactory implements SchemeFactory {
+      public clearCache_resultTupleScheme getScheme() {
+        return new clearCache_resultTupleScheme();
+      }
+    }
+
+    private static class clearCache_resultTupleScheme extends TupleScheme<clearCache_result> {
+
+      @Override
+      public void write(org.apache.thrift.protocol.TProtocol prot, clearCache_result struct) throws org.apache.thrift.TException {
+        TTupleProtocol oprot = (TTupleProtocol) prot;
+      }
+
+      @Override
+      public void read(org.apache.thrift.protocol.TProtocol prot, clearCache_result struct) throws org.apache.thrift.TException {
+        TTupleProtocol iprot = (TTupleProtocol) prot;
       }
     }
 

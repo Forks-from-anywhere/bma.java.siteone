@@ -110,4 +110,11 @@ public interface CommentsService {
 	 */
 	public PagerResult<CommentPoint> searchCommentPoint(
 			SearchCommentPointForm form);
+
+	/**
+	 * 清除缓冲
+	 * 
+	 * @param form
+	 */
+	public void clearCache(CacheForm form);
 }

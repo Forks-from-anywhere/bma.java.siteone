@@ -48,6 +48,7 @@ public class TSearchCommentForm implements org.apache.thrift.TBase<TSearchCommen
   private static final org.apache.thrift.protocol.TField PAGE_SIZE_FIELD_DESC = new org.apache.thrift.protocol.TField("pageSize", org.apache.thrift.protocol.TType.I32, (short)17);
   private static final org.apache.thrift.protocol.TField SORT_FIELD_DESC = new org.apache.thrift.protocol.TField("sort", org.apache.thrift.protocol.TType.STRING, (short)18);
   private static final org.apache.thrift.protocol.TField SORT_DIR_FIELD_DESC = new org.apache.thrift.protocol.TField("sortDir", org.apache.thrift.protocol.TType.STRING, (short)19);
+  private static final org.apache.thrift.protocol.TField CACHE_FIELD_DESC = new org.apache.thrift.protocol.TField("cache", org.apache.thrift.protocol.TType.STRING, (short)20);
 
   private static final Map<Class<? extends IScheme>, SchemeFactory> schemes = new HashMap<Class<? extends IScheme>, SchemeFactory>();
   static {
@@ -73,6 +74,7 @@ public class TSearchCommentForm implements org.apache.thrift.TBase<TSearchCommen
   public int pageSize; // required
   public String sort; // optional
   public String sortDir; // optional
+  public String cache; // optional
 
   /** The set of fields this struct contains, along with convenience methods for finding and manipulating them. */
   public enum _Fields implements org.apache.thrift.TFieldIdEnum {
@@ -93,7 +95,8 @@ public class TSearchCommentForm implements org.apache.thrift.TBase<TSearchCommen
     PAGE((short)16, "page"),
     PAGE_SIZE((short)17, "pageSize"),
     SORT((short)18, "sort"),
-    SORT_DIR((short)19, "sortDir");
+    SORT_DIR((short)19, "sortDir"),
+    CACHE((short)20, "cache");
 
     private static final Map<String, _Fields> byName = new HashMap<String, _Fields>();
 
@@ -144,6 +147,8 @@ public class TSearchCommentForm implements org.apache.thrift.TBase<TSearchCommen
           return SORT;
         case 19: // SORT_DIR
           return SORT_DIR;
+        case 20: // CACHE
+          return CACHE;
         default:
           return null;
       }
@@ -193,7 +198,7 @@ public class TSearchCommentForm implements org.apache.thrift.TBase<TSearchCommen
   private static final int __PAGE_ISSET_ID = 6;
   private static final int __PAGESIZE_ISSET_ID = 7;
   private BitSet __isset_bit_vector = new BitSet(8);
-  private _Fields optionals[] = {_Fields.POINT_ID,_Fields.POINT,_Fields.REPLY_ID,_Fields.SUBJECT,_Fields.URL,_Fields.USER_NAME,_Fields.USER_ID,_Fields.CONTENT,_Fields.IP,_Fields.START_TIME,_Fields.END_TIME,_Fields.NEED_AUTH,_Fields.STATUS,_Fields.HIDE,_Fields.SORT,_Fields.SORT_DIR};
+  private _Fields optionals[] = {_Fields.POINT_ID,_Fields.POINT,_Fields.REPLY_ID,_Fields.SUBJECT,_Fields.URL,_Fields.USER_NAME,_Fields.USER_ID,_Fields.CONTENT,_Fields.IP,_Fields.START_TIME,_Fields.END_TIME,_Fields.NEED_AUTH,_Fields.STATUS,_Fields.HIDE,_Fields.SORT,_Fields.SORT_DIR,_Fields.CACHE};
   public static final Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
   static {
     Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
@@ -232,6 +237,8 @@ public class TSearchCommentForm implements org.apache.thrift.TBase<TSearchCommen
     tmpMap.put(_Fields.SORT, new org.apache.thrift.meta_data.FieldMetaData("sort", org.apache.thrift.TFieldRequirementType.OPTIONAL, 
         new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.STRING)));
     tmpMap.put(_Fields.SORT_DIR, new org.apache.thrift.meta_data.FieldMetaData("sortDir", org.apache.thrift.TFieldRequirementType.OPTIONAL, 
+        new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.STRING)));
+    tmpMap.put(_Fields.CACHE, new org.apache.thrift.meta_data.FieldMetaData("cache", org.apache.thrift.TFieldRequirementType.OPTIONAL, 
         new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.STRING)));
     metaDataMap = Collections.unmodifiableMap(tmpMap);
     org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(TSearchCommentForm.class, metaDataMap);
@@ -301,6 +308,9 @@ public class TSearchCommentForm implements org.apache.thrift.TBase<TSearchCommen
     if (other.isSetSortDir()) {
       this.sortDir = other.sortDir;
     }
+    if (other.isSetCache()) {
+      this.cache = other.cache;
+    }
   }
 
   public TSearchCommentForm deepCopy() {
@@ -335,6 +345,7 @@ public class TSearchCommentForm implements org.apache.thrift.TBase<TSearchCommen
     this.pageSize = 0;
     this.sort = null;
     this.sortDir = null;
+    this.cache = null;
   }
 
   public int getPointId() {
@@ -761,6 +772,30 @@ public class TSearchCommentForm implements org.apache.thrift.TBase<TSearchCommen
     }
   }
 
+  public String getCache() {
+    return this.cache;
+  }
+
+  public TSearchCommentForm setCache(String cache) {
+    this.cache = cache;
+    return this;
+  }
+
+  public void unsetCache() {
+    this.cache = null;
+  }
+
+  /** Returns true if field cache is set (has been assigned a value) and false otherwise */
+  public boolean isSetCache() {
+    return this.cache != null;
+  }
+
+  public void setCacheIsSet(boolean value) {
+    if (!value) {
+      this.cache = null;
+    }
+  }
+
   public void setFieldValue(_Fields field, Object value) {
     switch (field) {
     case POINT_ID:
@@ -907,6 +942,14 @@ public class TSearchCommentForm implements org.apache.thrift.TBase<TSearchCommen
       }
       break;
 
+    case CACHE:
+      if (value == null) {
+        unsetCache();
+      } else {
+        setCache((String)value);
+      }
+      break;
+
     }
   }
 
@@ -966,6 +1009,9 @@ public class TSearchCommentForm implements org.apache.thrift.TBase<TSearchCommen
     case SORT_DIR:
       return getSortDir();
 
+    case CACHE:
+      return getCache();
+
     }
     throw new IllegalStateException();
   }
@@ -1013,6 +1059,8 @@ public class TSearchCommentForm implements org.apache.thrift.TBase<TSearchCommen
       return isSetSort();
     case SORT_DIR:
       return isSetSortDir();
+    case CACHE:
+      return isSetCache();
     }
     throw new IllegalStateException();
   }
@@ -1189,6 +1237,15 @@ public class TSearchCommentForm implements org.apache.thrift.TBase<TSearchCommen
       if (!(this_present_sortDir && that_present_sortDir))
         return false;
       if (!this.sortDir.equals(that.sortDir))
+        return false;
+    }
+
+    boolean this_present_cache = true && this.isSetCache();
+    boolean that_present_cache = true && that.isSetCache();
+    if (this_present_cache || that_present_cache) {
+      if (!(this_present_cache && that_present_cache))
+        return false;
+      if (!this.cache.equals(that.cache))
         return false;
     }
 
@@ -1388,6 +1445,16 @@ public class TSearchCommentForm implements org.apache.thrift.TBase<TSearchCommen
         return lastComparison;
       }
     }
+    lastComparison = Boolean.valueOf(isSetCache()).compareTo(typedOther.isSetCache());
+    if (lastComparison != 0) {
+      return lastComparison;
+    }
+    if (isSetCache()) {
+      lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.cache, typedOther.cache);
+      if (lastComparison != 0) {
+        return lastComparison;
+      }
+    }
     return 0;
   }
 
@@ -1548,6 +1615,16 @@ public class TSearchCommentForm implements org.apache.thrift.TBase<TSearchCommen
         sb.append("null");
       } else {
         sb.append(this.sortDir);
+      }
+      first = false;
+    }
+    if (isSetCache()) {
+      if (!first) sb.append(", ");
+      sb.append("cache:");
+      if (this.cache == null) {
+        sb.append("null");
+      } else {
+        sb.append(this.cache);
       }
       first = false;
     }
@@ -1739,6 +1816,14 @@ public class TSearchCommentForm implements org.apache.thrift.TBase<TSearchCommen
               org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
             }
             break;
+          case 20: // CACHE
+            if (schemeField.type == org.apache.thrift.protocol.TType.STRING) {
+              struct.cache = iprot.readString();
+              struct.setCacheIsSet(true);
+            } else { 
+              org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
+            }
+            break;
           default:
             org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
         }
@@ -1860,6 +1945,13 @@ public class TSearchCommentForm implements org.apache.thrift.TBase<TSearchCommen
           oprot.writeFieldEnd();
         }
       }
+      if (struct.cache != null) {
+        if (struct.isSetCache()) {
+          oprot.writeFieldBegin(CACHE_FIELD_DESC);
+          oprot.writeString(struct.cache);
+          oprot.writeFieldEnd();
+        }
+      }
       oprot.writeFieldStop();
       oprot.writeStructEnd();
     }
@@ -1932,7 +2024,10 @@ public class TSearchCommentForm implements org.apache.thrift.TBase<TSearchCommen
       if (struct.isSetSortDir()) {
         optionals.set(17);
       }
-      oprot.writeBitSet(optionals, 18);
+      if (struct.isSetCache()) {
+        optionals.set(18);
+      }
+      oprot.writeBitSet(optionals, 19);
       if (struct.isSetPointId()) {
         oprot.writeI32(struct.pointId);
       }
@@ -1987,12 +2082,15 @@ public class TSearchCommentForm implements org.apache.thrift.TBase<TSearchCommen
       if (struct.isSetSortDir()) {
         oprot.writeString(struct.sortDir);
       }
+      if (struct.isSetCache()) {
+        oprot.writeString(struct.cache);
+      }
     }
 
     @Override
     public void read(org.apache.thrift.protocol.TProtocol prot, TSearchCommentForm struct) throws org.apache.thrift.TException {
       TTupleProtocol iprot = (TTupleProtocol) prot;
-      BitSet incoming = iprot.readBitSet(18);
+      BitSet incoming = iprot.readBitSet(19);
       if (incoming.get(0)) {
         struct.pointId = iprot.readI32();
         struct.setPointIdIsSet(true);
@@ -2064,6 +2162,10 @@ public class TSearchCommentForm implements org.apache.thrift.TBase<TSearchCommen
       if (incoming.get(17)) {
         struct.sortDir = iprot.readString();
         struct.setSortDirIsSet(true);
+      }
+      if (incoming.get(18)) {
+        struct.cache = iprot.readString();
+        struct.setCacheIsSet(true);
       }
     }
   }

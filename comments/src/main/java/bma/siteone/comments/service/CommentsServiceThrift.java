@@ -11,6 +11,7 @@ import bma.common.langutil.core.ListUtil;
 import bma.common.langutil.core.PagerResult;
 import bma.siteone.comments.po.CommentInfo;
 import bma.siteone.comments.po.CommentPoint;
+import bma.siteone.comments.thrift.TCacheForm;
 import bma.siteone.comments.thrift.TCommentForm;
 import bma.siteone.comments.thrift.TCommentInfo;
 import bma.siteone.comments.thrift.TCommentPoint;
@@ -192,6 +193,15 @@ public class CommentsServiceThrift implements TCommentsService.Iface {
 					}
 				}));
 		return r;
+	}
+
+	@Override
+	public void clearCache(TCacheForm form) throws TException {
+		if (log.isDebugEnabled()) {
+			log.debug("clearCache({})", form);
+		}
+		CacheForm fObj = target.newInstance(null, form, CacheForm.class);
+		service.clearCache(fObj);
 	}
 
 }

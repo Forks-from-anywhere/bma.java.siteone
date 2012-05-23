@@ -48,7 +48,7 @@ public class CommentsServiceImpl implements CommentsService {
 	private JdbcTemplate jdbcTemplate;
 
 	private ICache<Integer, CommentInfo> commentCache;
-	private ICache<Integer, CommentPoint> commentPointCache;
+	private ICache<Integer, CommentPointCacheItem> commentPointCache;
 	private ICache<String, Integer> commentPointNameCache;
 
 	public ICache<String, Integer> getCommentPointNameCache() {
@@ -93,12 +93,12 @@ public class CommentsServiceImpl implements CommentsService {
 		this.commentCache = commentCache;
 	}
 
-	public ICache<Integer, CommentPoint> getCommentPointCache() {
+	public ICache<Integer, CommentPointCacheItem> getCommentPointCache() {
 		return commentPointCache;
 	}
 
 	public void setCommentPointCache(
-			ICache<Integer, CommentPoint> commentPointCache) {
+			ICache<Integer, CommentPointCacheItem> commentPointCache) {
 		this.commentPointCache = commentPointCache;
 	}
 
@@ -212,8 +212,9 @@ public class CommentsServiceImpl implements CommentsService {
 			fvs.addString("reserve4", form.getReserve4());
 		}
 
-		if(fvs.empty())return false;
-		
+		if (fvs.empty())
+			return false;
+
 		CommonFieldValues tj = new CommonFieldValues();
 		tj.addInt("id", id);
 
@@ -261,6 +262,27 @@ public class CommentsServiceImpl implements CommentsService {
 	@Transactional(propagation = Propagation.NOT_SUPPORTED, readOnly = true)
 	@Override
 	public PagerResult<CommentInfo> searchComment(SearchCommentForm form) {
+
+		if (ValueUtil.notEmpty(form.getCache())) {
+			int pid = 0;
+			if (form.getPointId() > 0) {
+				pid = form.getPointId();
+			} else if (ValueUtil.notEmpty(form.getPoint())) {
+				CommentPoint cp = getCommentPoint(form.getPoint());
+				if (cp != null) {
+					pid = cp.getId();
+				}
+			}
+			if (pid > 0) {
+				CommentPointCacheItem item = commentPointCache.get(pid);
+				if (item != null) {
+					PagerResult<CommentInfo> r = item.get(form.getCache());
+					if (r != null)
+						return r;
+				}
+			}
+		}
+
 		StringBuffer buf = new StringBuffer(256);
 		CommonFieldValues cptj = null;
 		CommonFieldValues tj = new CommonFieldValues();
@@ -376,6 +398,26 @@ public class CommentsServiceImpl implements CommentsService {
 		PagerResult<CommentInfo> result = new PagerResult<CommentInfo>();
 		result.setPager(pager);
 		result.setResult(list);
+
+		if (ValueUtil.notEmpty(form.getCache())) {
+			int pid = 0;
+			if (form.getPointId() > 0) {
+				pid = form.getPointId();
+			} else if (ValueUtil.notEmpty(form.getPoint())) {
+				CommentPoint cp = getCommentPoint(form.getPoint());
+				if (cp != null) {
+					pid = cp.getId();
+				}
+			}
+			if (pid > 0) {
+				CommentPointCacheItem item = commentPointCache.get(pid);
+				if (item == null) {
+					item = new CommentPointCacheItem();
+					commentPointCache.put(pid, item);
+				}
+				item.put(form.getCache(), result);
+			}
+		}
 		return result;
 
 	}
@@ -405,17 +447,35 @@ public class CommentsServiceImpl implements CommentsService {
 		}
 	}
 
+	protected CommentPoint getFromCache(int id) {
+		CommentPointCacheItem item = commentPointCache.get(id);
+		if (item != null) {
+			return item.getPoint();
+		}
+		return null;
+	}
+
+	protected void putToCache(CommentPoint cp) {
+		CommentPointCacheItem item = commentPointCache.get(cp.getId());
+		if (item == null) {
+			item = new CommentPointCacheItem();
+			commentPointCache.put(cp.getId(), item);
+		}
+		item.setPoint(cp);
+		commentPointNameCache.put(cp.getName(), cp.getId());
+	}
+
 	@Transactional(propagation = Propagation.NOT_SUPPORTED, readOnly = true)
 	@Override
 	public CommentPoint getCommentPoint(int id) {
-		CommentPoint info = commentPointCache.get(id);
+		CommentPoint info = getFromCache(id);
 		if (info != null) {
 			return info;
 		}
 		info = helper.selectOne(commentPointTableName, "id", id,
 				new CommentPointRowMapper());
 		if (info != null) {
-			commentPointCache.put(id, info);
+			putToCache(info);
 		}
 		return info;
 	}
@@ -423,10 +483,21 @@ public class CommentsServiceImpl implements CommentsService {
 	@Transactional(propagation = Propagation.NOT_SUPPORTED, readOnly = true)
 	@Override
 	public CommentPoint getCommentPoint(String name) {
-		CommentPoint info = helper.selectOne(commentPointTableName, "name",
-				name, new CommentPointRowMapper());
+		Integer pointId = commentPointNameCache.get(name);
+		CommentPoint info = null;
+		if (pointId != null) {
+			if (pointId.intValue() < 0)
+				return null;
+			info = getFromCache(pointId.intValue());
+		}
+		if (info == null) {
+			info = helper.selectOne(commentPointTableName, "name", name,
+					new CommentPointRowMapper());
+		}
 		if (info != null) {
-			commentPointCache.put(info.getId(), info);
+			putToCache(info);
+		} else {
+			commentPointNameCache.put(name, -1);
 		}
 		return info;
 	}
@@ -453,7 +524,10 @@ public class CommentsServiceImpl implements CommentsService {
 
 		Number id = (Number) helper.executeInsert(commentPointTableName, fvs,
 				"id");
-		return id.intValue();
+		int r = id.intValue();
+		commentPointNameCache.remove(form.getName());
+		commentCache.remove(r);
+		return r;
 	}
 
 	@Transactional(propagation = Propagation.REQUIRED)
@@ -557,9 +631,12 @@ public class CommentsServiceImpl implements CommentsService {
 	}
 
 	public void clearPointCache(int id) {
-		CommentPoint cp = commentPointCache.remove(id);
-		if (cp != null) {
-			commentPointNameCache.remove(cp.getName());
+		CommentPointCacheItem item = commentPointCache.remove(id);
+		if (item != null) {
+			CommentPoint cp = item.getPoint();
+			if (cp != null) {
+				commentPointNameCache.remove(cp.getName());
+			}
 		}
 	}
 
@@ -571,4 +648,38 @@ public class CommentsServiceImpl implements CommentsService {
 		commentCache.clear();
 	}
 
+	@Override
+	public void clearCache(CacheForm form) {
+		if (form.getCommentPointId() > 0) {
+			if (ValueUtil.notEmpty(form.getCache())) {
+				CommentPointCacheItem item = commentPointCache.get(form
+						.getCommentPointId());
+				if (item != null) {
+					item.clear(form.getCache());
+				}
+			} else {
+				clearPointCache(form.getCommentPointId());
+			}
+			return;
+		}
+		if (ValueUtil.notEmpty(form.getCommentPointName())) {
+			CommentPoint cp = getCommentPoint(form.getCommentPointName());
+			if (cp != null) {
+				if (ValueUtil.notEmpty(form.getCache())) {
+					CommentPointCacheItem item = commentPointCache.get(cp
+							.getId());
+					if (item != null) {
+						item.clear(form.getCache());
+					}
+				} else {
+					clearPointCache(cp.getId());
+				}
+			}
+			return;
+		}
+		if (form.getCommentId() > 0) {
+			commentCache.remove(form.getCommentId());
+			return;
+		}
+	}
 }

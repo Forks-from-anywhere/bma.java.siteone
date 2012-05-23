@@ -41,6 +41,16 @@ public class SearchCommentForm extends SearchForm {
 
 	private int hide = -1;
 
+	private String cache;
+
+	public String getCache() {
+		return cache;
+	}
+
+	public void setCache(String cache) {
+		this.cache = cache;
+	}
+
 	public int getReplyId() {
 		return replyId;
 	}

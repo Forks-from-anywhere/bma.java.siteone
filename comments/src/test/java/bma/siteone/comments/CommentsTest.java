@@ -10,6 +10,7 @@ import org.springframework.context.support.FileSystemXmlApplicationContext;
 
 import bma.common.jdbctemplate.JdbcTemplateUtil;
 import bma.common.langutil.testcase.SpringTestcaseUtil;
+import bma.siteone.comments.service.CacheForm;
 import bma.siteone.comments.service.CommentForm;
 import bma.siteone.comments.service.CommentPointForm;
 import bma.siteone.comments.service.CommentsService;
@@ -182,6 +183,36 @@ public class CommentsTest {
 
 		Object o = s.searchComment(form);
 		System.out.println(o);
+	}
+
+	@Test
+	public void testComment_SearchCache() throws Exception {
+		CommentsService s = context.getBean("service", CommentsService.class);
+
+		SearchCommentForm form = new SearchCommentForm();
+		// form.setPointId(15);
+		form.setPoint("name1");
+		form.setPage(1);
+		form.setPageSize(10);
+		form.setCache("test");
+
+		Object o = s.searchComment(form);
+		System.out.println(o);
+
+		o = s.searchComment(form);
+		System.out.println(o);
+	}
+
+	@Test
+	public void testComment_Cache() throws Exception {
+		testComment_SearchCache();
+		
+		CacheForm form = new CacheForm();
+		form.setCommentPointName("name1");
+		CommentsService s = context.getBean("service", CommentsService.class);
+		s.clearCache(form);
+		
+		testComment_SearchCache();
 	}
 
 }

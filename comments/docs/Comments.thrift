@@ -116,11 +116,19 @@ struct TSearchCommentForm {
   17: i32 pageSize,
   18: optional string sort,
   19: optional string sortDir,
+  20: optional string cache,
 }
 
 struct TCommentSearchResult {
   1: i32 total,
   2: list<TCommentInfo> result,
+}
+
+struct TCacheForm {
+  1: optional i32 commentPointId,
+  2: optional string commentPointName,
+  3: optional string cache,
+  4: optional i32 commentId,
 }
 
 service TCommentsService {
@@ -146,5 +154,7 @@ service TCommentsService {
    TCommentPoint getCommentPointByName(1:string name),
    
    TCommentPointSearchResult searchCommentPoint(1:TSearchCommentPointForm form),
+   
+   void clearCache(1:TCacheForm form),
    
 }
