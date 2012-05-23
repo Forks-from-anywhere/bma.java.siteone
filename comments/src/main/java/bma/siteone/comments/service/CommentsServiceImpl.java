@@ -193,6 +193,12 @@ public class CommentsServiceImpl implements CommentsService {
 		if (isUpdate("status", fields)) {
 			fvs.addInt("status", form.getStatus());
 		}
+		if (isUpdate("support", fields)) {
+			fvs.addInt("support", form.getSupport());
+		}
+		if (isUpdate("oppose", fields)) {
+			fvs.addInt("oppose", form.getOppose());
+		}
 		if (isUpdate("need_auth", fields)) {
 			fvs.addInt("need_auth", form.getNeedAuth());
 		}
