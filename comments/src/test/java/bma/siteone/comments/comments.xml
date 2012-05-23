@@ -58,7 +58,7 @@
 	</bean>
 
 	<!-- thrift -->
-	<bean id="serverTrans" class="org.apache.thrift.transport.TServerSocket">
+	<bean id="serverTrans" class="org.apache.thrift.transport.TNonblockingServerSocket">
 		<constructor-arg value="9090" />
 	</bean>
 	
@@ -69,7 +69,7 @@
 		<constructor-arg ref="handler" />
 	</bean>
 
-	<bean id="server" class="bma.common.thrift.ThriftServer.SimpleServer"
+	<bean id="server" class="bma.common.thrift.ThriftServer.HsHaServer"
 		destroy-method="close">
 		<constructor-arg ref="serverTrans" />
 		<constructor-arg>
@@ -82,6 +82,8 @@
 				</property>
 			</bean>
 		</constructor-arg>
+		<constructor-arg value="5"/>
+		<constructor-arg value="1000000"/>
 	</bean>
 
 </beans>

@@ -8,7 +8,7 @@ import org.springframework.context.support.FileSystemXmlApplicationContext;
 import bma.common.jdbctemplate.JdbcTemplateUtil;
 import bma.common.langutil.core.ObjectUtil;
 import bma.common.langutil.testcase.SpringTestcaseUtil;
-import bma.common.thrift.ThriftServer.SimpleServer;
+import bma.common.thrift.ThriftServer;
 
 /**
  * Thrift服务测试用例
@@ -41,7 +41,7 @@ public class CommentsServerTest {
 	 */
 	@Test
 	public void testServer() throws Exception {
-		SimpleServer s1 = context.getBean("server", SimpleServer.class);
+		ThriftServer s1 = context.getBean("server", ThriftServer.class);
 		System.out.println(s1.toString());
 
 		s1.start();

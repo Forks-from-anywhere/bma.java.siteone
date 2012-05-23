@@ -1,6 +1,5 @@
 package bma.siteone.comments.service;
 
-import bma.common.langutil.core.ValueUtil;
 
 public class CacheForm {
 
@@ -8,14 +7,6 @@ public class CacheForm {
 	private String commentPointName;
 	private String cache;
 	private int commentId;
-
-	public boolean isCommentPoint() {
-		if (commentPointId > 0)
-			return true;
-		if (ValueUtil.notEmpty(commentPointName))
-			return true;
-		return false;
-	}
 
 	public int getCommentPointId() {
 		return commentPointId;
