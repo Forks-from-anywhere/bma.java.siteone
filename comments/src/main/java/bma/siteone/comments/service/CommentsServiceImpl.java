@@ -326,6 +326,9 @@ public class CommentsServiceImpl implements CommentsService {
 				tj.addTimestamp("create_time", date, "<=");
 			}
 		}
+		if (form.getStatus() >= 0) {
+			tj.addInt("status", form.getStatus());
+		}
 		if (form.getNeedAuth() >= 0) {
 			tj.addInt("need_auth", form.getNeedAuth());
 		}
@@ -651,6 +654,10 @@ public class CommentsServiceImpl implements CommentsService {
 	@Override
 	public void clearCache(CacheForm form) {
 		if (form.getCommentPointId() > 0) {
+			if (log.isDebugEnabled()) {
+				log.debug("clear comment point cache - {}",
+						form.getCommentPointId());
+			}
 			if (ValueUtil.notEmpty(form.getCache())) {
 				CommentPointCacheItem item = commentPointCache.get(form
 						.getCommentPointId());
@@ -660,11 +667,13 @@ public class CommentsServiceImpl implements CommentsService {
 			} else {
 				clearPointCache(form.getCommentPointId());
 			}
-			return;
 		}
 		if (ValueUtil.notEmpty(form.getCommentPointName())) {
 			CommentPoint cp = getCommentPoint(form.getCommentPointName());
 			if (cp != null) {
+				if (log.isDebugEnabled()) {
+					log.debug("clear comment point cache,{}", cp.getId());
+				}
 				if (ValueUtil.notEmpty(form.getCache())) {
 					CommentPointCacheItem item = commentPointCache.get(cp
 							.getId());
@@ -674,12 +683,18 @@ public class CommentsServiceImpl implements CommentsService {
 				} else {
 					clearPointCache(cp.getId());
 				}
+			} else {
+				if (log.isDebugEnabled()) {
+					log.debug("clear comment point cache,skip {}",
+							form.getCommentPointName());
+				}
 			}
-			return;
 		}
 		if (form.getCommentId() > 0) {
+			if (log.isDebugEnabled()) {
+				log.debug("clear comment cache - {}", form.getCommentId());
+			}
 			commentCache.remove(form.getCommentId());
-			return;
 		}
 	}
 }
