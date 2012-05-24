@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:aop="http://www.springframework.org/schema/aop" xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+                     http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+                     http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd
+                     http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-3.0.xsd
+                     http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-3.0.xsd">
+
+	<context:annotation-config />
+	<!-- dataSource -->
+	<bean id="dataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource"
+		destroy-method="close">
+		<property name="driverClass" value="com.mysql.jdbc.Driver" />
+		<property name="jdbcUrl"
+			value="jdbc:mysql://172.16.25.137:3306/siteone?user=root&amp;password=root&amp;useUnicode=true&amp;characterEncoding=utf8" />
+		<property name="initialPoolSize">
+			<value>10</value>
+		</property>
+		<property name="minPoolSize">
+			<value>5</value>
+		</property>
+		<property name="maxPoolSize">
+			<value>30</value>
+		</property>
+		<property name="acquireIncrement">
+			<value>5</value>
+		</property>
+		<property name="maxIdleTime">
+			<value>10</value>
+		</property>
+		<property name="maxStatements">
+			<value>0</value>
+		</property>
+	</bean>
+
+	<!-- jdbcTemplate -->
+	<bean id="jdbcTemplate" class="org.springframework.jdbc.core.JdbcTemplate">		
+		<property name="dataSource" ref="dataSource" />
+	</bean>
+
+	<bean id="txManager"
+		class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+		<property name="dataSource" ref="dataSource" />
+	</bean>
+	<tx:annotation-driven transaction-manager="txManager" />
+
+	<!-- service -->
+	<bean id="cache" class="bma.common.langutil.cache.core.LruCacheImpl" scope="prototype">
+		<constructor-arg value="100"/>
+	</bean>
+	<bean id="service" class="bma.siteone.iptables.service.IptablesServiceImpl">
+		<property name="jdbcTemplate" ref="jdbcTemplate" />
+		<property name="infoCache" ref="cache"/>		
+	</bean>
+
+	<!-- thrift -->
+	<bean id="serverTrans" class="org.apache.thrift.transport.TNonblockingServerSocket">
+		<constructor-arg value="9090" />
+	</bean>
+	
+	<bean id="handler" class="bma.siteone.iptables.service.IptablesServiceThrift">
+		<property name="service" ref="service" />
+	</bean>
+	<bean id="processor" class="bma.siteone.iptables.thrift.TIptablesService.Processor">
+		<constructor-arg ref="handler" />
+	</bean>
+
+	<bean id="server" class="bma.common.thrift.ThriftServer.HsHaServer"
+		destroy-method="close">
+		<constructor-arg ref="serverTrans" />
+		<constructor-arg>
+			<bean class="bma.common.thrift.TProcessorModule">
+				<property name="defaultModule" value="iptables"/>
+				<property name="processors">
+					<map>
+						<entry key="iptables" value-ref="processor" />
+					</map>
+				</property>
+			</bean>
+		</constructor-arg>
+		<constructor-arg value="5"/>
+		<constructor-arg value="1000000"/>
+	</bean>
+ 	
+</beans>

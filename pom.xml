@@ -53,5 +53,6 @@
         <module>comments</module>
         <module>quartz</module>
         <module>filestore</module>
-  </modules>
+        <module>iptables</module>
+    </modules>
 </project>

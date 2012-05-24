@@ -199,10 +199,10 @@ public class CommentsServiceImpl implements CommentsService {
 		if (isUpdate("oppose", fields)) {
 			fvs.addInt("oppose", form.getOppose());
 		}
-		if (isUpdate("need_auth", fields)) {
+		if (isUpdate("need_auth", fields) || isUpdate("needAuth", fields)) {
 			fvs.addInt("need_auth", form.getNeedAuth());
 		}
-		if (isUpdate("hide_flag", fields)) {
+		if (isUpdate("hide_flag", fields) || isUpdate("hideFlag", fields)) {
 			fvs.addInt("hide_flag", form.getHideFlag());
 		}
 		if (isUpdate("reserve1", fields)) {

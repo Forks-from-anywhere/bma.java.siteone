@@ -15,7 +15,7 @@
  *
  * Did you also notice that Thrift supports C style comments?
  */
-namespace php comments
+namespace php bma.comments.thrift
 namespace java bma.siteone.comments.thrift
 
 struct TCommentPoint {
