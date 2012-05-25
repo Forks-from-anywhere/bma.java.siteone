@@ -1,6 +1,6 @@
 <?php
 $thriftBin = 'd:/workroom/java/thrift-0.8.0.exe';
-$thriftFile = 'D:/workroom/java/wsgit/siteone-parent/wordstock/docs/Iptables.thrift';
+$thriftFile = 'D:/workroom/java/wsgit/siteone-parent/wordstock/docs/Wordstock.thrift';
 $targetPath = 'D:/workroom/php/workspace/siteone/modules/bma/wordstock/thrift';
 $clearTarget = true;
 

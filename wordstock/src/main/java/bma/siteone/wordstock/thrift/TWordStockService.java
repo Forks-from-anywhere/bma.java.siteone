@@ -39,7 +39,7 @@ public class TWordStockService {
 
     public TWordInfo getWord(int id) throws org.apache.thrift.TException;
 
-    public boolean matchWordStock(String groupType, String content) throws org.apache.thrift.TException;
+    public String matchWordStock(String groupType, String content) throws org.apache.thrift.TException;
 
     public List<String> listWordStockGroupType() throws org.apache.thrift.TException;
 
@@ -181,7 +181,7 @@ public class TWordStockService {
       throw new org.apache.thrift.TApplicationException(org.apache.thrift.TApplicationException.MISSING_RESULT, "getWord failed: unknown result");
     }
 
-    public boolean matchWordStock(String groupType, String content) throws org.apache.thrift.TException
+    public String matchWordStock(String groupType, String content) throws org.apache.thrift.TException
     {
       send_matchWordStock(groupType, content);
       return recv_matchWordStock();
@@ -195,7 +195,7 @@ public class TWordStockService {
       sendBase("matchWordStock", args);
     }
 
-    public boolean recv_matchWordStock() throws org.apache.thrift.TException
+    public String recv_matchWordStock() throws org.apache.thrift.TException
     {
       matchWordStock_result result = new matchWordStock_result();
       receiveBase(result, "matchWordStock");
@@ -446,7 +446,7 @@ public class TWordStockService {
         prot.writeMessageEnd();
       }
 
-      public boolean getResult() throws org.apache.thrift.TException {
+      public String getResult() throws org.apache.thrift.TException {
         if (getState() != org.apache.thrift.async.TAsyncMethodCall.State.RESPONSE_READ) {
           throw new IllegalStateException("Method call not finished!");
         }
@@ -658,7 +658,6 @@ public class TWordStockService {
       protected matchWordStock_result getResult(I iface, matchWordStock_args args) throws org.apache.thrift.TException {
         matchWordStock_result result = new matchWordStock_result();
         result.success = iface.matchWordStock(args.groupType, args.content);
-        result.setSuccessIsSet(true);
         return result;
       }
     }
@@ -3988,7 +3987,7 @@ public class TWordStockService {
   public static class matchWordStock_result implements org.apache.thrift.TBase<matchWordStock_result, matchWordStock_result._Fields>, java.io.Serializable, Cloneable   {
     private static final org.apache.thrift.protocol.TStruct STRUCT_DESC = new org.apache.thrift.protocol.TStruct("matchWordStock_result");
 
-    private static final org.apache.thrift.protocol.TField SUCCESS_FIELD_DESC = new org.apache.thrift.protocol.TField("success", org.apache.thrift.protocol.TType.BOOL, (short)0);
+    private static final org.apache.thrift.protocol.TField SUCCESS_FIELD_DESC = new org.apache.thrift.protocol.TField("success", org.apache.thrift.protocol.TType.STRING, (short)0);
 
     private static final Map<Class<? extends IScheme>, SchemeFactory> schemes = new HashMap<Class<? extends IScheme>, SchemeFactory>();
     static {
@@ -3996,7 +3995,7 @@ public class TWordStockService {
       schemes.put(TupleScheme.class, new matchWordStock_resultTupleSchemeFactory());
     }
 
-    public boolean success; // required
+    public String success; // required
 
     /** The set of fields this struct contains, along with convenience methods for finding and manipulating them. */
     public enum _Fields implements org.apache.thrift.TFieldIdEnum {
@@ -4057,13 +4056,11 @@ public class TWordStockService {
     }
 
     // isset id assignments
-    private static final int __SUCCESS_ISSET_ID = 0;
-    private BitSet __isset_bit_vector = new BitSet(1);
     public static final Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
     static {
       Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
       tmpMap.put(_Fields.SUCCESS, new org.apache.thrift.meta_data.FieldMetaData("success", org.apache.thrift.TFieldRequirementType.DEFAULT, 
-          new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.BOOL)));
+          new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.STRING)));
       metaDataMap = Collections.unmodifiableMap(tmpMap);
       org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(matchWordStock_result.class, metaDataMap);
     }
@@ -4072,20 +4069,19 @@ public class TWordStockService {
     }
 
     public matchWordStock_result(
-      boolean success)
+      String success)
     {
       this();
       this.success = success;
-      setSuccessIsSet(true);
     }
 
     /**
      * Performs a deep copy on <i>other</i>.
      */
     public matchWordStock_result(matchWordStock_result other) {
-      __isset_bit_vector.clear();
-      __isset_bit_vector.or(other.__isset_bit_vector);
-      this.success = other.success;
+      if (other.isSetSuccess()) {
+        this.success = other.success;
+      }
     }
 
     public matchWordStock_result deepCopy() {
@@ -4094,31 +4090,31 @@ public class TWordStockService {
 
     @Override
     public void clear() {
-      setSuccessIsSet(false);
-      this.success = false;
+      this.success = null;
     }
 
-    public boolean isSuccess() {
+    public String getSuccess() {
       return this.success;
     }
 
-    public matchWordStock_result setSuccess(boolean success) {
+    public matchWordStock_result setSuccess(String success) {
       this.success = success;
-      setSuccessIsSet(true);
       return this;
     }
 
     public void unsetSuccess() {
-      __isset_bit_vector.clear(__SUCCESS_ISSET_ID);
+      this.success = null;
     }
 
     /** Returns true if field success is set (has been assigned a value) and false otherwise */
     public boolean isSetSuccess() {
-      return __isset_bit_vector.get(__SUCCESS_ISSET_ID);
+      return this.success != null;
     }
 
     public void setSuccessIsSet(boolean value) {
-      __isset_bit_vector.set(__SUCCESS_ISSET_ID, value);
+      if (!value) {
+        this.success = null;
+      }
     }
 
     public void setFieldValue(_Fields field, Object value) {
@@ -4127,7 +4123,7 @@ public class TWordStockService {
         if (value == null) {
           unsetSuccess();
         } else {
-          setSuccess((Boolean)value);
+          setSuccess((String)value);
         }
         break;
 
@@ -4137,7 +4133,7 @@ public class TWordStockService {
     public Object getFieldValue(_Fields field) {
       switch (field) {
       case SUCCESS:
-        return Boolean.valueOf(isSuccess());
+        return getSuccess();
 
       }
       throw new IllegalStateException();
@@ -4169,12 +4165,12 @@ public class TWordStockService {
       if (that == null)
         return false;
 
-      boolean this_present_success = true;
-      boolean that_present_success = true;
+      boolean this_present_success = true && this.isSetSuccess();
+      boolean that_present_success = true && that.isSetSuccess();
       if (this_present_success || that_present_success) {
         if (!(this_present_success && that_present_success))
           return false;
-        if (this.success != that.success)
+        if (!this.success.equals(that.success))
           return false;
       }
 
@@ -4225,7 +4221,11 @@ public class TWordStockService {
       boolean first = true;
 
       sb.append("success:");
-      sb.append(this.success);
+      if (this.success == null) {
+        sb.append("null");
+      } else {
+        sb.append(this.success);
+      }
       first = false;
       sb.append(")");
       return sb.toString();
@@ -4270,8 +4270,8 @@ public class TWordStockService {
           }
           switch (schemeField.id) {
             case 0: // SUCCESS
-              if (schemeField.type == org.apache.thrift.protocol.TType.BOOL) {
-                struct.success = iprot.readBool();
+              if (schemeField.type == org.apache.thrift.protocol.TType.STRING) {
+                struct.success = iprot.readString();
                 struct.setSuccessIsSet(true);
               } else { 
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
@@ -4292,9 +4292,11 @@ public class TWordStockService {
         struct.validate();
 
         oprot.writeStructBegin(STRUCT_DESC);
-        oprot.writeFieldBegin(SUCCESS_FIELD_DESC);
-        oprot.writeBool(struct.success);
-        oprot.writeFieldEnd();
+        if (struct.success != null) {
+          oprot.writeFieldBegin(SUCCESS_FIELD_DESC);
+          oprot.writeString(struct.success);
+          oprot.writeFieldEnd();
+        }
         oprot.writeFieldStop();
         oprot.writeStructEnd();
       }
@@ -4318,7 +4320,7 @@ public class TWordStockService {
         }
         oprot.writeBitSet(optionals, 1);
         if (struct.isSetSuccess()) {
-          oprot.writeBool(struct.success);
+          oprot.writeString(struct.success);
         }
       }
 
@@ -4327,7 +4329,7 @@ public class TWordStockService {
         TTupleProtocol iprot = (TTupleProtocol) prot;
         BitSet incoming = iprot.readBitSet(1);
         if (incoming.get(0)) {
-          struct.success = iprot.readBool();
+          struct.success = iprot.readString();
           struct.setSuccessIsSet(true);
         }
       }

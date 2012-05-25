@@ -86,12 +86,13 @@ public class WordStockServiceThrift implements TWordStockService.Iface {
 	}
 
 	@Override
-	public boolean matchWordStock(String groupType, String content)
+	public String matchWordStock(String groupType, String content)
 			throws TException {
 		if (log.isDebugEnabled()) {
 			log.debug("matchWordStock({},{})", groupType, content);
 		}
-		return service.match(groupType, content);
+		String r = service.match(groupType, content);
+		return r == null ? "" : r;
 	}
 
 	@Override

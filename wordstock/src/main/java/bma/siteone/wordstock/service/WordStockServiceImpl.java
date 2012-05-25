@@ -225,7 +225,7 @@ public class WordStockServiceImpl implements WordStockService {
 
 	@Transactional(propagation = Propagation.NOT_SUPPORTED, readOnly = true)
 	@Override
-	public boolean match(String groupId, String content) {
+	public String match(String groupId, String content) {
 		List<WordItem> ilist = this.infoCache.get(groupId);
 		if (ilist == null) {
 			List<WordInfo> polist = listInfo(groupId);
@@ -276,7 +276,7 @@ public class WordStockServiceImpl implements WordStockService {
 						if (log.isDebugEnabled()) {
 							log.debug("{} match {}", content, w);
 						}
-						return true;
+						return w;
 					}
 				}
 			} else {
@@ -286,7 +286,7 @@ public class WordStockServiceImpl implements WordStockService {
 						if (log.isDebugEnabled()) {
 							log.debug("{} match {}", content, p);
 						}
-						return true;
+						return p.toString();
 					}
 				}
 			}
@@ -294,7 +294,7 @@ public class WordStockServiceImpl implements WordStockService {
 		if (log.isDebugEnabled()) {
 			log.debug("{} no-match", content);
 		}
-		return false;
+		return null;
 	}
 
 	public void clearCache(String groupType) {

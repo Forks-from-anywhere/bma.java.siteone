@@ -41,7 +41,7 @@ service TWordStockService {
    
    TWordInfo getWord(1:i32 id),
    
-   bool matchWordStock(1:string groupType, 2:string content),
+   string matchWordStock(1:string groupType, 2:string content),
    
    list<string> listWordStockGroupType(),
    

@@ -16,7 +16,7 @@ import bma.common.thrift.ThriftServer;
  * @author 关中
  * 
  */
-public class IptablesServerTest {
+public class WordStockServerTest {
 
 	FileSystemXmlApplicationContext context;
 
@@ -25,7 +25,7 @@ public class IptablesServerTest {
 		SpringTestcaseUtil.disableDebug();
 		JdbcTemplateUtil.disableDebug(true);
 		context = new SpringTestcaseUtil.ApplicationContextBuilder().resource(
-				IptablesServerTest.class, "iptables.xml").build();
+				WordStockServerTest.class, "wordstock.xml").build();
 	}
 
 	@After

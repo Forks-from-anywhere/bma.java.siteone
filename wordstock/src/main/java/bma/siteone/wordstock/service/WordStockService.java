@@ -26,7 +26,7 @@ public interface WordStockService {
 	 * @param ip
 	 * @return
 	 */
-	public boolean match(String groupType, String word);
+	public String match(String groupType, String word);
 
 	/**
 	 * 列出所有数据的group
