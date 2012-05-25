@@ -78,7 +78,7 @@ public class IptablesServiceThrift implements TIptablesService.Iface {
 	@Override
 	public TIptableInfo getIptable(int id) throws TException {
 		if (log.isDebugEnabled()) {
-			log.debug("deleteIptable({})", id);
+			log.debug("getIptable({})", id);
 		}
 		return t(service.getOne(id));
 	}

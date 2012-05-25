@@ -231,12 +231,10 @@ public class IptablesServiceImpl implements IptablesService {
 			List<IptableItem> alllist = new LinkedList<IptableItem>();
 			for (IptableInfo info : polist) {
 				String str = info.getInet();
-				String sp[] = StringUtil.tokenSplit(str, "\n\r;");
+				String sp[] = StringUtil.tokenSplit(str, "\n\r,;");
 				String as[] = sp;
-				int i = 0;
 				List<InetNetwork> list = new ArrayList<InetNetwork>(as.length);
-				for (int j = as.length; i < j; i++) {
-					String ss = as[i];
+				for (String ss : as) {
 					InetNetwork in = InetNetwork.create(ss.trim());
 					if (in != null) {
 						list.add(in);

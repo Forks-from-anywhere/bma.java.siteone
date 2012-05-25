@@ -49,10 +49,10 @@
 		</dependency>
 	</dependencies>
 	<modules>
-		<module>matchlist</module>
         <module>comments</module>
         <module>quartz</module>
         <module>filestore</module>
         <module>iptables</module>
-    </modules>
+    	<module>wordstock</module>
+  </modules>
 </project>
