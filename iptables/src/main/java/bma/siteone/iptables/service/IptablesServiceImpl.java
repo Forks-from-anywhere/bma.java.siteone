@@ -129,8 +129,9 @@ public class IptablesServiceImpl implements IptablesService {
 			return false;
 		}
 
-		int c = jdbcTemplate.update("DELETE FROM " + iptablesTableName
-				+ " WHERE id = ?", id);
+		CommonFieldValues tj = new CommonFieldValues();
+		tj.addInt("id", id);
+		int c = helper.executeDelete(iptablesTableName, tj);
 		if (c == 1) {
 			clearCache(old.getGroupType());
 			return true;

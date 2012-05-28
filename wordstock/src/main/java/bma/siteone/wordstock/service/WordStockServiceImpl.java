@@ -133,8 +133,9 @@ public class WordStockServiceImpl implements WordStockService {
 			return false;
 		}
 
-		int c = jdbcTemplate.update("DELETE FROM " + wordstockTableName
-				+ " WHERE id = ?", id);
+		CommonFieldValues tj = new CommonFieldValues();
+		tj.addInt("id", id);
+		int c = helper.executeDelete(wordstockTableName, tj);
 		if (c == 1) {
 			clearCache(old.getGroupType());
 			return true;
