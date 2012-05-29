@@ -55,5 +55,6 @@
         <module>iptables</module>
     	<module>wordstock</module>
     <module>evaluate</module>
+    <module>actionlock</module>
   </modules>
 </project>
