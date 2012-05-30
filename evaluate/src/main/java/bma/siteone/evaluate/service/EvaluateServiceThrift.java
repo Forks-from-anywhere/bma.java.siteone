@@ -62,6 +62,7 @@ public class EvaluateServiceThrift implements TEvaluateService.Iface {
 
 	protected TEvaluateInfo t(EvaluateInfo info) {
 		TEvaluateInfo r = new TEvaluateInfo();
+		if(info==null)return r;
 		r.setGroupType(info.getGroupType());
 		r.setItemId(info.getItemId());
 		r.setUrl(info.getUrl());
