@@ -46,12 +46,11 @@
 	</bean>
 	<tx:annotation-driven transaction-manager="txManager" />
 
-	<!-- service -->
-	<bean id="cache" class="bma.common.langutil.cache.core.LruCacheImpl" scope="prototype">
-		<constructor-arg value="100"/>
-	</bean>
+	<!-- service -->	
 	<bean id="service" class="bma.siteone.actionlock.service.ActionlockServiceImpl" init-method="init">
 		<property name="jdbcTemplate" ref="jdbcTemplate" />
+		<property name="defaultCleanDelay" value="108000000"/>
+		<property name="cleanPeriod" value="300000"/>
 	</bean>
 
 	<!-- thrift -->
