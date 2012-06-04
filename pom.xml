@@ -56,5 +56,6 @@
     	<module>wordstock</module>
     <module>evaluate</module>
     <module>actionlock</module>
+    <module>netty-thrift</module>
   </modules>
 </project>
