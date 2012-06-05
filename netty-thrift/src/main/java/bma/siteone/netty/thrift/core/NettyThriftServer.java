@@ -1,8 +1,11 @@
 package bma.siteone.netty.thrift.core;
 
 import org.apache.thrift.TProcessor;
+import org.jboss.netty.channel.ChannelHandlerContext;
 import org.jboss.netty.channel.ChannelPipeline;
+import org.jboss.netty.channel.ExceptionEvent;
 
+import bma.common.langutil.core.ExceptionUtil;
 import bma.common.langutil.log.LogPrinter.LEVEL;
 import bma.common.netty.NettyServer;
 import bma.common.netty.handler.ChannelHandlerExceptionClose;
@@ -59,6 +62,17 @@ public class NettyThriftServer extends NettyServer {
 			pipeline.addLast("downlog", new ChannelHandlerLog(log, LEVEL.DEBUG,
 					TYPE.DOWNSTREAM, traceBufferSize));
 		}
-		pipeline.addLast("error", new ChannelHandlerExceptionClose());
+		pipeline.addLast("error", new ChannelHandlerExceptionClose() {
+			@Override
+			protected void logException(ChannelHandlerContext ctx,
+					ExceptionEvent e) {
+				if (log.isWarnEnabled()) {
+					Throwable t = ExceptionUtil.cause(e.getCause());
+					log.warn("{} error {}/{}", new Object[] {
+							ctx.getChannel().getRemoteAddress(),
+							t.getClass().getName(), t.getMessage() });
+				}
+			}
+		});
 	}
 }
