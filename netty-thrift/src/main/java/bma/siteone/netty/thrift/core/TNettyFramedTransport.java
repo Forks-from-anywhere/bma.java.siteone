@@ -8,6 +8,8 @@ import org.jboss.netty.channel.Channel;
 
 public class TNettyFramedTransport extends TTransport {
 
+	private int maxLength;
+
 	/**
 	 * Buffer for output
 	 */
@@ -20,10 +22,11 @@ public class TNettyFramedTransport extends TTransport {
 
 	private Channel channel;
 
-	public TNettyFramedTransport(Channel ch, ChannelBuffer in) {
+	public TNettyFramedTransport(Channel ch, ChannelBuffer in, int maxlen) {
 		super();
 		this.channel = ch;
 		this.readBuffer = in;
+		this.maxLength = maxlen;
 	}
 
 	public void open() throws TTransportException {
@@ -50,6 +53,11 @@ public class TNettyFramedTransport extends TTransport {
 	}
 
 	public void write(byte[] buf, int off, int len) throws TTransportException {
+		if (writeBuffer.writerIndex() + len > maxLength) {
+			throw new TTransportException("Frame size ("
+					+ (writeBuffer.writerIndex() + len)
+					+ ") larger than max length (" + maxLength + ")!");
+		}
 		writeBuffer.writeBytes(buf, off, len);
 	}
 

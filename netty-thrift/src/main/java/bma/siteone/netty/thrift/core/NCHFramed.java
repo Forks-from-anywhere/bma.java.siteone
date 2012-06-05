@@ -53,7 +53,7 @@ public class NCHFramed extends FrameReaderDecoder {
 			return null;
 		}
 		ChannelBuffer cb = buffer.readBytes(size);
-		return new TNettyFramedTransport(ctx.getChannel(), cb);
+		return new TNettyFramedTransport(ctx.getChannel(), cb, this.maxLength);
 	}
 
 	public static final int decodeFrameSize(final byte[] buf) {
