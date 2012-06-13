@@ -38,6 +38,7 @@ public class NCHFramed extends FrameReaderDecoder {
 		if (buffer.readableBytes() < 4)
 			return null;
 		byte[] i32buf = new byte[4];
+		buffer.markReaderIndex();
 		buffer.readBytes(i32buf);
 		int size = decodeFrameSize(i32buf);
 
@@ -50,6 +51,7 @@ public class NCHFramed extends FrameReaderDecoder {
 					+ ") larger than max length (" + maxLength + ")!");
 		}
 		if (buffer.readableBytes() < size) {
+			buffer.resetReaderIndex();
 			return null;
 		}
 		ChannelBuffer cb = buffer.readBytes(size);
