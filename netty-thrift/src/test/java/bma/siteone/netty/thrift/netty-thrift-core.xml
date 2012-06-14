@@ -26,7 +26,7 @@
     
     <!-- Thrift Service -->
 	<bean id="handler" class="bma.siteone.netty.thrift.HelloHandler" />
-	<bean id="processor" class="bma.siteone.netty.thrift.Hello.Processor">
+	<bean id="processor" class="bma.siteone.netty.thrift.Hello4AI.Processor">
 		<constructor-arg ref="handler" />
 	</bean>
 
