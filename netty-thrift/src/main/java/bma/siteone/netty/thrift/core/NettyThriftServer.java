@@ -6,6 +6,8 @@ import org.jboss.netty.channel.ChannelPipeline;
 import org.jboss.netty.channel.ExceptionEvent;
 
 import bma.common.langutil.core.ExceptionUtil;
+import bma.common.langutil.core.SizeUtil;
+import bma.common.langutil.core.SizeUtil.Unit;
 import bma.common.langutil.log.LogPrinter.LEVEL;
 import bma.common.netty.NettyServer;
 import bma.common.netty.handler.ChannelHandlerExceptionClose;
@@ -41,6 +43,14 @@ public class NettyThriftServer extends NettyServer {
 		this.maxLength = maxLength;
 	}
 
+	public void setFrameSize(String sz) {
+		try {
+			this.maxLength = (int) SizeUtil.convert(sz, 1024, Unit.B);
+		} catch (Exception e) {
+			throw ExceptionUtil.throwRuntime(e);
+		}
+	}
+
 	public int getTraceBufferSize() {
 		return traceBufferSize;
 	}
@@ -57,6 +67,7 @@ public class NettyThriftServer extends NettyServer {
 					TYPE.UPSTREAM, traceBufferSize));
 		}
 		pipeline.addLast("framed", new NCHFramed(maxLength));
+		pipeline.addLast("transport", new NCHServerFramedTransport());
 		pipeline.addLast("request", new NCHThriftRequest(processor));
 		if (traceBufferSize > 0) {
 			pipeline.addLast("downlog", new ChannelHandlerLog(log, LEVEL.DEBUG,

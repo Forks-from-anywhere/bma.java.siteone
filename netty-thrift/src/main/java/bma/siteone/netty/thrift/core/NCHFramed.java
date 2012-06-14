@@ -9,6 +9,34 @@ import bma.common.netty.framereader.FrameReaderDecoder;
 
 public class NCHFramed extends FrameReaderDecoder {
 
+	public static class FramedChannelBuffer {
+		private ChannelBuffer buffer;
+		private int maxLength;
+
+		public FramedChannelBuffer(ChannelBuffer buffer, int maxLength) {
+			super();
+			this.buffer = buffer;
+			this.maxLength = maxLength;
+		}
+
+		public ChannelBuffer getBuffer() {
+			return buffer;
+		}
+
+		public void setBuffer(ChannelBuffer buffer) {
+			this.buffer = buffer;
+		}
+
+		public int getMaxLength() {
+			return maxLength;
+		}
+
+		public void setMaxLength(int maxLength) {
+			this.maxLength = maxLength;
+		}
+
+	}
+
 	private int maxLength;
 
 	protected NCHFramed(int maxLength) {
@@ -55,12 +83,22 @@ public class NCHFramed extends FrameReaderDecoder {
 			return null;
 		}
 		ChannelBuffer cb = buffer.readBytes(size);
-		return new TNettyFramedTransport(ctx.getChannel(), cb, this.maxLength);
+		return new FramedChannelBuffer(cb, this.maxLength);
+		// return new TNettyFramedTransport(ctx.getChannel(), cb,
+		// this.maxLength);
 	}
 
 	public static final int decodeFrameSize(final byte[] buf) {
 		return ((buf[0] & 0xff) << 24) | ((buf[1] & 0xff) << 16)
 				| ((buf[2] & 0xff) << 8) | ((buf[3] & 0xff));
+	}
+	
+	public static final void encodeFrameSize(final int frameSize,
+			final byte[] buf) {
+		buf[0] = (byte) (0xff & (frameSize >> 24));
+		buf[1] = (byte) (0xff & (frameSize >> 16));
+		buf[2] = (byte) (0xff & (frameSize >> 8));
+		buf[3] = (byte) (0xff & (frameSize));
 	}
 
 }
