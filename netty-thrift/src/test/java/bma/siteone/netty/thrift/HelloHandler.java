@@ -5,9 +5,9 @@ import org.apache.thrift.TException;
 
 import bma.common.langutil.ai.stack.AISRun;
 import bma.common.langutil.ai.stack.AIStack;
-import bma.common.thrift.TAIBaseFace;
+import bma.common.thrift.ai.TAIBaseFaceImpl;
 
-public class HelloHandler extends TAIBaseFace implements Hello.Iface,
+public class HelloHandler extends TAIBaseFaceImpl implements Hello.Iface,
 		Hello4AI.Iface {
 
 	final org.slf4j.Logger log = org.slf4j.LoggerFactory

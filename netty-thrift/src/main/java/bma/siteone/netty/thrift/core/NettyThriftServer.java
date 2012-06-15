@@ -1,9 +1,12 @@
 package bma.siteone.netty.thrift.core;
 
 import org.apache.thrift.TProcessor;
+import org.jboss.netty.buffer.ChannelBuffer;
+import org.jboss.netty.channel.Channel;
 import org.jboss.netty.channel.ChannelHandlerContext;
 import org.jboss.netty.channel.ChannelPipeline;
 import org.jboss.netty.channel.ExceptionEvent;
+import org.jboss.netty.handler.codec.oneone.OneToOneDecoder;
 
 import bma.common.langutil.core.ExceptionUtil;
 import bma.common.langutil.core.SizeUtil;
@@ -67,7 +70,19 @@ public class NettyThriftServer extends NettyServer {
 					TYPE.UPSTREAM, traceBufferSize));
 		}
 		pipeline.addLast("framed", new NCHFramed(maxLength));
-		pipeline.addLast("transport", new NCHServerFramedTransport());
+		pipeline.addLast("transport", new OneToOneDecoder() {
+			@Override
+			protected Object decode(ChannelHandlerContext ctx, Channel channel,
+					Object msg) throws Exception {
+				if (msg instanceof ChannelBuffer) {
+					ChannelBuffer cb = (ChannelBuffer) msg;
+					TNettyServerFramedTransport t = new TNettyServerFramedTransport(
+							ctx.getChannel(), cb, maxLength);
+					return t;
+				}
+				return msg;
+			}
+		});
 		pipeline.addLast("request", new NCHThriftRequest(processor));
 		if (traceBufferSize > 0) {
 			pipeline.addLast("downlog", new ChannelHandlerLog(log, LEVEL.DEBUG,

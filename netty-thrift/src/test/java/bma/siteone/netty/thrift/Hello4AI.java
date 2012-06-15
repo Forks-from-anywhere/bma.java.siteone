@@ -10,11 +10,14 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.thrift.TBase;
+import org.apache.thrift.TException;
+import org.apache.thrift.protocol.TProtocol;
 
 import bma.common.langutil.ai.stack.AIStack;
-import bma.common.thrift.AIBaseStack;
-import bma.common.thrift.TAIBaseProcessor;
-import bma.common.thrift.TAIProcessFunction;
+import bma.common.thrift.ai.AIBaseStack;
+import bma.common.thrift.ai.TAIBaseProcessor;
+import bma.common.thrift.ai.TAIBaseServiceClient;
+import bma.common.thrift.ai.TAIProcessFunction;
 import bma.siteone.netty.thrift.Hello.error_args;
 import bma.siteone.netty.thrift.Hello.error_result;
 import bma.siteone.netty.thrift.Hello.name_args;
@@ -68,7 +71,7 @@ public class Hello4AI {
 			protected boolean getResult(AIStack<TBase> stack, I iface,
 					say_args args) throws org.apache.thrift.TException {
 				say_result result = new say_result();
-				return iface.say(new AIBaseStack<Boolean>(stack, result, null),
+				return iface.say(new AIBaseStack<Boolean>(stack, result),
 						args.getWord());
 			};
 
@@ -89,8 +92,8 @@ public class Hello4AI {
 			protected boolean getResult(AIStack<TBase> stack, I iface,
 					name_args args) throws org.apache.thrift.TException {
 				name_result result = new name_result();
-				return iface.name(new AIBaseStack<String>(stack, result,
-						name_result._Fields.SUCCESS), args.getTitle());
+				return iface.name(new AIBaseStack<String>(stack, result),
+						args.getTitle());
 			}
 		}
 
@@ -109,11 +112,42 @@ public class Hello4AI {
 			protected boolean getResult(AIStack<TBase> stack, I iface,
 					error_args args) throws org.apache.thrift.TException {
 				error_result result = new error_result();
-				return iface.say(new AIBaseStack<Boolean>(stack, result, null),
+				return iface.error(new AIBaseStack<Boolean>(stack, result),
 						args.getMsg());
 			}
 		}
 
 	}
 
+	public static class Client extends TAIBaseServiceClient implements Iface {
+
+		public Client(TProtocol iprot, TProtocol oprot) {
+			super(iprot, oprot);
+		}
+
+		public Client(TProtocol prot) {
+			super(prot);
+		}
+
+		@Override
+		public boolean say(AIStack<Boolean> stack, String word)
+				throws TException {
+			return super.invoke(stack, new say_result(), "say", new say_args(
+					word));
+		}
+
+		@Override
+		public boolean name(AIStack<String> stack, String title)
+				throws TException {
+			return super.invoke(stack, new name_result(), "name",
+					new name_args(title));
+		}
+
+		@Override
+		public boolean error(AIStack<Boolean> stack, String msg)
+				throws TException {
+			return super.invoke(stack, new error_result(), "error",
+					new error_args(msg));
+		}
+	}
 }
