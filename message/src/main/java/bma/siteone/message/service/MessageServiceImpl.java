@@ -62,7 +62,7 @@ public class MessageServiceImpl implements MessageService{
 	public int sendMessage(SendMessageForm sendMessageForm) {
 		CommonFieldValues fvs = new CommonFieldValues();
 		fvs.addString("app", sendMessageForm.getApp());
-		fvs.addInt("type",1);
+		fvs.addInt("type",sendMessageForm.getType());
 		fvs.addString("receiver", sendMessageForm.getReceiver());
 		fvs.addString("sender", sendMessageForm.getSender());
 		fvs.addString("title", sendMessageForm.getTitle());
