@@ -106,5 +106,14 @@ public class MessageServiceThrift implements TMessageService.Iface{
 		service.deleteExpireMessages();
 		return true;
 	}
+
+	@Override
+	public int getUnreadMessageNum(String receiver, String app)
+			throws TException {
+		if (log.isDebugEnabled()) {
+			log.debug("getUnreadMessageNum({},{})",receiver,app);
+		}
+		return service.getUnreadMessageNum(receiver, app);
+	}
 	
 }

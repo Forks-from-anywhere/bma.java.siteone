@@ -202,6 +202,20 @@ public class MessageServiceImpl implements MessageService{
 		return true;
 	}
 	
+	public int getUnreadMessageNum(String receiver, String app) {
+		
+		CommonFieldValues tj = new CommonFieldValues();
+		if (ValueUtil.notEmpty(receiver)) {
+			tj.addString("receiver", receiver);
+		}
+		if (ValueUtil.notEmpty(app)) {
+			tj.addString("app", app);
+		}
+		tj.addInt("is_read", 0);
+		return helper.selectCount(siteoneMessageTableName, tj);
+		
+	}
+	
 	private ScheduledExecutorService timer;
 	
 	public ScheduledExecutorService getTimer() {

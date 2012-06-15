@@ -47,4 +47,6 @@ service TMessageService {
 
    bool deleteExpireMessages(),					//自动删除过期的消息,默认超过半年为过期
 
+   i32 getUnreadMessageNum(1:string receiver,2: string app)	//查询未读数
+
 }

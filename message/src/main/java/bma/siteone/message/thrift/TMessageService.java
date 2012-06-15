@@ -41,6 +41,8 @@ public class TMessageService {
 
     public boolean deleteExpireMessages() throws org.apache.thrift.TException;
 
+    public int getUnreadMessageNum(String receiver, String app) throws org.apache.thrift.TException;
+
   }
 
   public interface AsyncIface {
@@ -54,6 +56,8 @@ public class TMessageService {
     public void setMessagesRead(List<Integer> ids, org.apache.thrift.async.AsyncMethodCallback<AsyncClient.setMessagesRead_call> resultHandler) throws org.apache.thrift.TException;
 
     public void deleteExpireMessages(org.apache.thrift.async.AsyncMethodCallback<AsyncClient.deleteExpireMessages_call> resultHandler) throws org.apache.thrift.TException;
+
+    public void getUnreadMessageNum(String receiver, String app, org.apache.thrift.async.AsyncMethodCallback<AsyncClient.getUnreadMessageNum_call> resultHandler) throws org.apache.thrift.TException;
 
   }
 
@@ -189,6 +193,30 @@ public class TMessageService {
         return result.success;
       }
       throw new org.apache.thrift.TApplicationException(org.apache.thrift.TApplicationException.MISSING_RESULT, "deleteExpireMessages failed: unknown result");
+    }
+
+    public int getUnreadMessageNum(String receiver, String app) throws org.apache.thrift.TException
+    {
+      send_getUnreadMessageNum(receiver, app);
+      return recv_getUnreadMessageNum();
+    }
+
+    public void send_getUnreadMessageNum(String receiver, String app) throws org.apache.thrift.TException
+    {
+      getUnreadMessageNum_args args = new getUnreadMessageNum_args();
+      args.setReceiver(receiver);
+      args.setApp(app);
+      sendBase("getUnreadMessageNum", args);
+    }
+
+    public int recv_getUnreadMessageNum() throws org.apache.thrift.TException
+    {
+      getUnreadMessageNum_result result = new getUnreadMessageNum_result();
+      receiveBase(result, "getUnreadMessageNum");
+      if (result.isSetSuccess()) {
+        return result.success;
+      }
+      throw new org.apache.thrift.TApplicationException(org.apache.thrift.TApplicationException.MISSING_RESULT, "getUnreadMessageNum failed: unknown result");
     }
 
   }
@@ -366,6 +394,41 @@ public class TMessageService {
       }
     }
 
+    public void getUnreadMessageNum(String receiver, String app, org.apache.thrift.async.AsyncMethodCallback<getUnreadMessageNum_call> resultHandler) throws org.apache.thrift.TException {
+      checkReady();
+      getUnreadMessageNum_call method_call = new getUnreadMessageNum_call(receiver, app, resultHandler, this, ___protocolFactory, ___transport);
+      this.___currentMethod = method_call;
+      ___manager.call(method_call);
+    }
+
+    public static class getUnreadMessageNum_call extends org.apache.thrift.async.TAsyncMethodCall {
+      private String receiver;
+      private String app;
+      public getUnreadMessageNum_call(String receiver, String app, org.apache.thrift.async.AsyncMethodCallback<getUnreadMessageNum_call> resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws org.apache.thrift.TException {
+        super(client, protocolFactory, transport, resultHandler, false);
+        this.receiver = receiver;
+        this.app = app;
+      }
+
+      public void write_args(org.apache.thrift.protocol.TProtocol prot) throws org.apache.thrift.TException {
+        prot.writeMessageBegin(new org.apache.thrift.protocol.TMessage("getUnreadMessageNum", org.apache.thrift.protocol.TMessageType.CALL, 0));
+        getUnreadMessageNum_args args = new getUnreadMessageNum_args();
+        args.setReceiver(receiver);
+        args.setApp(app);
+        args.write(prot);
+        prot.writeMessageEnd();
+      }
+
+      public int getResult() throws org.apache.thrift.TException {
+        if (getState() != org.apache.thrift.async.TAsyncMethodCall.State.RESPONSE_READ) {
+          throw new IllegalStateException("Method call not finished!");
+        }
+        org.apache.thrift.transport.TMemoryInputTransport memoryTransport = new org.apache.thrift.transport.TMemoryInputTransport(getFrameBuffer().array());
+        org.apache.thrift.protocol.TProtocol prot = client.getProtocolFactory().getProtocol(memoryTransport);
+        return (new Client(prot)).recv_getUnreadMessageNum();
+      }
+    }
+
   }
 
   public static class Processor<I extends Iface> extends org.apache.thrift.TBaseProcessor<I> implements org.apache.thrift.TProcessor {
@@ -384,6 +447,7 @@ public class TMessageService {
       processMap.put("searchReceiverMessage", new searchReceiverMessage());
       processMap.put("setMessagesRead", new setMessagesRead());
       processMap.put("deleteExpireMessages", new deleteExpireMessages());
+      processMap.put("getUnreadMessageNum", new getUnreadMessageNum());
       return processMap;
     }
 
@@ -466,6 +530,23 @@ public class TMessageService {
       protected deleteExpireMessages_result getResult(I iface, deleteExpireMessages_args args) throws org.apache.thrift.TException {
         deleteExpireMessages_result result = new deleteExpireMessages_result();
         result.success = iface.deleteExpireMessages();
+        result.setSuccessIsSet(true);
+        return result;
+      }
+    }
+
+    private static class getUnreadMessageNum<I extends Iface> extends org.apache.thrift.ProcessFunction<I, getUnreadMessageNum_args> {
+      public getUnreadMessageNum() {
+        super("getUnreadMessageNum");
+      }
+
+      protected getUnreadMessageNum_args getEmptyArgsInstance() {
+        return new getUnreadMessageNum_args();
+      }
+
+      protected getUnreadMessageNum_result getResult(I iface, getUnreadMessageNum_args args) throws org.apache.thrift.TException {
+        getUnreadMessageNum_result result = new getUnreadMessageNum_result();
+        result.success = iface.getUnreadMessageNum(args.receiver, args.app);
         result.setSuccessIsSet(true);
         return result;
       }
@@ -3986,6 +4067,809 @@ public class TMessageService {
         BitSet incoming = iprot.readBitSet(1);
         if (incoming.get(0)) {
           struct.success = iprot.readBool();
+          struct.setSuccessIsSet(true);
+        }
+      }
+    }
+
+  }
+
+  public static class getUnreadMessageNum_args implements org.apache.thrift.TBase<getUnreadMessageNum_args, getUnreadMessageNum_args._Fields>, java.io.Serializable, Cloneable   {
+    private static final org.apache.thrift.protocol.TStruct STRUCT_DESC = new org.apache.thrift.protocol.TStruct("getUnreadMessageNum_args");
+
+    private static final org.apache.thrift.protocol.TField RECEIVER_FIELD_DESC = new org.apache.thrift.protocol.TField("receiver", org.apache.thrift.protocol.TType.STRING, (short)1);
+    private static final org.apache.thrift.protocol.TField APP_FIELD_DESC = new org.apache.thrift.protocol.TField("app", org.apache.thrift.protocol.TType.STRING, (short)2);
+
+    private static final Map<Class<? extends IScheme>, SchemeFactory> schemes = new HashMap<Class<? extends IScheme>, SchemeFactory>();
+    static {
+      schemes.put(StandardScheme.class, new getUnreadMessageNum_argsStandardSchemeFactory());
+      schemes.put(TupleScheme.class, new getUnreadMessageNum_argsTupleSchemeFactory());
+    }
+
+    public String receiver; // required
+    public String app; // required
+
+    /** The set of fields this struct contains, along with convenience methods for finding and manipulating them. */
+    public enum _Fields implements org.apache.thrift.TFieldIdEnum {
+      RECEIVER((short)1, "receiver"),
+      APP((short)2, "app");
+
+      private static final Map<String, _Fields> byName = new HashMap<String, _Fields>();
+
+      static {
+        for (_Fields field : EnumSet.allOf(_Fields.class)) {
+          byName.put(field.getFieldName(), field);
+        }
+      }
+
+      /**
+       * Find the _Fields constant that matches fieldId, or null if its not found.
+       */
+      public static _Fields findByThriftId(int fieldId) {
+        switch(fieldId) {
+          case 1: // RECEIVER
+            return RECEIVER;
+          case 2: // APP
+            return APP;
+          default:
+            return null;
+        }
+      }
+
+      /**
+       * Find the _Fields constant that matches fieldId, throwing an exception
+       * if it is not found.
+       */
+      public static _Fields findByThriftIdOrThrow(int fieldId) {
+        _Fields fields = findByThriftId(fieldId);
+        if (fields == null) throw new IllegalArgumentException("Field " + fieldId + " doesn't exist!");
+        return fields;
+      }
+
+      /**
+       * Find the _Fields constant that matches name, or null if its not found.
+       */
+      public static _Fields findByName(String name) {
+        return byName.get(name);
+      }
+
+      private final short _thriftId;
+      private final String _fieldName;
+
+      _Fields(short thriftId, String fieldName) {
+        _thriftId = thriftId;
+        _fieldName = fieldName;
+      }
+
+      public short getThriftFieldId() {
+        return _thriftId;
+      }
+
+      public String getFieldName() {
+        return _fieldName;
+      }
+    }
+
+    // isset id assignments
+    public static final Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
+    static {
+      Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
+      tmpMap.put(_Fields.RECEIVER, new org.apache.thrift.meta_data.FieldMetaData("receiver", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+          new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.STRING)));
+      tmpMap.put(_Fields.APP, new org.apache.thrift.meta_data.FieldMetaData("app", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+          new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.STRING)));
+      metaDataMap = Collections.unmodifiableMap(tmpMap);
+      org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(getUnreadMessageNum_args.class, metaDataMap);
+    }
+
+    public getUnreadMessageNum_args() {
+    }
+
+    public getUnreadMessageNum_args(
+      String receiver,
+      String app)
+    {
+      this();
+      this.receiver = receiver;
+      this.app = app;
+    }
+
+    /**
+     * Performs a deep copy on <i>other</i>.
+     */
+    public getUnreadMessageNum_args(getUnreadMessageNum_args other) {
+      if (other.isSetReceiver()) {
+        this.receiver = other.receiver;
+      }
+      if (other.isSetApp()) {
+        this.app = other.app;
+      }
+    }
+
+    public getUnreadMessageNum_args deepCopy() {
+      return new getUnreadMessageNum_args(this);
+    }
+
+    @Override
+    public void clear() {
+      this.receiver = null;
+      this.app = null;
+    }
+
+    public String getReceiver() {
+      return this.receiver;
+    }
+
+    public getUnreadMessageNum_args setReceiver(String receiver) {
+      this.receiver = receiver;
+      return this;
+    }
+
+    public void unsetReceiver() {
+      this.receiver = null;
+    }
+
+    /** Returns true if field receiver is set (has been assigned a value) and false otherwise */
+    public boolean isSetReceiver() {
+      return this.receiver != null;
+    }
+
+    public void setReceiverIsSet(boolean value) {
+      if (!value) {
+        this.receiver = null;
+      }
+    }
+
+    public String getApp() {
+      return this.app;
+    }
+
+    public getUnreadMessageNum_args setApp(String app) {
+      this.app = app;
+      return this;
+    }
+
+    public void unsetApp() {
+      this.app = null;
+    }
+
+    /** Returns true if field app is set (has been assigned a value) and false otherwise */
+    public boolean isSetApp() {
+      return this.app != null;
+    }
+
+    public void setAppIsSet(boolean value) {
+      if (!value) {
+        this.app = null;
+      }
+    }
+
+    public void setFieldValue(_Fields field, Object value) {
+      switch (field) {
+      case RECEIVER:
+        if (value == null) {
+          unsetReceiver();
+        } else {
+          setReceiver((String)value);
+        }
+        break;
+
+      case APP:
+        if (value == null) {
+          unsetApp();
+        } else {
+          setApp((String)value);
+        }
+        break;
+
+      }
+    }
+
+    public Object getFieldValue(_Fields field) {
+      switch (field) {
+      case RECEIVER:
+        return getReceiver();
+
+      case APP:
+        return getApp();
+
+      }
+      throw new IllegalStateException();
+    }
+
+    /** Returns true if field corresponding to fieldID is set (has been assigned a value) and false otherwise */
+    public boolean isSet(_Fields field) {
+      if (field == null) {
+        throw new IllegalArgumentException();
+      }
+
+      switch (field) {
+      case RECEIVER:
+        return isSetReceiver();
+      case APP:
+        return isSetApp();
+      }
+      throw new IllegalStateException();
+    }
+
+    @Override
+    public boolean equals(Object that) {
+      if (that == null)
+        return false;
+      if (that instanceof getUnreadMessageNum_args)
+        return this.equals((getUnreadMessageNum_args)that);
+      return false;
+    }
+
+    public boolean equals(getUnreadMessageNum_args that) {
+      if (that == null)
+        return false;
+
+      boolean this_present_receiver = true && this.isSetReceiver();
+      boolean that_present_receiver = true && that.isSetReceiver();
+      if (this_present_receiver || that_present_receiver) {
+        if (!(this_present_receiver && that_present_receiver))
+          return false;
+        if (!this.receiver.equals(that.receiver))
+          return false;
+      }
+
+      boolean this_present_app = true && this.isSetApp();
+      boolean that_present_app = true && that.isSetApp();
+      if (this_present_app || that_present_app) {
+        if (!(this_present_app && that_present_app))
+          return false;
+        if (!this.app.equals(that.app))
+          return false;
+      }
+
+      return true;
+    }
+
+    @Override
+    public int hashCode() {
+      return 0;
+    }
+
+    public int compareTo(getUnreadMessageNum_args other) {
+      if (!getClass().equals(other.getClass())) {
+        return getClass().getName().compareTo(other.getClass().getName());
+      }
+
+      int lastComparison = 0;
+      getUnreadMessageNum_args typedOther = (getUnreadMessageNum_args)other;
+
+      lastComparison = Boolean.valueOf(isSetReceiver()).compareTo(typedOther.isSetReceiver());
+      if (lastComparison != 0) {
+        return lastComparison;
+      }
+      if (isSetReceiver()) {
+        lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.receiver, typedOther.receiver);
+        if (lastComparison != 0) {
+          return lastComparison;
+        }
+      }
+      lastComparison = Boolean.valueOf(isSetApp()).compareTo(typedOther.isSetApp());
+      if (lastComparison != 0) {
+        return lastComparison;
+      }
+      if (isSetApp()) {
+        lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.app, typedOther.app);
+        if (lastComparison != 0) {
+          return lastComparison;
+        }
+      }
+      return 0;
+    }
+
+    public _Fields fieldForId(int fieldId) {
+      return _Fields.findByThriftId(fieldId);
+    }
+
+    public void read(org.apache.thrift.protocol.TProtocol iprot) throws org.apache.thrift.TException {
+      schemes.get(iprot.getScheme()).getScheme().read(iprot, this);
+    }
+
+    public void write(org.apache.thrift.protocol.TProtocol oprot) throws org.apache.thrift.TException {
+      schemes.get(oprot.getScheme()).getScheme().write(oprot, this);
+    }
+
+    @Override
+    public String toString() {
+      StringBuilder sb = new StringBuilder("getUnreadMessageNum_args(");
+      boolean first = true;
+
+      sb.append("receiver:");
+      if (this.receiver == null) {
+        sb.append("null");
+      } else {
+        sb.append(this.receiver);
+      }
+      first = false;
+      if (!first) sb.append(", ");
+      sb.append("app:");
+      if (this.app == null) {
+        sb.append("null");
+      } else {
+        sb.append(this.app);
+      }
+      first = false;
+      sb.append(")");
+      return sb.toString();
+    }
+
+    public void validate() throws org.apache.thrift.TException {
+      // check for required fields
+    }
+
+    private void writeObject(java.io.ObjectOutputStream out) throws java.io.IOException {
+      try {
+        write(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(out)));
+      } catch (org.apache.thrift.TException te) {
+        throw new java.io.IOException(te);
+      }
+    }
+
+    private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, ClassNotFoundException {
+      try {
+        read(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(in)));
+      } catch (org.apache.thrift.TException te) {
+        throw new java.io.IOException(te);
+      }
+    }
+
+    private static class getUnreadMessageNum_argsStandardSchemeFactory implements SchemeFactory {
+      public getUnreadMessageNum_argsStandardScheme getScheme() {
+        return new getUnreadMessageNum_argsStandardScheme();
+      }
+    }
+
+    private static class getUnreadMessageNum_argsStandardScheme extends StandardScheme<getUnreadMessageNum_args> {
+
+      public void read(org.apache.thrift.protocol.TProtocol iprot, getUnreadMessageNum_args struct) throws org.apache.thrift.TException {
+        org.apache.thrift.protocol.TField schemeField;
+        iprot.readStructBegin();
+        while (true)
+        {
+          schemeField = iprot.readFieldBegin();
+          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) { 
+            break;
+          }
+          switch (schemeField.id) {
+            case 1: // RECEIVER
+              if (schemeField.type == org.apache.thrift.protocol.TType.STRING) {
+                struct.receiver = iprot.readString();
+                struct.setReceiverIsSet(true);
+              } else { 
+                org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
+              }
+              break;
+            case 2: // APP
+              if (schemeField.type == org.apache.thrift.protocol.TType.STRING) {
+                struct.app = iprot.readString();
+                struct.setAppIsSet(true);
+              } else { 
+                org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
+              }
+              break;
+            default:
+              org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
+          }
+          iprot.readFieldEnd();
+        }
+        iprot.readStructEnd();
+
+        // check for required fields of primitive type, which can't be checked in the validate method
+        struct.validate();
+      }
+
+      public void write(org.apache.thrift.protocol.TProtocol oprot, getUnreadMessageNum_args struct) throws org.apache.thrift.TException {
+        struct.validate();
+
+        oprot.writeStructBegin(STRUCT_DESC);
+        if (struct.receiver != null) {
+          oprot.writeFieldBegin(RECEIVER_FIELD_DESC);
+          oprot.writeString(struct.receiver);
+          oprot.writeFieldEnd();
+        }
+        if (struct.app != null) {
+          oprot.writeFieldBegin(APP_FIELD_DESC);
+          oprot.writeString(struct.app);
+          oprot.writeFieldEnd();
+        }
+        oprot.writeFieldStop();
+        oprot.writeStructEnd();
+      }
+
+    }
+
+    private static class getUnreadMessageNum_argsTupleSchemeFactory implements SchemeFactory {
+      public getUnreadMessageNum_argsTupleScheme getScheme() {
+        return new getUnreadMessageNum_argsTupleScheme();
+      }
+    }
+
+    private static class getUnreadMessageNum_argsTupleScheme extends TupleScheme<getUnreadMessageNum_args> {
+
+      @Override
+      public void write(org.apache.thrift.protocol.TProtocol prot, getUnreadMessageNum_args struct) throws org.apache.thrift.TException {
+        TTupleProtocol oprot = (TTupleProtocol) prot;
+        BitSet optionals = new BitSet();
+        if (struct.isSetReceiver()) {
+          optionals.set(0);
+        }
+        if (struct.isSetApp()) {
+          optionals.set(1);
+        }
+        oprot.writeBitSet(optionals, 2);
+        if (struct.isSetReceiver()) {
+          oprot.writeString(struct.receiver);
+        }
+        if (struct.isSetApp()) {
+          oprot.writeString(struct.app);
+        }
+      }
+
+      @Override
+      public void read(org.apache.thrift.protocol.TProtocol prot, getUnreadMessageNum_args struct) throws org.apache.thrift.TException {
+        TTupleProtocol iprot = (TTupleProtocol) prot;
+        BitSet incoming = iprot.readBitSet(2);
+        if (incoming.get(0)) {
+          struct.receiver = iprot.readString();
+          struct.setReceiverIsSet(true);
+        }
+        if (incoming.get(1)) {
+          struct.app = iprot.readString();
+          struct.setAppIsSet(true);
+        }
+      }
+    }
+
+  }
+
+  public static class getUnreadMessageNum_result implements org.apache.thrift.TBase<getUnreadMessageNum_result, getUnreadMessageNum_result._Fields>, java.io.Serializable, Cloneable   {
+    private static final org.apache.thrift.protocol.TStruct STRUCT_DESC = new org.apache.thrift.protocol.TStruct("getUnreadMessageNum_result");
+
+    private static final org.apache.thrift.protocol.TField SUCCESS_FIELD_DESC = new org.apache.thrift.protocol.TField("success", org.apache.thrift.protocol.TType.I32, (short)0);
+
+    private static final Map<Class<? extends IScheme>, SchemeFactory> schemes = new HashMap<Class<? extends IScheme>, SchemeFactory>();
+    static {
+      schemes.put(StandardScheme.class, new getUnreadMessageNum_resultStandardSchemeFactory());
+      schemes.put(TupleScheme.class, new getUnreadMessageNum_resultTupleSchemeFactory());
+    }
+
+    public int success; // required
+
+    /** The set of fields this struct contains, along with convenience methods for finding and manipulating them. */
+    public enum _Fields implements org.apache.thrift.TFieldIdEnum {
+      SUCCESS((short)0, "success");
+
+      private static final Map<String, _Fields> byName = new HashMap<String, _Fields>();
+
+      static {
+        for (_Fields field : EnumSet.allOf(_Fields.class)) {
+          byName.put(field.getFieldName(), field);
+        }
+      }
+
+      /**
+       * Find the _Fields constant that matches fieldId, or null if its not found.
+       */
+      public static _Fields findByThriftId(int fieldId) {
+        switch(fieldId) {
+          case 0: // SUCCESS
+            return SUCCESS;
+          default:
+            return null;
+        }
+      }
+
+      /**
+       * Find the _Fields constant that matches fieldId, throwing an exception
+       * if it is not found.
+       */
+      public static _Fields findByThriftIdOrThrow(int fieldId) {
+        _Fields fields = findByThriftId(fieldId);
+        if (fields == null) throw new IllegalArgumentException("Field " + fieldId + " doesn't exist!");
+        return fields;
+      }
+
+      /**
+       * Find the _Fields constant that matches name, or null if its not found.
+       */
+      public static _Fields findByName(String name) {
+        return byName.get(name);
+      }
+
+      private final short _thriftId;
+      private final String _fieldName;
+
+      _Fields(short thriftId, String fieldName) {
+        _thriftId = thriftId;
+        _fieldName = fieldName;
+      }
+
+      public short getThriftFieldId() {
+        return _thriftId;
+      }
+
+      public String getFieldName() {
+        return _fieldName;
+      }
+    }
+
+    // isset id assignments
+    private static final int __SUCCESS_ISSET_ID = 0;
+    private BitSet __isset_bit_vector = new BitSet(1);
+    public static final Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
+    static {
+      Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
+      tmpMap.put(_Fields.SUCCESS, new org.apache.thrift.meta_data.FieldMetaData("success", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+          new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
+      metaDataMap = Collections.unmodifiableMap(tmpMap);
+      org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(getUnreadMessageNum_result.class, metaDataMap);
+    }
+
+    public getUnreadMessageNum_result() {
+    }
+
+    public getUnreadMessageNum_result(
+      int success)
+    {
+      this();
+      this.success = success;
+      setSuccessIsSet(true);
+    }
+
+    /**
+     * Performs a deep copy on <i>other</i>.
+     */
+    public getUnreadMessageNum_result(getUnreadMessageNum_result other) {
+      __isset_bit_vector.clear();
+      __isset_bit_vector.or(other.__isset_bit_vector);
+      this.success = other.success;
+    }
+
+    public getUnreadMessageNum_result deepCopy() {
+      return new getUnreadMessageNum_result(this);
+    }
+
+    @Override
+    public void clear() {
+      setSuccessIsSet(false);
+      this.success = 0;
+    }
+
+    public int getSuccess() {
+      return this.success;
+    }
+
+    public getUnreadMessageNum_result setSuccess(int success) {
+      this.success = success;
+      setSuccessIsSet(true);
+      return this;
+    }
+
+    public void unsetSuccess() {
+      __isset_bit_vector.clear(__SUCCESS_ISSET_ID);
+    }
+
+    /** Returns true if field success is set (has been assigned a value) and false otherwise */
+    public boolean isSetSuccess() {
+      return __isset_bit_vector.get(__SUCCESS_ISSET_ID);
+    }
+
+    public void setSuccessIsSet(boolean value) {
+      __isset_bit_vector.set(__SUCCESS_ISSET_ID, value);
+    }
+
+    public void setFieldValue(_Fields field, Object value) {
+      switch (field) {
+      case SUCCESS:
+        if (value == null) {
+          unsetSuccess();
+        } else {
+          setSuccess((Integer)value);
+        }
+        break;
+
+      }
+    }
+
+    public Object getFieldValue(_Fields field) {
+      switch (field) {
+      case SUCCESS:
+        return Integer.valueOf(getSuccess());
+
+      }
+      throw new IllegalStateException();
+    }
+
+    /** Returns true if field corresponding to fieldID is set (has been assigned a value) and false otherwise */
+    public boolean isSet(_Fields field) {
+      if (field == null) {
+        throw new IllegalArgumentException();
+      }
+
+      switch (field) {
+      case SUCCESS:
+        return isSetSuccess();
+      }
+      throw new IllegalStateException();
+    }
+
+    @Override
+    public boolean equals(Object that) {
+      if (that == null)
+        return false;
+      if (that instanceof getUnreadMessageNum_result)
+        return this.equals((getUnreadMessageNum_result)that);
+      return false;
+    }
+
+    public boolean equals(getUnreadMessageNum_result that) {
+      if (that == null)
+        return false;
+
+      boolean this_present_success = true;
+      boolean that_present_success = true;
+      if (this_present_success || that_present_success) {
+        if (!(this_present_success && that_present_success))
+          return false;
+        if (this.success != that.success)
+          return false;
+      }
+
+      return true;
+    }
+
+    @Override
+    public int hashCode() {
+      return 0;
+    }
+
+    public int compareTo(getUnreadMessageNum_result other) {
+      if (!getClass().equals(other.getClass())) {
+        return getClass().getName().compareTo(other.getClass().getName());
+      }
+
+      int lastComparison = 0;
+      getUnreadMessageNum_result typedOther = (getUnreadMessageNum_result)other;
+
+      lastComparison = Boolean.valueOf(isSetSuccess()).compareTo(typedOther.isSetSuccess());
+      if (lastComparison != 0) {
+        return lastComparison;
+      }
+      if (isSetSuccess()) {
+        lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.success, typedOther.success);
+        if (lastComparison != 0) {
+          return lastComparison;
+        }
+      }
+      return 0;
+    }
+
+    public _Fields fieldForId(int fieldId) {
+      return _Fields.findByThriftId(fieldId);
+    }
+
+    public void read(org.apache.thrift.protocol.TProtocol iprot) throws org.apache.thrift.TException {
+      schemes.get(iprot.getScheme()).getScheme().read(iprot, this);
+    }
+
+    public void write(org.apache.thrift.protocol.TProtocol oprot) throws org.apache.thrift.TException {
+      schemes.get(oprot.getScheme()).getScheme().write(oprot, this);
+      }
+
+    @Override
+    public String toString() {
+      StringBuilder sb = new StringBuilder("getUnreadMessageNum_result(");
+      boolean first = true;
+
+      sb.append("success:");
+      sb.append(this.success);
+      first = false;
+      sb.append(")");
+      return sb.toString();
+    }
+
+    public void validate() throws org.apache.thrift.TException {
+      // check for required fields
+    }
+
+    private void writeObject(java.io.ObjectOutputStream out) throws java.io.IOException {
+      try {
+        write(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(out)));
+      } catch (org.apache.thrift.TException te) {
+        throw new java.io.IOException(te);
+      }
+    }
+
+    private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, ClassNotFoundException {
+      try {
+        read(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(in)));
+      } catch (org.apache.thrift.TException te) {
+        throw new java.io.IOException(te);
+      }
+    }
+
+    private static class getUnreadMessageNum_resultStandardSchemeFactory implements SchemeFactory {
+      public getUnreadMessageNum_resultStandardScheme getScheme() {
+        return new getUnreadMessageNum_resultStandardScheme();
+      }
+    }
+
+    private static class getUnreadMessageNum_resultStandardScheme extends StandardScheme<getUnreadMessageNum_result> {
+
+      public void read(org.apache.thrift.protocol.TProtocol iprot, getUnreadMessageNum_result struct) throws org.apache.thrift.TException {
+        org.apache.thrift.protocol.TField schemeField;
+        iprot.readStructBegin();
+        while (true)
+        {
+          schemeField = iprot.readFieldBegin();
+          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) { 
+            break;
+          }
+          switch (schemeField.id) {
+            case 0: // SUCCESS
+              if (schemeField.type == org.apache.thrift.protocol.TType.I32) {
+                struct.success = iprot.readI32();
+                struct.setSuccessIsSet(true);
+              } else { 
+                org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
+              }
+              break;
+            default:
+              org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
+          }
+          iprot.readFieldEnd();
+        }
+        iprot.readStructEnd();
+
+        // check for required fields of primitive type, which can't be checked in the validate method
+        struct.validate();
+      }
+
+      public void write(org.apache.thrift.protocol.TProtocol oprot, getUnreadMessageNum_result struct) throws org.apache.thrift.TException {
+        struct.validate();
+
+        oprot.writeStructBegin(STRUCT_DESC);
+        oprot.writeFieldBegin(SUCCESS_FIELD_DESC);
+        oprot.writeI32(struct.success);
+        oprot.writeFieldEnd();
+        oprot.writeFieldStop();
+        oprot.writeStructEnd();
+      }
+
+    }
+
+    private static class getUnreadMessageNum_resultTupleSchemeFactory implements SchemeFactory {
+      public getUnreadMessageNum_resultTupleScheme getScheme() {
+        return new getUnreadMessageNum_resultTupleScheme();
+      }
+    }
+
+    private static class getUnreadMessageNum_resultTupleScheme extends TupleScheme<getUnreadMessageNum_result> {
+
+      @Override
+      public void write(org.apache.thrift.protocol.TProtocol prot, getUnreadMessageNum_result struct) throws org.apache.thrift.TException {
+        TTupleProtocol oprot = (TTupleProtocol) prot;
+        BitSet optionals = new BitSet();
+        if (struct.isSetSuccess()) {
+          optionals.set(0);
+        }
+        oprot.writeBitSet(optionals, 1);
+        if (struct.isSetSuccess()) {
+          oprot.writeI32(struct.success);
+        }
+      }
+
+      @Override
+      public void read(org.apache.thrift.protocol.TProtocol prot, getUnreadMessageNum_result struct) throws org.apache.thrift.TException {
+        TTupleProtocol iprot = (TTupleProtocol) prot;
+        BitSet incoming = iprot.readBitSet(1);
+        if (incoming.get(0)) {
+          struct.success = iprot.readI32();
           struct.setSuccessIsSet(true);
         }
       }

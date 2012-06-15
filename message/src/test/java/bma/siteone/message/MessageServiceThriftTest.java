@@ -101,4 +101,15 @@ public class MessageServiceThriftTest {
 		System.out.println(r);
 	}
 	
+	@Test
+	public void testGetUnreadMessageNum() throws Exception {
+		TMessageService.Iface s = context.getBean("handler", TMessageService.Iface.class);
+		
+		String receiver = "123111";
+		String app = "live";
+		int r = s.getUnreadMessageNum(receiver,app);
+		
+		System.out.println(r);
+	}
+	
 }

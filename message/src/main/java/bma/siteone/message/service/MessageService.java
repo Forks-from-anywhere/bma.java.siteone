@@ -41,5 +41,13 @@ public interface MessageService {
 	 */
 	public boolean deleteExpireMessages();
 	
+	/**
+	 * 查询未读数
+	 * @param receiver
+	 * @param app
+	 * @return
+	 */
+	public int getUnreadMessageNum(String receiver, String app);
+	
 
 }
