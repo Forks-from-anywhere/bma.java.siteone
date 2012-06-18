@@ -25,8 +25,8 @@
     </bean>
     
     <!-- Thrift Service -->
-	<bean id="handler" class="bma.siteone.netty.thrift.HelloHandler" />
-	<bean id="processor" class="bma.siteone.netty.thrift.Hello4AI.Processor">
+	<bean id="handler" class="bma.common.thrift.sample.HelloHandler" />
+	<bean id="processor" class="bma.common.thrift.sample.Hello4AI.Processor">
 		<constructor-arg ref="handler" />
 	</bean>
 
@@ -34,8 +34,7 @@
 		destroy-method="close">
 		<property name="name" value="testServer"/>
 		<property name="port" value="9091" />
-		<property name="worker" value="5" />
-		<property name="processor" ref="processor"/>
+		<property name="worker" value="5" />		
 		<property name="maxLength" value="10485760"/>
 		<property name="traceBufferSize" value="256"/>
 		<property name="Pipelines">
@@ -43,6 +42,7 @@
 				<ref bean="secureFilter"/>
 			</list>
 		</property>
+		<property name="processor" ref="processor"/>
 	</bean>
 
 </beans>

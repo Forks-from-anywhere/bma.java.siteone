@@ -19,6 +19,8 @@ import bma.common.langutil.log.LogPrinter.LEVEL;
 import bma.common.netty.client.NettyClientBootstrap;
 import bma.common.netty.handler.ChannelHandlerLog;
 import bma.common.netty.handler.ChannelHandlerLog.TYPE;
+import bma.common.thrift.sample.Hello;
+import bma.common.thrift.sample.Hello4AI;
 import bma.siteone.netty.thrift.client.TNettyClientFramedTransport;
 import bma.siteone.netty.thrift.core.TNettyChannelTransport;
 

@@ -3,33 +3,36 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:util="http://www.springframework.org/schema/util"
 	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
 	http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-3.0.xsd">
-
-	<!-- 访问IP限制  -->
-    <bean id="secureFilter" class="bma.common.netty.handler.ChannelHandlerIpFilter">
-		<property name="whiteAddress">
-	        <value>127.0.0.1,127.0.0.6</value>
-		</property>
-    </bean>
-    
+	
+	<import resource="netty-thrift-global.xml"/>
+	
     <!-- Thrift Service -->
-	<bean id="handler" class="bma.siteone.netty.thrift.HelloHandler" />
-	<bean id="processor" class="bma.siteone.netty.thrift.Hello4AI.Processor">
-		<constructor-arg ref="handler" />
+	<bean id="serviceHello" class="bma.common.thrift.sample.HelloHandler" />
+	<bean id="tpHello" class="bma.common.thrift.sample.Hello.Processor">
+		<constructor-arg ref="serviceHello" />
 	</bean>
-
-	<bean id="server" class="bma.siteone.netty.thrift.core.NettyThriftServer"
-		destroy-method="close">
-		<property name="name" value="testServer"/>
-		<property name="port" value="9091" />
-		<property name="worker" value="5" />
-		<property name="processor" ref="processor"/>
-		<property name="maxLength" value="10485760"/>
-		<property name="traceBufferSize" value="256"/>
-		<property name="Pipelines">
-			<list>
-				<ref bean="secureFilter"/>
-			</list>
+	<bean id="serviceHello2" class="bma.common.thrift.sample.HelloHandler">
+		<property name="executor" ref="aiExecutor"/>
+	</bean>
+	<bean id="atpHello" class="bma.common.thrift.sample.Hello4AI.Processor">		
+		<constructor-arg ref="serviceHello2" />
+	</bean>
+	
+	<!--  ThriftServiceServer Processor -->
+	<bean id="thriftServiceProcessor" class="bma.common.thrift.TProcessorRouter">
+		<property name="defaultModule" value="hello"/>
+		<property name="processors">
+			<map>
+				<entry key="hello" value-ref="atpHello" />
+			</map>
 		</property>
 	</bean>
+
+	<!-- BOOT -->
+	<!-- bma.common.langutil.ai.boot.AIServerBoot -->	
+	<!-- booter -->
+	<bean id="booter" class="bma.common.langutil.spring.SimpleServerBooter">
+        <property name="main" ref="thriftServiceServer"/>
+    </bean>	  
 
 </beans>
