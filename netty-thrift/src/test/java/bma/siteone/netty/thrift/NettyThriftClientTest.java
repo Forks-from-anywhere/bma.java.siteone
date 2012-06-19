@@ -21,7 +21,8 @@ import bma.common.netty.handler.ChannelHandlerLog;
 import bma.common.netty.handler.ChannelHandlerLog.TYPE;
 import bma.common.thrift.sample.Hello;
 import bma.common.thrift.sample.Hello4AI;
-import bma.siteone.netty.thrift.client.TNettyClientFramedTransport;
+import bma.siteone.netty.thrift.client.AIThriftClientFactoryNetty;
+import bma.siteone.netty.thrift.client.TNettyChannelFramedTransport;
 import bma.siteone.netty.thrift.core.TNettyChannelTransport;
 
 public class NettyThriftClientTest {
@@ -87,13 +88,27 @@ public class NettyThriftClientTest {
 		cf.awaitUninterruptibly();
 		if (cf.isSuccess()) {
 			Channel ch = cf.getChannel();
-			TNettyClientFramedTransport t = new TNettyClientFramedTransport(ch,
-					1024 * 1024);
+			TNettyChannelFramedTransport t = new TNettyChannelFramedTransport(
+					ch, 1024 * 1024);
 			t.bindHandler();
 
 			return t;
 		}
 		return null;
+	}
+
+	protected TTransport trans3() throws Exception {
+
+		NettyClientBootstrap bootstrap = new NettyClientBootstrap();
+		bootstrap.init();
+
+		AIThriftClientFactoryNetty fac = new AIThriftClientFactoryNetty();
+		fac.setBootstrap(bootstrap);
+		fac.setTraceBufferSize(128);
+		fac.setHostPort("localhost:9091");
+		fac.setFrameSize("10m");
+		fac.setModule("hello");
+		return fac.createThriftClient().getTransport();
 	}
 
 	@Test
@@ -139,7 +154,7 @@ public class NettyThriftClientTest {
 	@Test
 	public void framedChannelTransport() throws Exception {
 
-		TTransport trans = trans2();
+		TTransport trans = trans3();
 		if (trans != null) {
 			TProtocol p = new TBinaryProtocol(trans);
 

@@ -8,6 +8,8 @@ import org.apache.thrift.transport.TTransportException;
 import org.jboss.netty.buffer.ChannelBuffer;
 import org.jboss.netty.buffer.ChannelBuffers;
 import org.jboss.netty.channel.Channel;
+import org.jboss.netty.channel.ChannelHandler;
+import org.jboss.netty.channel.ChannelPipeline;
 
 import bma.common.langutil.ai.AIUtil;
 import bma.common.langutil.ai.stack.AIStack;
@@ -16,13 +18,13 @@ import bma.common.thrift.ai.TAIBaseServiceClient;
 import bma.siteone.netty.thrift.core.NCHFramed;
 import bma.siteone.netty.thrift.core.TNettyChannelTransport;
 
-public class TNettyClientFramedTransport extends TNettyChannelTransport
+public class TNettyChannelFramedTransport extends TNettyChannelTransport
 		implements AIThriftInvoker {
 
 	protected int maxLength;
 	protected ChannelBuffer writeBuffer;
 
-	public TNettyClientFramedTransport(Channel ch, int maxlen) {
+	public TNettyChannelFramedTransport(Channel ch, int maxlen) {
 		super(ch);
 		this.maxLength = maxlen;
 	}
@@ -52,7 +54,13 @@ public class TNettyClientFramedTransport extends TNettyChannelTransport
 	}
 
 	public void bindHandler() {
-		channel.getPipeline().addLast("framed", new NCHFramed(this.maxLength));
+		ChannelPipeline p = channel.getPipeline();
+		ChannelHandler ch = new NCHFramed(this.maxLength);
+		if (p.get(PIPELINE_NAME) != null) {
+			p.addBefore(PIPELINE_NAME, "framed", ch);
+		} else {
+			channel.getPipeline().addLast("framed", ch);
+		}
 		super.bindHandler();
 	}
 

@@ -5,7 +5,9 @@ import org.apache.thrift.transport.TTransportException;
 import org.jboss.netty.buffer.ChannelBuffer;
 import org.jboss.netty.buffer.ChannelBuffers;
 import org.jboss.netty.channel.Channel;
+import org.jboss.netty.channel.ChannelHandler;
 import org.jboss.netty.channel.ChannelHandlerContext;
+import org.jboss.netty.channel.ChannelPipeline;
 import org.jboss.netty.channel.MessageEvent;
 import org.jboss.netty.channel.SimpleChannelUpstreamHandler;
 
@@ -89,20 +91,27 @@ public class TNettyChannelTransport extends TTransport {
 		channel.write(ChannelBuffers.copiedBuffer(buf, off, len));
 	}
 
+	public static final String PIPELINE_NAME = "nettyChannelTransport";
+
 	public void bindHandler() {
-		channel.getPipeline().addLast("nettyChannelTransport",
-				new SimpleChannelUpstreamHandler() {
-					@Override
-					public void messageReceived(ChannelHandlerContext ctx,
-							MessageEvent e) throws Exception {
-						Object obj = e.getMessage();
-						if (obj instanceof ChannelBuffer) {
-							ChannelBuffer cb = (ChannelBuffer) obj;
-							addReadBuffer(cb);
-							return;
-						}
-						super.messageReceived(ctx, e);
-					}
-				});
+		ChannelPipeline p = channel.getPipeline();
+		ChannelHandler ch = new SimpleChannelUpstreamHandler() {
+			@Override
+			public void messageReceived(ChannelHandlerContext ctx,
+					MessageEvent e) throws Exception {
+				Object obj = e.getMessage();
+				if (obj instanceof ChannelBuffer) {
+					ChannelBuffer cb = (ChannelBuffer) obj;
+					addReadBuffer(cb);
+					return;
+				}
+				super.messageReceived(ctx, e);
+			}
+		};
+		if (p.get(PIPELINE_NAME) != null) {
+			p.replace(PIPELINE_NAME, PIPELINE_NAME, ch);
+		} else {
+			p.addLast(PIPELINE_NAME, ch);
+		}
 	}
 }

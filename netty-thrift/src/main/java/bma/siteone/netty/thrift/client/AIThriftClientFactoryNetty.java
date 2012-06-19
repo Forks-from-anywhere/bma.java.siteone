@@ -1,0 +1,188 @@
+package bma.siteone.netty.thrift.client;
+
+import org.apache.thrift.TException;
+import org.apache.thrift.protocol.TProtocol;
+import org.apache.thrift.transport.TFramedTransport;
+import org.apache.thrift.transport.THttpClient;
+import org.apache.thrift.transport.TSocket;
+import org.apache.thrift.transport.TTransport;
+import org.jboss.netty.channel.Channel;
+import org.jboss.netty.channel.ChannelFuture;
+import org.jboss.netty.channel.ChannelFutureListener;
+import org.jboss.netty.channel.ChannelHandler;
+import org.jboss.netty.channel.ChannelHandlerContext;
+import org.jboss.netty.channel.ChannelPipeline;
+import org.jboss.netty.channel.ChannelPipelineFactory;
+import org.jboss.netty.channel.Channels;
+import org.jboss.netty.channel.ExceptionEvent;
+
+import bma.common.langutil.ai.AIUtil;
+import bma.common.langutil.ai.stack.AIStack;
+import bma.common.langutil.ai.stack.AIStackSimple;
+import bma.common.langutil.core.ExceptionUtil;
+import bma.common.langutil.core.Preconditions;
+import bma.common.langutil.log.LogPrinter.LEVEL;
+import bma.common.langutil.pipeline.CommonPipelineBuilder;
+import bma.common.netty.NettyChannelPipeline;
+import bma.common.netty.client.NettyClientBootstrap;
+import bma.common.netty.handler.ChannelHandlerExceptionClose;
+import bma.common.netty.handler.ChannelHandlerLog;
+import bma.common.netty.handler.ChannelHandlerLog.TYPE;
+import bma.common.netty.handler.ChannelHandlerPlaceholder;
+import bma.common.thrift.ThriftClient;
+import bma.common.thrift.ThriftClientFactory;
+import bma.common.thrift.ThriftClientFactoryConfig;
+import bma.common.thrift.ai.AIThriftClientFactory;
+import bma.siteone.netty.thrift.core.TNettyChannelTransport;
+
+public class AIThriftClientFactoryNetty extends ThriftClientFactoryConfig
+		implements ThriftClientFactory, AIThriftClientFactory {
+
+	final org.slf4j.Logger log = org.slf4j.LoggerFactory
+			.getLogger(AIThriftClientFactoryNetty.class);
+
+	protected NettyClientBootstrap bootstrap;
+	protected CommonPipelineBuilder<ChannelHandler> pipelineBuilder;
+	protected int traceBufferSize = 0;
+
+	public NettyClientBootstrap getBootstrap() {
+		return bootstrap;
+	}
+
+	public void setBootstrap(NettyClientBootstrap bootstrap) {
+		this.bootstrap = bootstrap;
+	}
+
+	public CommonPipelineBuilder<ChannelHandler> getPipelineBuilder() {
+		return pipelineBuilder;
+	}
+
+	public void setPipelineBuilder(
+			CommonPipelineBuilder<ChannelHandler> pipelineBuilder) {
+		this.pipelineBuilder = pipelineBuilder;
+	}
+
+	public int getTraceBufferSize() {
+		return traceBufferSize;
+	}
+
+	public void setTraceBufferSize(int traceBufferSize) {
+		this.traceBufferSize = traceBufferSize;
+	}
+
+	protected TTransport createTransport() throws TException {
+		TTransport transport = null;
+		if (TYPE_HTTP.equals(type)) {
+			Preconditions.checkNotNull(url);
+			if (log.isDebugEnabled()) {
+				log.debug("create http client - {}", url);
+			}
+			transport = new THttpClient(url);
+		} else {
+			Preconditions.checkNotNull(host);
+			if (log.isDebugEnabled()) {
+				log.debug("create socket client - {}", host);
+			}
+			transport = new TSocket(host.getHost(), host.getPort(9090));
+		}
+		transport.open();
+		if (frameMaxLength > 0) {
+			transport = new TFramedTransport(transport, frameMaxLength);
+		}
+		return transport;
+	}
+
+	@Override
+	public ThriftClient createThriftClient() throws TException {
+		AIStackSimple<ThriftClient> stack = new AIStackSimple<ThriftClient>(
+				null);
+		createThriftClient(stack);
+		try {
+			return stack.get();
+		} catch (Exception e) {
+			throw ExceptionUtil.throwRuntime(e);
+		}
+	}
+
+	protected void beforeBuildPipeline(ChannelPipeline pipeline) {
+
+	}
+
+	protected void afterBuildPipeline(ChannelPipeline pipeline) {
+
+	}
+
+	@Override
+	public boolean createThriftClient(final AIStack<ThriftClient> stack)
+			throws TException {
+
+		ChannelPipelineFactory fac = new ChannelPipelineFactory() {
+
+			@Override
+			public ChannelPipeline getPipeline() throws Exception {
+				ChannelPipeline pipeline = Channels.pipeline();
+				beforeBuildPipeline(pipeline);
+				if (traceBufferSize > 0) {
+					pipeline.addLast("uplog", new ChannelHandlerLog(log,
+							LEVEL.DEBUG, TYPE.UPSTREAM, traceBufferSize));
+				}
+				pipeline.addLast(TNettyChannelTransport.PIPELINE_NAME,
+						new ChannelHandlerPlaceholder());
+				if (traceBufferSize > 0) {
+					pipeline.addLast("downlog", new ChannelHandlerLog(log,
+							LEVEL.DEBUG, TYPE.DOWNSTREAM, traceBufferSize));
+				}
+				pipeline.addLast("error", new ChannelHandlerExceptionClose() {
+					@Override
+					protected void logException(ChannelHandlerContext ctx,
+							ExceptionEvent e) {
+						if (log.isWarnEnabled()) {
+							Throwable t = ExceptionUtil.cause(e.getCause());
+							log.warn("{} error {}/{}", new Object[] {
+									ctx.getChannel().getRemoteAddress(),
+									t.getClass().getName(), t.getMessage() });
+						}
+					}
+				});
+
+				if (pipelineBuilder != null) {
+					pipelineBuilder.buildPipeline(new NettyChannelPipeline(
+							pipeline));
+				}
+				afterBuildPipeline(pipeline);
+				return pipeline;
+			}
+		};
+
+		bootstrap.connect(host.createInetSocketAddress(), null, fac)
+				.addListener(new ChannelFutureListener() {
+
+					@Override
+					public void operationComplete(ChannelFuture cf)
+							throws Exception {
+						if (cf.isSuccess()) {
+							try {
+								Channel ch = cf.getChannel();
+								TNettyChannelTransport transport = null;
+								if (frameMaxLength > 0) {
+									transport = new TNettyChannelFramedTransport(
+											ch, frameMaxLength);
+								} else {
+									transport = new TNettyChannelTransport(ch);
+								}
+								transport.bindHandler();
+								TProtocol pro = createProtocol(transport);
+								AIUtil.safeSuccess(stack, new ThriftClient(
+										transport, pro));
+							} catch (Exception err) {
+								AIUtil.safeFailure(stack, err);
+							}
+						} else {
+							AIUtil.safeFailure(stack, cf.getCause());
+						}
+					}
+				});
+		return false;
+	}
+
+}

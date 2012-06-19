@@ -12,4 +12,11 @@ public class NettyThriftStandardTC {
 				"classpath:bma/siteone/netty/thrift/netty-thrift-standard.xml");
 		AIServerBoot.main(new String[0]);
 	}
+	
+	@Test
+	public void serviceHub() {
+		System.setProperty("spring_server_xml",
+				"classpath:bma/siteone/netty/thrift/netty-thrift-servicehub.xml");
+		AIServerBoot.main(new String[0]);
+	}
 }
