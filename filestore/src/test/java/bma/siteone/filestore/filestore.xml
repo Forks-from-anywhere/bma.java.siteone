@@ -12,31 +12,34 @@
 
 	<!-- thrift -->
 	<bean id="filestore" class="bma.siteone.filestore.service.FileStoreThrift" init-method="init" destroy-method="close">
-		<property name="tempFile" value="e:/tmp/filestore_tmp"/>
+		<property name="tempFile" value="d:/duowan/temp/filestore_tmp"/>
 		<property name="configs">
 			<list>
 				<bean class="bma.siteone.filestore.service.FileStoreConfig">
-					<property name="appId" value="test"/>
-					<property name="rootFile" value="e:/tmp/filestore"/>					
-				</bean>		
+					<property name="appId" value="live.avatar"/>
+					<property name="rootFile" value="d:/duowan/temp/filestore/avatar"/>					
+				</bean>
 				<bean class="bma.siteone.filestore.service.FileStoreConfig">
-					<property name="appId" value="test2"/>
-					<property name="key" value="123456"/>
-					<property name="rootFile" value="e:/tmp/filestore"/>					
-				</bean>				
+					<property name="appId" value="live.activity_post"/>
+					<property name="rootFile" value="d:/duowan/temp/filestore/activity_post"/>					
+				</bean>
+				<bean class="bma.siteone.filestore.service.FileStoreConfig">
+					<property name="appId" value="live.slideshow"/>
+					<property name="rootFile" value="d:/duowan/temp/filestore/slideshow"/>					
+				</bean>					
 			</list>
 		</property>
 	</bean>
 	
 	<bean id="serverTrans" class="org.apache.thrift.transport.TServerSocket">
-		<constructor-arg value="9090" />
+		<constructor-arg value="9092" />
 	</bean>	
 	
 	<bean id="thriftProcessor" class="bma.siteone.filestore.thrift.TFileStore.Processor">
 		<constructor-arg ref="filestore" />
 	</bean>
 
-	<bean id="server" class="bma.common.thrift.ThriftServer.SimpleServer"
+	<bean id="server" class="bma.common.thrift.ThriftServer.ThreadPoolServer"
 		destroy-method="close">
 		<constructor-arg ref="serverTrans" />
 		<constructor-arg>
@@ -49,6 +52,8 @@
 				</property>
 			</bean>
 		</constructor-arg>
+		<constructor-arg value="10"/>
+		<constructor-arg value="1"/>
 	</bean>
 
 </beans>

@@ -44,7 +44,7 @@ public class FileStoreServerTest {
 
 		s1.start();
 
-		ObjectUtil.waitFor(this, 30 * 60 * 1000);
+		ObjectUtil.waitFor(this, 30 * 60 * 1000 * 100);
 	}
 
 }
