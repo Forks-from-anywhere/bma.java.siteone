@@ -24,7 +24,7 @@
 	<bean id="serviceHub" class="bma.common.thrift.servicehub.impl.ThriftServiceHub4ThriftAI">
 		<property name="service" ref="serviceHubImpl"/>
 	</bean>
-	<bean id="atpHub" class="bma.common.thrift.servicehub.protocol.TServiceHub4AI.Processor">		
+	<bean id="atpHub" class="bma.siteone.netty.thrift.hub.NettyThriftServiceHubProcessor">		
 		<constructor-arg ref="serviceHub" />
 	</bean>
 	
