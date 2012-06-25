@@ -1,5 +1,7 @@
 package bma.siteone.netty.thrift.core;
 
+import java.util.concurrent.Executor;
+
 import org.apache.thrift.TProcessor;
 import org.jboss.netty.buffer.ChannelBuffer;
 import org.jboss.netty.channel.Channel;
@@ -11,11 +13,16 @@ import org.jboss.netty.handler.codec.oneone.OneToOneDecoder;
 import bma.common.langutil.core.ExceptionUtil;
 import bma.common.langutil.core.SizeUtil;
 import bma.common.langutil.core.SizeUtil.Unit;
+import bma.common.langutil.core.StringUtil;
+import bma.common.langutil.core.ValueUtil;
 import bma.common.langutil.log.LogPrinter.LEVEL;
 import bma.common.netty.NettyServer;
 import bma.common.netty.handler.ChannelHandlerExceptionClose;
 import bma.common.netty.handler.ChannelHandlerLog;
 import bma.common.netty.handler.ChannelHandlerLog.TYPE;
+import bma.common.thrift.TProcessorRouter;
+import bma.common.thrift.ThriftClientFactorySimple;
+import bma.common.thrift.servicehub.ThriftServiceNode;
 
 public class NettyThriftServer extends NettyServer {
 
@@ -60,6 +67,45 @@ public class NettyThriftServer extends NettyServer {
 
 	public void setTraceBufferSize(int traceBufferSize) {
 		this.traceBufferSize = traceBufferSize;
+	}
+
+	protected ThriftServiceNode node;
+	protected Executor processExecutor;
+
+	public void setProcessExecutor(Executor processExecutor) {
+		this.processExecutor = processExecutor;
+		makeNodeProcessor();
+	}
+
+	public void setNode(ThriftServiceNode node) {
+		this.node = node;
+
+		String type = node.getType();
+		if (!(ValueUtil.empty(type) || StringUtil.equals(
+				ThriftClientFactorySimple.TYPE_SOCKET, type))) {
+			throw new IllegalArgumentException("type(" + type
+					+ ") must 'socket'");
+		}
+		setHostPort(node.getHostport());
+		setMaxLength(node.getFrameLength());
+		makeNodeProcessor();
+	}
+
+	protected void makeNodeProcessor() {
+		if (node == null)
+			return;
+		if (processExecutor == null)
+			return;
+
+		TProcessorRouter pr = new TProcessorRouter();
+		pr.setDefaultModule(node.getDefaultModule());
+		pr.setProcessorBeans(node.getServices());
+
+		TProcessorNetty p = new TProcessorNetty();
+		p.setExecutor(processExecutor);
+		p.setProcessor(pr);
+
+		setProcessor(p);
 	}
 
 	@Override

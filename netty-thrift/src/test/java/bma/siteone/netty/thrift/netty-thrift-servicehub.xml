@@ -38,12 +38,40 @@
 			</map>
 		</property>
 	</bean>
+	
+	<!-- ThriftServiceNode -->
+	<bean id="thriftServiceNode" class="bma.common.thrift.servicehub.ThriftServiceNode">
+		<property name="type" value="socket"/>
+		<property name="port" value="9091" />				
+		<property name="frameSize" value="10m"/>
+		<property name="defaultModule" value="hello"/>
+		<property name="serviceMap">
+			<map>
+				<entry key="hello" value-ref="atpHello" />
+				<entry key="serviceHub" value-ref="atpHub" />
+			</map>
+		</property>
+	</bean>
+	
+	<bean id="thriftServiceServer2" class="bma.siteone.netty.thrift.core.NettyThriftServer"
+		destroy-method="close">
+		<property name="name" value="thriftService"/>				
+		<property name="worker" value="5" />
+		<property name="traceBufferSize" value="256"/>
+		<property name="Pipelines">
+			<list>
+				<ref bean="secureFilter"/>
+			</list>
+		</property>
+		<property name="node" ref="thriftServiceNode" />
+		<property name="processExecutor" ref="syncExecutor"/>
+	</bean>
 
 	<!-- BOOT -->
 	<!-- bma.common.langutil.ai.boot.AIServerBoot -->	
 	<!-- booter -->
 	<bean id="booter" class="bma.common.langutil.spring.SimpleServerBooter">
-        <property name="main" ref="thriftServiceServer"/>
+        <property name="main" ref="thriftServiceServer2"/>
     </bean>	  
 
 </beans>
