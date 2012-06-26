@@ -29,6 +29,15 @@
 			</bean>
 		</property>
 	</bean>		
+	
+	<!-- netty client support -->
+	<bean id="nettyClientBootstrap" class="bma.common.netty.client.NettyClientBootstrap" init-method="init">
+		<property name="worker" value="3"/>
+	</bean>
+	<bean id="aiThriftEntry" class="bma.siteone.netty.thrift.client.AIThriftEntryNetty">
+		<property name="bootstrap" ref="nettyClientBootstrap"/>
+		<property name="traceBufferSize" value="128"/>
+	</bean>
 
 	<!-- ip limit  -->
     <bean id="secureFilter" class="bma.common.netty.handler.ChannelHandlerIpFilter">
@@ -39,22 +48,30 @@
     
 	<bean id="thriftServiceServer" class="bma.siteone.netty.thrift.core.NettyThriftServer"
 		destroy-method="close">
-		<property name="name" value="thriftService"/>
-		<property name="port" value="9091" />		
-		<property name="worker" value="5" />		
-		<property name="frameSize" value="10m"/>
+		<property name="name" value="thriftService"/>				
+		<property name="worker" value="5" />
 		<property name="traceBufferSize" value="256"/>
 		<property name="Pipelines">
 			<list>
 				<ref bean="secureFilter"/>
 			</list>
 		</property>
-		<property name="processor">			
-			<bean class="bma.siteone.netty.thrift.core.TProcessorNetty">
-				<property name="executor" ref="syncExecutor"/>
-				<property name="processor" ref="thriftServiceProcessor"/>
-			</bean>			
+		<property name="node" ref="thriftServiceNode" />
+		<property name="processExecutor" ref="syncExecutor"/>
+	</bean>
+	
+	<bean id="thriftManageServer" class="bma.siteone.netty.thrift.core.NettyThriftServer"
+		destroy-method="close">
+		<property name="name" value="thriftManage"/>				
+		<property name="worker" value="2" />
+		<property name="traceBufferSize" value="256"/>
+		<property name="Pipelines">
+			<list>
+				<ref bean="secureFilter"/>
+			</list>
 		</property>
+		<property name="node" ref="thriftManageNode" />
+		<property name="processExecutor" ref="syncExecutor"/>
 	</bean>
 
 </beans>

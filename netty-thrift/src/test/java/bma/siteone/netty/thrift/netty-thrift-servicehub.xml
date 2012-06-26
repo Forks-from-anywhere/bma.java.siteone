@@ -17,29 +17,18 @@
 	<bean id="atpHello" class="bma.common.thrift.sample.Hello4AI.Processor">		
 		<constructor-arg ref="serviceHello2" />
 	</bean>
-	<!--  Thrift Service Hub -->
+	
+	<!-- ThriftServiceNode -->
 	<bean id="serviceHubImpl" class="bma.common.thrift.servicehub.impl.ThriftServiceHubSimple">
 		<property name="executor" ref="aiExecutor"/>
 	</bean>
 	<bean id="serviceHub" class="bma.common.thrift.servicehub.impl.ThriftServiceHub4ThriftAI">
 		<property name="service" ref="serviceHubImpl"/>
+		<property name="entry" ref="aiThriftEntry"/>
 	</bean>
 	<bean id="atpHub" class="bma.siteone.netty.thrift.hub.NettyThriftServiceHubProcessor">		
 		<constructor-arg ref="serviceHub" />
 	</bean>
-	
-	<!--  ThriftServiceServer Processor -->
-	<bean id="thriftServiceProcessor" class="bma.common.thrift.TProcessorRouter">
-		<property name="defaultModule" value="hello"/>
-		<property name="processors">
-			<map>
-				<entry key="hello" value-ref="atpHello" />
-				<entry key="serviceHub" value-ref="atpHub" />
-			</map>
-		</property>
-	</bean>
-	
-	<!-- ThriftServiceNode -->
 	<bean id="thriftServiceNode" class="bma.common.thrift.servicehub.ThriftServiceNode">
 		<property name="type" value="socket"/>
 		<property name="port" value="9091" />				
@@ -53,25 +42,34 @@
 		</property>
 	</bean>
 	
-	<bean id="thriftServiceServer2" class="bma.siteone.netty.thrift.core.NettyThriftServer"
-		destroy-method="close">
-		<property name="name" value="thriftService"/>				
-		<property name="worker" value="5" />
-		<property name="traceBufferSize" value="256"/>
-		<property name="Pipelines">
-			<list>
-				<ref bean="secureFilter"/>
-			</list>
+	<!-- ThriftManageNode -->
+	<bean id="atpListener" class="bma.common.thrift.servicehub.protocol.TServiceHubListener4AI.Processor">		
+		<constructor-arg>
+			<bean class="bma.common.thrift.servicehub.impl.ThriftServiceHubListener4Log"/>		
+		</constructor-arg>
+	</bean>	
+	<bean id="thriftManageNode" class="bma.common.thrift.servicehub.ThriftServiceNode">
+		<property name="type" value="socket"/>
+		<property name="port" value="9092" />				
+		<property name="frameSize" value="10m"/>
+		<property name="defaultModule" value="listener"/>
+		<property name="serviceMap">
+			<map>
+				<entry key="listener" value-ref="atpListener" />
+			</map>
 		</property>
-		<property name="node" ref="thriftServiceNode" />
-		<property name="processExecutor" ref="syncExecutor"/>
 	</bean>
 
 	<!-- BOOT -->
 	<!-- bma.common.langutil.ai.boot.AIServerBoot -->	
 	<!-- booter -->
 	<bean id="booter" class="bma.common.langutil.spring.SimpleServerBooter">
-        <property name="main" ref="thriftServiceServer2"/>
+        <property name="mainList">
+        	<list>
+        		<ref bean="thriftManageServer"/>
+        		<ref bean="thriftServiceServer"/>        		
+        	</list>
+        </property>
     </bean>	  
 
 </beans>
