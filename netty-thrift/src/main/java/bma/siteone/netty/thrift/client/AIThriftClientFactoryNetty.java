@@ -29,6 +29,7 @@ import bma.common.netty.handler.ChannelHandlerExceptionClose;
 import bma.common.netty.handler.ChannelHandlerLog;
 import bma.common.netty.handler.ChannelHandlerLog.TYPE;
 import bma.common.netty.handler.ChannelHandlerPlaceholder;
+import bma.common.netty.handler.ChannelHandlerShowConnect;
 import bma.common.thrift.ThriftClient;
 import bma.common.thrift.ThriftClientFactory;
 import bma.common.thrift.ThriftClientFactoryConfig;
@@ -125,6 +126,9 @@ public class AIThriftClientFactoryNetty extends ThriftClientFactoryConfig
 				if (traceBufferSize > 0) {
 					pipeline.addLast("uplog", new ChannelHandlerLog(log,
 							LEVEL.DEBUG, TYPE.UPSTREAM, traceBufferSize));
+				} else {
+					pipeline.addLast("showConnect",
+							new ChannelHandlerShowConnect(log, LEVEL.DEBUG));
 				}
 				pipeline.addLast(TNettyChannelTransport.PIPELINE_NAME,
 						new ChannelHandlerPlaceholder());

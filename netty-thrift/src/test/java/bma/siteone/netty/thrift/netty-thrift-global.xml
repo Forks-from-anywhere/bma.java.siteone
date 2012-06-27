@@ -36,7 +36,7 @@
 	</bean>
 	<bean id="aiThriftEntry" class="bma.siteone.netty.thrift.client.AIThriftEntryNetty">
 		<property name="bootstrap" ref="nettyClientBootstrap"/>
-		<property name="traceBufferSize" value="128"/>
+		<property name="traceBufferSize" value="0"/>
 	</bean>
 
 	<!-- ip limit  -->
@@ -50,7 +50,7 @@
 		destroy-method="close">
 		<property name="name" value="thriftService"/>				
 		<property name="worker" value="5" />
-		<property name="traceBufferSize" value="256"/>
+		<property name="traceBufferSize" value="0"/>
 		<property name="Pipelines">
 			<list>
 				<ref bean="secureFilter"/>
@@ -64,7 +64,7 @@
 		destroy-method="close">
 		<property name="name" value="thriftManage"/>				
 		<property name="worker" value="2" />
-		<property name="traceBufferSize" value="256"/>
+		<property name="traceBufferSize" value="0"/>
 		<property name="Pipelines">
 			<list>
 				<ref bean="secureFilter"/>

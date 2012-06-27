@@ -15,11 +15,8 @@ import bma.common.langutil.core.SizeUtil;
 import bma.common.langutil.core.SizeUtil.Unit;
 import bma.common.langutil.core.StringUtil;
 import bma.common.langutil.core.ValueUtil;
-import bma.common.langutil.log.LogPrinter.LEVEL;
 import bma.common.netty.NettyServer;
 import bma.common.netty.handler.ChannelHandlerExceptionClose;
-import bma.common.netty.handler.ChannelHandlerLog;
-import bma.common.netty.handler.ChannelHandlerLog.TYPE;
 import bma.common.thrift.TProcessorRouter;
 import bma.common.thrift.ThriftClientFactorySimple;
 import bma.common.thrift.servicehub.ThriftServiceNode;
@@ -31,7 +28,6 @@ public class NettyThriftServer extends NettyServer {
 
 	protected TProcessor processor;
 	protected int maxLength;
-	protected int traceBufferSize = 0;
 
 	public NettyThriftServer() {
 		super();
@@ -59,14 +55,6 @@ public class NettyThriftServer extends NettyServer {
 		} catch (Exception e) {
 			throw ExceptionUtil.throwRuntime(e);
 		}
-	}
-
-	public int getTraceBufferSize() {
-		return traceBufferSize;
-	}
-
-	public void setTraceBufferSize(int traceBufferSize) {
-		this.traceBufferSize = traceBufferSize;
 	}
 
 	protected ThriftServiceNode node;
@@ -111,10 +99,6 @@ public class NettyThriftServer extends NettyServer {
 	@Override
 	protected void beforeBuildPipeline(ChannelPipeline pipeline) {
 		super.beforeBuildPipeline(pipeline);
-		if (traceBufferSize > 0) {
-			pipeline.addLast("uplog", new ChannelHandlerLog(log, LEVEL.DEBUG,
-					TYPE.UPSTREAM, traceBufferSize));
-		}
 		pipeline.addLast("framed", new NCHFramed(maxLength));
 		pipeline.addLast("transport", new OneToOneDecoder() {
 			@Override
@@ -130,10 +114,6 @@ public class NettyThriftServer extends NettyServer {
 			}
 		});
 		pipeline.addLast("request", new NCHThriftRequest(processor));
-		if (traceBufferSize > 0) {
-			pipeline.addLast("downlog", new ChannelHandlerLog(log, LEVEL.DEBUG,
-					TYPE.DOWNSTREAM, traceBufferSize));
-		}
 		pipeline.addLast("error", new ChannelHandlerExceptionClose() {
 			@Override
 			protected void logException(ChannelHandlerContext ctx,

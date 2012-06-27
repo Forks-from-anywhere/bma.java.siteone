@@ -6,7 +6,10 @@ import org.jboss.netty.buffer.ChannelBuffer;
 import org.jboss.netty.buffer.ChannelBuffers;
 import org.jboss.netty.channel.Channel;
 
-public class TNettyServerFramedTransport extends TTransport {
+import bma.common.netty.SupportedNettyChannel;
+
+public class TNettyServerFramedTransport extends TTransport implements
+		SupportedNettyChannel {
 
 	protected Channel channel;
 	private ChannelBuffer readBuffer;
@@ -24,6 +27,7 @@ public class TNettyServerFramedTransport extends TTransport {
 		this.readBuffer = rcb;
 	}
 
+	@Override
 	public Channel getChannel() {
 		return channel;
 	}
@@ -66,12 +70,12 @@ public class TNettyServerFramedTransport extends TTransport {
 
 	@Override
 	public void open() throws TTransportException {
-		
+
 	}
 
 	@Override
 	public void close() {
-		
+
 	}
 
 }

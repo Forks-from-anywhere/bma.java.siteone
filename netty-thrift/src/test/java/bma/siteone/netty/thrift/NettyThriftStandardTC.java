@@ -20,4 +20,10 @@ public class NettyThriftStandardTC {
 		AIServerBoot.main(new String[0]);
 	}
 
+	@Test
+	public void servicePeer() {
+		System.setProperty("spring_server_xml",
+				"classpath:bma/siteone/netty/thrift/netty-thrift-hubpeer.xml");
+		AIServerBoot.main(new String[0]);
+	}
 }

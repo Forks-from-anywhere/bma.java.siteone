@@ -12,12 +12,14 @@ import org.jboss.netty.channel.MessageEvent;
 import org.jboss.netty.channel.SimpleChannelUpstreamHandler;
 
 import bma.common.langutil.concurrent.Event;
+import bma.common.netty.SupportedNettyChannel;
 
 /**
  * Netty Channel implementation of the TTransport interface.
  * 
  */
-public class TNettyChannelTransport extends TTransport {
+public class TNettyChannelTransport extends TTransport implements
+		SupportedNettyChannel {
 
 	protected Channel channel;
 	protected ChannelBuffer readBuffer;
@@ -30,6 +32,7 @@ public class TNettyChannelTransport extends TTransport {
 		event = Event.createManulResetEvent();
 	}
 
+	@Override
 	public Channel getChannel() {
 		return channel;
 	}

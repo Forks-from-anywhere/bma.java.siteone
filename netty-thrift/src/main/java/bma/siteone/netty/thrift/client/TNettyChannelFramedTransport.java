@@ -1,5 +1,7 @@
 package bma.siteone.netty.thrift.client;
 
+import java.util.LinkedList;
+
 import org.apache.thrift.TBase;
 import org.apache.thrift.TException;
 import org.apache.thrift.TFieldIdEnum;
@@ -9,7 +11,10 @@ import org.jboss.netty.buffer.ChannelBuffer;
 import org.jboss.netty.buffer.ChannelBuffers;
 import org.jboss.netty.channel.Channel;
 import org.jboss.netty.channel.ChannelHandler;
+import org.jboss.netty.channel.ChannelHandlerContext;
 import org.jboss.netty.channel.ChannelPipeline;
+import org.jboss.netty.channel.ChannelStateEvent;
+import org.jboss.netty.channel.SimpleChannelUpstreamHandler;
 
 import bma.common.langutil.ai.AIUtil;
 import bma.common.langutil.ai.stack.AIStack;
@@ -56,10 +61,20 @@ public class TNettyChannelFramedTransport extends TNettyChannelTransport
 	public void bindHandler() {
 		ChannelPipeline p = channel.getPipeline();
 		ChannelHandler ch = new NCHFramed(this.maxLength);
+		ChannelHandler ch2 = new SimpleChannelUpstreamHandler() {
+			@Override
+			public void channelClosed(ChannelHandlerContext ctx,
+					ChannelStateEvent e) throws Exception {
+				processError(new IllegalStateException("closed"));
+				super.channelClosed(ctx, e);
+			}
+		};
 		if (p.get(PIPELINE_NAME) != null) {
 			p.addBefore(PIPELINE_NAME, "framed", ch);
+			p.addBefore(PIPELINE_NAME, "closed", ch2);
 		} else {
-			channel.getPipeline().addLast("framed", ch);
+			p.addLast("framed", ch);
+			p.addBefore(PIPELINE_NAME, "closed", ch2);
 		}
 		super.bindHandler();
 	}
@@ -67,16 +82,73 @@ public class TNettyChannelFramedTransport extends TNettyChannelTransport
 	@Override
 	public void addReadBuffer(ChannelBuffer cb) {
 		super.addReadBuffer(cb);
-		if (receiver != null) {
-			try {
-				receiver.run();
-			} finally {
-				receiver = null;
+		processReceiver();
+	}
+
+	protected boolean processReceiver() {
+		synchronized (this) {
+			if (!event.checkEvent()) {
+				return false;
+			}
+			if (receiverList.isEmpty())
+				return false;
+			Request r = receiverList.remove();
+			r.run();
+			return true;
+		}
+	}
+
+	protected void processError(Throwable t) {
+		synchronized (this) {
+			while (!receiverList.isEmpty()) {
+				Request r = receiverList.remove();
+				r.error(t);
 			}
 		}
 	}
 
-	private volatile Runnable receiver;
+	private final class Request<TYPE> {
+		private final TProtocol in;
+		private final String name;
+		private final int seqid;
+		private final TBase result;
+		private final AIStack<TYPE> stack;
+
+		private Request(TProtocol in, String name, int seqid, TBase result,
+				AIStack<TYPE> stack) {
+			this.in = in;
+			this.name = name;
+			this.seqid = seqid;
+			this.result = result;
+			this.stack = stack;
+		}
+
+		public void run() {
+			try {
+				TAIBaseServiceClient.readBase(stack, in, seqid, name, result);
+				TFieldIdEnum field = result.fieldForId(0);
+				if (field != null) {
+					stack.success((TYPE) result.getFieldValue(field));
+				} else {
+					stack.success(null);
+				}
+				return;
+			} catch (Exception err) {
+				stack.failure(err);
+			}
+		}
+
+		public void error(Throwable t) {
+			AIUtil.safeFailure(stack, t);
+		}
+
+		@Override
+		public String toString() {
+			return "req[" + seqid + "]";
+		}
+	}
+
+	private LinkedList<Request> receiverList = new LinkedList<Request>();
 
 	@Override
 	public <TYPE> boolean invoke(AIStack<TYPE> s, final TProtocol in,
@@ -86,31 +158,11 @@ public class TNettyChannelFramedTransport extends TNettyChannelTransport
 		if (result == null)
 			return s.success(null);
 		final AIStack<TYPE> stack = AIUtil.fork(s);
-		receiver = new Runnable() {
-
-			@Override
-			public void run() {
-				try {
-					TAIBaseServiceClient.readBase(stack, in, seqid, name,
-							result);
-					TFieldIdEnum field = result.fieldForId(0);
-					if (field != null) {
-						stack.success((TYPE) result.getFieldValue(field));
-					} else {
-						stack.success(null);
-					}
-					return;
-				} catch (Exception err) {
-					stack.failure(err);
-				}
-			}
-		};
-		if (event.checkEvent()) {
-			receiver.run();
-			receiver = null;
-			return true;
+		Request<TYPE> r = new Request<TYPE>(in, name, seqid, result, stack);
+		synchronized (receiverList) {
+			receiverList.add(r);
 		}
-		return false;
+		return processReceiver();
 	}
 
 }
