@@ -135,16 +135,12 @@ public class TAIServiceHub4PeerProcessor<IFACE extends Iface> extends
 								new AIStackNone<Boolean>(), peer.key
 										+ "-listener", peer.listenerEntry);
 					}
-					for (TServicePointId id : peer.serviceIdList) {
-						hubFace.unregisterThriftService(
-								new AIStackNone<Boolean>(), id);
-					}
+					hubFace.unregisterThriftService(new AIStackNone<Boolean>(),
+							peer.serviceIdList);
 				}
 			});
 
-			for (TServicePointInfo info : infoList) {
-				hubFace.registerThriftService(new AIStackNone<Boolean>(), info);
-			}
+			hubFace.registerThriftService(new AIStackNone<Boolean>(), infoList);
 			if (ValueUtil.notEmpty(listenEntry)) {
 				hubFace.addServiceHubListener(new AIStackNone<Boolean>(),
 						peer.key + "-listener", listenEntry);
@@ -196,10 +192,8 @@ public class TAIServiceHub4PeerProcessor<IFACE extends Iface> extends
 				log.debug("HubPeer active '{}'", peer.listenerEntry);
 			}
 
-			for (TServicePointId id : peer.serviceIdList) {
-				hubFace.activeThriftService(new AIStackNone<Boolean>(), id,
-						null);
-			}
+			hubFace.activeThriftService(new AIStackNone<Boolean>(),
+					peer.serviceIdList);
 
 			result.setSuccess(true);
 			return stack.success(result);

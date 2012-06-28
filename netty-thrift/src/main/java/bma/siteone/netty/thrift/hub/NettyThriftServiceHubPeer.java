@@ -3,6 +3,10 @@ package bma.siteone.netty.thrift.hub;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import org.apache.thrift.TException;
 import org.apache.thrift.transport.TTransport;
@@ -12,19 +16,28 @@ import org.jboss.netty.channel.ChannelFutureListener;
 
 import bma.common.langutil.ai.common.AIEvent;
 import bma.common.langutil.ai.common.AIFunction;
+import bma.common.langutil.ai.compatible.SwitchAIException;
 import bma.common.langutil.ai.executor.AIExecutor;
 import bma.common.langutil.ai.stack.AIStack;
 import bma.common.langutil.ai.stack.AIStackAbstract;
 import bma.common.langutil.ai.stack.AIStackConvert;
 import bma.common.langutil.ai.stack.AIStackNone;
+import bma.common.langutil.ai.stack.AIStackStep;
 import bma.common.langutil.ai.stack.AIStackWrap;
 import bma.common.langutil.concurrent.TimerManager;
 import bma.common.langutil.core.DateTimeUtil;
+import bma.common.langutil.core.ObjectFilter;
 import bma.common.langutil.spring.ServerBooter;
 import bma.common.netty.SupportedNettyChannel;
 import bma.common.thrift.ThriftClient;
 import bma.common.thrift.entry.AIThriftEntry;
+import bma.common.thrift.servicehub.ThriftServiceHubClient;
+import bma.common.thrift.servicehub.ThriftServiceHubListener;
+import bma.common.thrift.servicehub.ThriftServicePointId;
+import bma.common.thrift.servicehub.ThriftServicePointInfo;
+import bma.common.thrift.servicehub.impl.ThriftServiceHub4ThriftAI;
 import bma.common.thrift.servicehub.protocol.TAIServiceHub4Peer;
+import bma.common.thrift.servicehub.protocol.TAIServiceHubListener.Iface;
 import bma.common.thrift.servicehub.protocol.TServicePointInfo;
 
 /**
@@ -33,7 +46,25 @@ import bma.common.thrift.servicehub.protocol.TServicePointInfo;
  * @author guanzhong
  * 
  */
-public class NettyThriftServiceHubPeer implements ServerBooter {
+public class NettyThriftServiceHubPeer implements ThriftServiceHubClient,
+		ServerBooter {
+
+	public static class Listener implements Iface {
+
+		private NettyThriftServiceHubPeer peer;
+
+		public Listener(NettyThriftServiceHubPeer peer) {
+			super();
+			this.peer = peer;
+		}
+
+		@Override
+		public boolean serviceHubEvent(AIStack<Boolean> stack, boolean changed)
+				throws TException {
+			return peer.serviceHubEvent(stack, changed);
+		}
+
+	}
 
 	final org.slf4j.Logger log = org.slf4j.LoggerFactory
 			.getLogger(NettyThriftServiceHubPeer.class);
@@ -44,6 +75,7 @@ public class NettyThriftServiceHubPeer implements ServerBooter {
 
 	protected AIThriftEntry entry;
 	protected List<String> hubUrlList;
+	protected String listenerUrl;
 
 	// runtime
 	protected ThriftClient client;
@@ -51,6 +83,17 @@ public class NettyThriftServiceHubPeer implements ServerBooter {
 	protected boolean connecting = false;
 	protected boolean logRetry = false;
 	protected AIEvent<Boolean> event = AIEvent.createManulResetEvent();
+
+	// cache
+	protected Map<ThriftServicePointId, ThriftServicePointInfo> infoMap = new ConcurrentHashMap<ThriftServicePointId, ThriftServicePointInfo>();
+
+	public String getListenerUrl() {
+		return listenerUrl;
+	}
+
+	public void setListenerUrl(String listenerEntry) {
+		this.listenerUrl = listenerEntry;
+	}
 
 	public List<String> getHubUrlList() {
 		return hubUrlList;
@@ -137,11 +180,11 @@ public class NettyThriftServiceHubPeer implements ServerBooter {
 		}
 
 		if (connect) {
-			AIStackConvert<ThriftClient, Boolean> st = new AIStackConvert<ThriftClient, Boolean>(
+			AIStackStep<ThriftClient, Boolean> st = new AIStackStep<ThriftClient, Boolean>(
 					stack) {
 
 				@Override
-				protected boolean convert(ThriftClient result) {
+				protected boolean next(ThriftClient result) {
 					synchronized (this) {
 						client = result;
 						api = new TAIServiceHub4Peer.Client(
@@ -169,23 +212,28 @@ public class NettyThriftServiceHubPeer implements ServerBooter {
 					// register listener
 					List<TServicePointInfo> infoList = new ArrayList<TServicePointInfo>(
 							0);
-					String listenerEntry = null;
 					try {
 						api.registerThriftServicePeer(
 								new AIStackNone<Boolean>(), infoList,
-								listenerEntry);
+								listenerUrl);
 					} catch (TException e) {
 						return failure(e);
 					}
 
 					// load all service from Hub
+					return reloadHubServices(new AIStackStep<Boolean, Boolean>(
+							delegate()) {
+						@Override
+						public boolean next(Boolean result) {
+							// do heartbeat
+							doHeartbeat();
 
-					// do heartbeat
-					doHeartbeat();
+							boolean r = successForward(true);
+							event.checkEvent();
+							return r;
+						}
+					});
 
-					boolean r = successConvert(true);
-					event.checkEvent();
-					return r;
 				}
 
 				@Override
@@ -298,6 +346,14 @@ public class NettyThriftServiceHubPeer implements ServerBooter {
 		}, queryHeartbeatTime()));
 	}
 
+	public boolean serviceHubEvent(AIStack<Boolean> stack, boolean changed)
+			throws TException {
+		if (log.isInfoEnabled()) {
+			log.info("receive serviceHubEvent({},{})", changed);
+		}
+		return stack.success(true);
+	}
+
 	public void start() {
 		open(new AIStackNone<Boolean>(), false, true);
 	}
@@ -318,6 +374,141 @@ public class NettyThriftServiceHubPeer implements ServerBooter {
 	@Override
 	public void stopServer() {
 		close();
+	}
+
+	protected static boolean isDone(Boolean r) {
+		if (r == null)
+			return false;
+		return r.booleanValue();
+	}
+
+	protected List<ThriftServiceHubListener> listenerList = new CopyOnWriteArrayList<ThriftServiceHubListener>();
+
+	@Override
+	public boolean addListener(AIStack<Boolean> stack,
+			ThriftServiceHubListener lis) {
+		if (!listenerList.contains(lis)) {
+			listenerList.add(lis);
+			return stack.success(true);
+		} else {
+			return stack.success(false);
+		}
+	}
+
+	public void eventNotify(boolean change) {
+		for (ThriftServiceHubListener lis : this.listenerList) {
+			try {
+				lis.eventNotify(change);
+			} catch (Exception e) {
+			}
+		}
+	}
+
+	@Override
+	public boolean removeListener(AIStack<Boolean> stack,
+			final ThriftServiceHubListener lis) {
+		boolean r = listenerList.remove(lis);
+		return stack.success(r);
+	}
+
+	@Override
+	public boolean getService(AIStack<ThriftServicePointInfo> stack,
+			ThriftServicePointId id) throws SwitchAIException {
+		return queryService(
+				new AIStackConvert<List<ThriftServicePointInfo>, ThriftServicePointInfo>(
+						stack) {
+					@Override
+					protected boolean convert(
+							List<ThriftServicePointInfo> result) {
+						if (result == null || result.isEmpty()) {
+							return successConvert(null);
+						}
+						return successConvert(result.get(0));
+					}
+				},
+				new ObjectFilter<ThriftServicePointInfo, ThriftServicePointId>() {
+					@Override
+					public boolean accept(ThriftServicePointInfo obj,
+							ThriftServicePointId id) {
+						return obj.equals(id);
+					}
+				}, id);
+	}
+
+	@Override
+	public <PTYPE> boolean queryService(
+			AIStack<List<ThriftServicePointInfo>> stack,
+			ObjectFilter<ThriftServicePointInfo, PTYPE> filter,
+			PTYPE filterParam) throws SwitchAIException {
+		return false;
+	}
+
+	protected boolean reloadHubServices(AIStack<Boolean> stack) {
+		AIStack<List<ThriftServicePointInfo>> loadStack = new AIStackStep<List<ThriftServicePointInfo>, Boolean>(
+				stack) {
+			@Override
+			protected boolean next(List<ThriftServicePointInfo> result) {
+
+				if (log.isInfoEnabled()) {
+					log.info("reloadHubServices({})", result == null ? 0
+							: result.size());
+				}
+
+				if (result != null) {
+					Set<ThriftServicePointId> keys = infoMap.keySet();
+					for (ThriftServicePointInfo info : result) {
+						keys.remove(info);
+						ThriftServicePointId id = info.cloneId();
+						infoMap.put(id, info);
+					}
+					for (ThriftServicePointId delId : keys) {
+						infoMap.remove(delId);
+					}
+				}
+				return super.successForward(true);
+			}
+
+			@Override
+			public boolean failure(Throwable t) {
+				if (log.isWarnEnabled()) {
+					log.warn("reloadHubServices fail: " + t);
+				}
+				return super.failure(t);
+			}
+		};
+		return loadHubServices(loadStack);
+	}
+
+	protected boolean loadHubServices(
+			AIStack<List<ThriftServicePointInfo>> stack) {
+		return open(new AIStackStep<Boolean, List<ThriftServicePointInfo>>(
+				stack) {
+
+			@Override
+			protected boolean next(Boolean result) {
+				if (!isDone(result)) {
+					return successForward(null);
+				}
+
+				try {
+					return api.listThriftServicesPeer(new AIStackConvert<List<TServicePointInfo>, List<ThriftServicePointInfo>>(
+							delegate()) {
+						@Override
+						protected boolean convert(List<TServicePointInfo> result) {
+							List<ThriftServicePointInfo> r = new LinkedList<ThriftServicePointInfo>();
+							if (result != null) {
+								for (TServicePointInfo info : result) {
+									r.add(ThriftServiceHub4ThriftAI.to(info));
+								}
+							}
+							return successConvert(r);
+						}
+					});
+				} catch (TException e) {
+					return failure(e);
+				}
+			}
+		}, false, false);
 	}
 
 }

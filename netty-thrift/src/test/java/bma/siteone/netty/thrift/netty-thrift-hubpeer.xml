@@ -13,22 +13,26 @@
 	<bean id="hubPeer" class="bma.siteone.netty.thrift.hub.NettyThriftServiceHubPeer">
 		<property name="entry" ref="aiThriftEntry"/>
 		<property name="hubUrl" value="socket://127.0.0.1:9092/?module=serviceHubExt&amp;frameSize=10m"/>
-		<property name="heartbeat" value="1m"/>
+		<property name="listenerUrl" value="socket://127.0.0.1:9192/?module=hubListener&amp;frameSize=10m"/>
+		<property name="heartbeat" value="60m"/>
 	</bean>
-	<bean id="atpListener" class="bma.common.thrift.servicehub.protocol.TAIServiceHubListener.Processor">		
+	<bean id="atpListener" class="bma.common.thrift.servicehub.protocol.TAIServiceHubListener.Processor">
 		<constructor-arg>
-			<bean class="bma.common.thrift.servicehub.impl.ThriftServiceHubListener4Log"/>		
+			<bean class="bma.siteone.netty.thrift.hub.NettyThriftServiceHubPeer.Listener">		
+				<constructor-arg ref="hubPeer"/>
+			</bean>
 		</constructor-arg>
-	</bean>	
+	</bean>
+		
 	<bean id="thriftManageNode" class="bma.common.thrift.servicehub.ThriftServiceNode">
 		<property name="name" value="hubpeer"/>
 		<property name="type" value="socket"/>
 		<property name="port" value="9192" />				
 		<property name="frameSize" value="10m"/>
-		<property name="defaultModule" value="listener"/>
+		<property name="defaultModule" value="hubListener"/>
 		<property name="serviceMap">
 			<map>
-				<entry key="listener" value-ref="atpListener" />
+				<entry key="hubListener" value-ref="atpListener" />
 			</map>
 		</property>
 	</bean>

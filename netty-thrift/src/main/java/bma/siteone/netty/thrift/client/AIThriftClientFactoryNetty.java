@@ -13,8 +13,10 @@ import org.jboss.netty.channel.ChannelHandler;
 import org.jboss.netty.channel.ChannelHandlerContext;
 import org.jboss.netty.channel.ChannelPipeline;
 import org.jboss.netty.channel.ChannelPipelineFactory;
+import org.jboss.netty.channel.ChannelStateEvent;
 import org.jboss.netty.channel.Channels;
 import org.jboss.netty.channel.ExceptionEvent;
+import org.jboss.netty.channel.SimpleChannelUpstreamHandler;
 
 import bma.common.langutil.ai.AIUtil;
 import bma.common.langutil.ai.stack.AIStack;
@@ -132,6 +134,30 @@ public class AIThriftClientFactoryNetty extends ThriftClientFactoryConfig
 				}
 				pipeline.addLast(TNettyChannelTransport.PIPELINE_NAME,
 						new ChannelHandlerPlaceholder());
+				ChannelHandler sch = new SimpleChannelUpstreamHandler() {
+					@Override
+					public void channelConnected(ChannelHandlerContext ctx,
+							ChannelStateEvent e) throws Exception {
+						try {
+							Channel ch = ctx.getChannel();
+							TNettyChannelTransport transport = null;
+							if (frameMaxLength > 0) {
+								transport = new TNettyChannelFramedTransport(
+										ch, frameMaxLength);
+							} else {
+								transport = new TNettyChannelTransport(ch);
+							}
+							transport.bindHandler();
+							TProtocol pro = createProtocol(transport);
+							AIUtil.safeSuccess(stack, new ThriftClient(
+									transport, pro));
+						} catch (Exception err) {
+							AIUtil.safeFailure(stack, err);
+						}
+						super.channelConnected(ctx, e);
+					}
+				};
+				pipeline.addLast("startu[", sch);
 				if (traceBufferSize > 0) {
 					pipeline.addLast("downlog", new ChannelHandlerLog(log,
 							LEVEL.DEBUG, TYPE.DOWNSTREAM, traceBufferSize));
@@ -165,22 +191,7 @@ public class AIThriftClientFactoryNetty extends ThriftClientFactoryConfig
 					public void operationComplete(ChannelFuture cf)
 							throws Exception {
 						if (cf.isSuccess()) {
-							try {
-								Channel ch = cf.getChannel();
-								TNettyChannelTransport transport = null;
-								if (frameMaxLength > 0) {
-									transport = new TNettyChannelFramedTransport(
-											ch, frameMaxLength);
-								} else {
-									transport = new TNettyChannelTransport(ch);
-								}
-								transport.bindHandler();
-								TProtocol pro = createProtocol(transport);
-								AIUtil.safeSuccess(stack, new ThriftClient(
-										transport, pro));
-							} catch (Exception err) {
-								AIUtil.safeFailure(stack, err);
-							}
+
 						} else {
 							AIUtil.safeFailure(stack, cf.getCause());
 						}
