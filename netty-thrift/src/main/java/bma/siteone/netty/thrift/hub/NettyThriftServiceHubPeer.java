@@ -31,13 +31,16 @@ import bma.common.langutil.spring.ServerBooter;
 import bma.common.netty.SupportedNettyChannel;
 import bma.common.thrift.ThriftClient;
 import bma.common.thrift.entry.AIThriftEntry;
+import bma.common.thrift.servicehub.ThriftServiceBean;
 import bma.common.thrift.servicehub.ThriftServiceHubClient;
 import bma.common.thrift.servicehub.ThriftServiceHubListener;
+import bma.common.thrift.servicehub.ThriftServiceNode;
 import bma.common.thrift.servicehub.ThriftServicePointId;
 import bma.common.thrift.servicehub.ThriftServicePointInfo;
 import bma.common.thrift.servicehub.impl.ThriftServiceHub4ThriftAI;
 import bma.common.thrift.servicehub.protocol.TAIServiceHub4Peer;
 import bma.common.thrift.servicehub.protocol.TAIServiceHubListener.Iface;
+import bma.common.thrift.servicehub.protocol.TServicePointId;
 import bma.common.thrift.servicehub.protocol.TServicePointInfo;
 
 /**
@@ -77,6 +80,8 @@ public class NettyThriftServiceHubPeer implements ThriftServiceHubClient,
 	protected List<String> hubUrlList;
 	protected String listenerUrl;
 
+	protected List<ThriftServiceNode> registerNodeList;
+
 	// runtime
 	protected ThriftClient client;
 	protected TAIServiceHub4Peer.Client api;
@@ -86,6 +91,20 @@ public class NettyThriftServiceHubPeer implements ThriftServiceHubClient,
 
 	// cache
 	protected Map<ThriftServicePointId, ThriftServicePointInfo> infoMap = new ConcurrentHashMap<ThriftServicePointId, ThriftServicePointInfo>();
+
+	public List<ThriftServiceNode> getRegisterNodeList() {
+		return registerNodeList;
+	}
+
+	public void setRegisterNodeList(List<ThriftServiceNode> nodeList) {
+		this.registerNodeList = nodeList;
+	}
+
+	public void setRegisterNode(ThriftServiceNode node) {
+		if (this.registerNodeList == null)
+			this.registerNodeList = new ArrayList();
+		this.registerNodeList.add(node);
+	}
 
 	public String getListenerUrl() {
 		return listenerUrl;
@@ -212,6 +231,22 @@ public class NettyThriftServiceHubPeer implements ThriftServiceHubClient,
 					// register listener
 					List<TServicePointInfo> infoList = new ArrayList<TServicePointInfo>(
 							0);
+					if (registerNodeList != null) {
+						for (ThriftServiceNode node : registerNodeList) {
+							for (ThriftServiceBean bean : node.getServices()) {
+								TServicePointId id = new TServicePointId();
+								id.setNodeName(node.getName());
+								id.setServiceName(bean.getModule());
+
+								TServicePointInfo info = new TServicePointInfo();
+								info.setId(id);
+								info.setProperties(bean.getServiceProperties());
+								info.setServiceEntry(bean.getEntry());
+
+								infoList.add(info);
+							}
+						}
+					}
 					try {
 						api.registerThriftServicePeer(
 								new AIStackNone<Boolean>(), infoList,
@@ -349,9 +384,9 @@ public class NettyThriftServiceHubPeer implements ThriftServiceHubClient,
 	public boolean serviceHubEvent(AIStack<Boolean> stack, boolean changed)
 			throws TException {
 		if (log.isInfoEnabled()) {
-			log.info("receive serviceHubEvent({},{})", changed);
+			log.info("receive serviceHubEvent({})", changed);
 		}
-		return stack.success(true);
+		return reloadHubServices(stack);
 	}
 
 	public void start() {
@@ -440,7 +475,19 @@ public class NettyThriftServiceHubPeer implements ThriftServiceHubClient,
 			AIStack<List<ThriftServicePointInfo>> stack,
 			ObjectFilter<ThriftServicePointInfo, PTYPE> filter,
 			PTYPE filterParam) throws SwitchAIException {
-		return false;
+		List<ThriftServicePointInfo> r = new ArrayList<ThriftServicePointInfo>();
+		for (Map.Entry<ThriftServicePointId, ThriftServicePointInfo> entry : this.infoMap
+				.entrySet()) {
+			ThriftServicePointInfo info = entry.getValue();
+			if (filter != null) {
+				if (filter.accept(info, filterParam)) {
+					r.add(info);
+				}
+			} else {
+				r.add(info);
+			}
+		}
+		return stack.success(r);
 	}
 
 	protected boolean reloadHubServices(AIStack<Boolean> stack) {

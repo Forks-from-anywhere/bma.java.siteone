@@ -6,15 +6,38 @@
 	
 	<import resource="netty-thrift-global.xml"/>
 
-	<!-- skip ServiceNode -->	
-	<bean id="thriftServiceNode" class="bma.common.thrift.servicehub.ThriftServiceNode"/>
+	<!-- ThriftServiceNode -->
+	<bean id="serviceHello" class="bma.common.thrift.sample.HelloHandler">
+		<property name="executor" ref="aiExecutor"/>
+	</bean>
+	<bean id="atpHello" class="bma.common.thrift.sample.Hello4AI.Processor">		
+		<constructor-arg ref="serviceHello" />
+	</bean>
+	
+	<bean id="thriftServiceNode" class="bma.common.thrift.servicehub.ThriftServiceNode">
+		<property name="name" value="nodeName"/>
+		<property name="type" value="socket"/>
+		<property name="accessHost" value="172.19.16.78"/>
+		<property name="port" value="9093" />				
+		<property name="frameSize" value="10m"/>
+		<property name="defaultModule" value="hello"/>
+		<property name="serviceMap">
+			<map>
+				<entry key="hello" value-ref="atpHello" />				
+			</map>
+		</property>
+	</bean>
 	
 	<!-- ThriftManageNode -->
 	<bean id="hubPeer" class="bma.siteone.netty.thrift.hub.NettyThriftServiceHubPeer">
 		<property name="entry" ref="aiThriftEntry"/>
-		<property name="hubUrl" value="socket://127.0.0.1:9092/?module=serviceHubExt&amp;frameSize=10m"/>
-		<property name="listenerUrl" value="socket://127.0.0.1:9192/?module=hubListener&amp;frameSize=10m"/>
+		<!--		
+		<property name="hubUrl" value="socket://172.19.16.195:9291/?module=serviceHubExt&amp;frameSize=10m"/>
+		 -->
+		 <property name="hubUrl" value="socket://127.0.0.1:9092/?module=serviceHubExt&amp;frameSize=10m"/>
+		<property name="listenerUrl" value="socket://172.19.16.78:9193/?module=hubListener&amp;frameSize=10m"/>
 		<property name="heartbeat" value="60m"/>
+		<property name="registerNode" ref="thriftServiceNode"/>
 	</bean>
 	<bean id="atpListener" class="bma.common.thrift.servicehub.protocol.TAIServiceHubListener.Processor">
 		<constructor-arg>
@@ -27,7 +50,7 @@
 	<bean id="thriftManageNode" class="bma.common.thrift.servicehub.ThriftServiceNode">
 		<property name="name" value="hubpeer"/>
 		<property name="type" value="socket"/>
-		<property name="port" value="9192" />				
+		<property name="port" value="9193" />				
 		<property name="frameSize" value="10m"/>
 		<property name="defaultModule" value="hubListener"/>
 		<property name="serviceMap">

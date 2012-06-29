@@ -36,13 +36,13 @@
 	</bean>
 	<bean id="aiThriftEntry" class="bma.siteone.netty.thrift.client.AIThriftEntryNetty">
 		<property name="bootstrap" ref="nettyClientBootstrap"/>
-		<property name="traceBufferSize" value="256"/>
+		<property name="traceBufferSize" value="0"/>
 	</bean>
 
 	<!-- ip limit  -->
     <bean id="secureFilter" class="bma.common.netty.handler.ChannelHandlerIpFilter">
 		<property name="whiteAddress">
-	        <value>127.0.0.1,127.0.0.6</value>
+	        <value></value>
 		</property>
     </bean>
     
