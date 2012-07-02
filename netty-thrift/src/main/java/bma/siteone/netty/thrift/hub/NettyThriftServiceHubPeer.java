@@ -512,7 +512,11 @@ public class NettyThriftServiceHubPeer implements ThriftServiceHubClient,
 						infoMap.remove(delId);
 					}
 				}
-				return super.successForward(true);
+				try {
+					return super.successForward(true);
+				} finally {
+					eventNotify(true);
+				}
 			}
 
 			@Override

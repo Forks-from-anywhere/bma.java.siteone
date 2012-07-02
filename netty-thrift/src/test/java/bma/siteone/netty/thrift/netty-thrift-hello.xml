@@ -5,6 +5,7 @@
 	http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-3.0.xsd">
 	
 	<import resource="netty-thrift-global.xml"/>
+	<import resource="netty-thrift-peer.xml"/>
 
 	<!-- ThriftServiceNode -->
 	<bean id="serviceHello" class="bma.common.thrift.sample.HelloHandler">
@@ -13,7 +14,10 @@
 	<bean id="atpHello" class="bma.common.thrift.sample.Hello4AI.Processor">		
 		<constructor-arg ref="serviceHello" />
 	</bean>
-	
+	<bean id="tbeanHello" class="bma.common.thrift.servicehub.ThriftServiceBean">
+		<property name="module" value="hello"/>
+		<property name="processor" ref="atpHello"/>
+	</bean>	
 	<bean id="thriftServiceNode" class="bma.common.thrift.servicehub.ThriftServiceNode">
 		<property name="name" value="nodeName"/>
 		<property name="type" value="socket"/>
@@ -21,41 +25,37 @@
 		<property name="port" value="9093" />				
 		<property name="frameSize" value="10m"/>
 		<property name="defaultModule" value="hello"/>
-		<property name="serviceMap">
-			<map>
-				<entry key="hello" value-ref="atpHello" />				
-			</map>
+		<property name="services">
+			<list>
+				<ref bean="tbeanHello"/>				
+			</list>
 		</property>
 	</bean>
 	
+	<!-- TMBean -->
+	<bean id="tmbean" class="bma.common.thrift.servicehub.impl.ThriftCommonManagableService">
+		<property name="executor" ref="aiExecutor"/>
+		<property name="beanList">
+			<list>
+				<ref bean="tbeanHello"/>
+			</list>
+		</property>
+	</bean>
+	<bean id="atpTMBean" class="bma.common.thrift.servicehub.protocol.TAIServiceCommonManage.Processor">
+		<constructor-arg ref="tmbean" />
+	</bean>		
+	
 	<!-- ThriftManageNode -->
-	<bean id="hubPeer" class="bma.siteone.netty.thrift.hub.NettyThriftServiceHubPeer">
-		<property name="entry" ref="aiThriftEntry"/>
-		<!--		
-		<property name="hubUrl" value="socket://127.0.0.1:9092/?module=serviceHubExt&amp;frameSize=10m"/>
-		 -->
-		 <property name="hubUrl" value="socket://172.19.16.195:9291/?module=serviceHubExt&amp;frameSize=10m"/>		 
-		<property name="listenerUrl" value="socket://172.19.16.78:9193/?module=hubListener&amp;frameSize=10m"/>
-		<property name="heartbeat" value="60m"/>
-		<property name="registerNode" ref="thriftServiceNode"/>
-	</bean>
-	<bean id="atpListener" class="bma.common.thrift.servicehub.protocol.TAIServiceHubListener.Processor">
-		<constructor-arg>
-			<bean class="bma.siteone.netty.thrift.hub.NettyThriftServiceHubPeer.Listener">		
-				<constructor-arg ref="hubPeer"/>
-			</bean>
-		</constructor-arg>
-	</bean>
-		
 	<bean id="thriftManageNode" class="bma.common.thrift.servicehub.ThriftServiceNode">
-		<property name="name" value="hubpeer"/>
+		<property name="name" value="nodeName-manage"/>
 		<property name="type" value="socket"/>
 		<property name="port" value="9193" />				
 		<property name="frameSize" value="10m"/>
-		<property name="defaultModule" value="hubListener"/>
+		<property name="defaultModule" value="hubPeerListener"/>
 		<property name="serviceMap">
 			<map>
-				<entry key="hubListener" value-ref="atpListener" />
+				<entry key="hubPeerListener" value-ref="atpListener" />
+				<entry key="tmbean" value-ref="atpTMBean" />
 			</map>
 		</property>
 	</bean>
@@ -68,7 +68,7 @@
         	<list>
         		<ref bean="thriftManageServer"/>
         		<ref bean="thriftServiceServer"/>   
-        		<ref bean="hubPeer"/>     		
+        		<ref bean="hubPeer"/>
         	</list>
         </property>
     </bean>	  
