@@ -11,7 +11,7 @@ public class NettyThriftStandardTC {
 	@Before
 	public void setUp() {
 		LogbackUtil.setLevel("bma.common.langutil.concurrent.ProcessTimeWheel",
-				"DEBUG");
+				"INFO");
 	}
 
 	@Test

@@ -40,6 +40,23 @@
 				<ref bean="tbeanHello"/>
 			</list>
 		</property>
+		<property name="infoList">
+			<list>
+				<bean class="bma.common.thrift.tmbean.TMBeanInfo">
+					<property name="serviceName" value="file"/>
+					<property name="mbean">
+						<bean class="bma.common.thrift.common.FileTMBean">
+							<property name="config">
+								<bean class="bma.common.thrift.common.FileTMBeanConfig">
+									<property name="key" value=""/>
+									<property name="rootFile" value="e:/tmp/hub"/>									
+								</bean>
+							</property>
+						</bean>
+					</property>
+				</bean>
+			</list>
+		</property>
 	</bean>
 	<bean id="atpTMBean" class="bma.common.thrift.servicehub.protocol.TAIServiceCommonManage.Processor">
 		<constructor-arg ref="tmbean" />

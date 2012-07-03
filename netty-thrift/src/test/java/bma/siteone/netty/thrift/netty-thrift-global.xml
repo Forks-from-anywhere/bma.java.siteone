@@ -48,9 +48,7 @@
 		<property name="whiteAddress">
 			<value></value>
 		</property>
-		<!-- 
-		<property name="file" value="e:/tmp/iplimit.txt"/>
-		 -->
+		<property name="file" value="e:/tmp/hub/iplimit.txt"/>
 	</bean>
 
 	<bean id="thriftServiceServer" class="bma.siteone.netty.thrift.core.NettyThriftServer"
