@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:aop="http://www.springframework.org/schema/aop" xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+                     http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+                     http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd
+                     http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-3.0.xsd
+                     http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-3.0.xsd">
+
+	<context:annotation-config />
+	
+	<!-- 导入外部文件 -->
+	<context:property-placeholder location="classpath:service.properties" />
+	
+	<!-- dataSource -->
+	<bean id="dataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource"
+		destroy-method="close">
+		<property name="driverClass" value="${jdbc.driverClassName}" />
+		<property name="jdbcUrl" value="${jdbc.url}" />
+		<property name="initialPoolSize">
+			<value>${jdbc.initialPoolSize}</value>
+		</property>
+		<property name="minPoolSize">
+			<value>${jdbc.minPoolSize}</value>
+		</property>
+		<property name="maxPoolSize">
+			<value>${jdbc.maxPoolSize}</value>
+		</property>
+		<property name="acquireIncrement">
+			<value>${jdbc.acquireIncrement}</value>
+		</property>
+		<property name="maxIdleTime">
+			<value>${jdbc.maxIdleTime}</value>
+		</property>
+		<property name="maxStatements">
+			<value>${jdbc.maxStatements}</value>
+		</property>
+	</bean>
+
+	<!-- jdbcTemplate -->
+	<bean id="jdbcTemplate" class="org.springframework.jdbc.core.JdbcTemplate">		
+		<property name="dataSource" ref="dataSource" />
+	</bean>
+
+	<bean id="txManager"
+		class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+		<property name="dataSource" ref="dataSource" />
+	</bean>
+	<tx:annotation-driven transaction-manager="txManager" />
+
+	<bean id="service" class="bma.siteone.message.service.MessageServiceImpl" init-method="init" lazy-init="false">
+		<property name="jdbcTemplate" ref="jdbcTemplate" />
+		<property name="deleteExpireConfig">
+				<map>
+					<entry key="${message.app.live}" value="${message.app.live.expire}" />
+					<entry key="${message.app.live2}" value="${message.app.live2.expire}" />
+				</map>
+		</property>
+	</bean>
+	
+	<bean id="serverTrans" class="org.apache.thrift.transport.TNonblockingServerSocket">
+		<constructor-arg value="${thrift.serverTrans.port}" />
+	</bean>
+	
+	<bean id="handler" class="bma.siteone.message.service.MessageServiceThrift">
+		<property name="service" ref="service" />
+	</bean>
+	<bean id="processor" class="bma.siteone.message.thrift.TMessageService.Processor">
+		<constructor-arg ref="handler" />
+	</bean>
+	
+	<bean id="server" class="bma.common.thrift.ThriftServer.HsHaServer"
+		destroy-method="close">
+		<constructor-arg ref="serverTrans" />
+		<constructor-arg>
+			<bean class="bma.common.thrift.TProcessorRouter">
+				<property name="defaultModule" value="message"/>
+				<property name="processors">
+					<map>
+						<entry key="message" value-ref="processor" />
+					</map>
+				</property>
+			</bean>
+		</constructor-arg>
+		<constructor-arg value="${thrift.HsHaServer.worker}"/>
+		<constructor-arg value="${thrift.HsHaServer.maxFrameSize}"/>
+	</bean> 
+
+</beans>

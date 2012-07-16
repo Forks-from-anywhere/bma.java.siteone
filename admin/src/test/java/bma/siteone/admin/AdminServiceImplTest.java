@@ -325,12 +325,14 @@ public class AdminServiceImplTest {
 		ops.add("createProfile");
 		ops.add("deleteProfile");
 		ops.add("refreshProfile");
+		ops.add("refreshActCount");
 		ops.add("showProfile");
 		ops.add("editProfile");
 		ops.add("deleteIdcard");
 		ops.add("deleteAvatar");
 		ops.add("sync");
 		ops.add("authProfile");
+		ops.add("recommendProfile");
 		
 		ops.add("listGame");
 		ops.add("deleteGame");
@@ -341,6 +343,13 @@ public class AdminServiceImplTest {
 		ops.add("deleteChannel");
 		ops.add("editChannel");
 		ops.add("createChannel");
+		
+		ops.add("listParam");
+		ops.add("createParam");
+		ops.add("editParam");
+		ops.add("deleteParam");
+		
+		ops.add("propStats");
 		
 		for(String op : ops){
 			AdminOp adminOp = new AdminOp();
@@ -385,6 +394,7 @@ public class AdminServiceImplTest {
 		ops_admin.add("createProfile");
 		ops_admin.add("deleteProfile");
 		ops_admin.add("refreshProfile");
+		ops_admin.add("refreshActCount");
 		ops_admin.add("showProfile");
 		
 		ops_admin.add("editProfile");
@@ -392,6 +402,7 @@ public class AdminServiceImplTest {
 		ops_admin.add("deleteAvatar");
 		ops_admin.add("sync");
 		ops_admin.add("authProfile");
+		ops_admin.add("recommendProfile");
 		
 		ops_admin.add("listGame");
 		ops_admin.add("deleteGame");
@@ -402,6 +413,13 @@ public class AdminServiceImplTest {
 		ops_admin.add("deleteChannel");
 		ops_admin.add("editChannel");
 		ops_admin.add("createChannel");
+		
+		ops_admin.add("listParam");
+		ops_admin.add("createParam");
+		ops_admin.add("editParam");
+		ops_admin.add("deleteParam");
+		
+		ops_admin.add("propStats");
 		
 		for(String op : ops_admin){
 			RoleOp roleOp = new RoleOp();
@@ -418,6 +436,7 @@ public class AdminServiceImplTest {
 		ops_editor.add("createProfile");
 		ops_editor.add("deleteProfile");
 		ops_editor.add("refreshProfile");
+		ops_editor.add("refreshActCount");
 		ops_editor.add("showProfile");
 		
 		ops_editor.add("editProfile");
@@ -434,7 +453,6 @@ public class AdminServiceImplTest {
 		ops_editor.add("deleteChannel");
 		ops_editor.add("editChannel");
 		ops_editor.add("createChannel");
-		
 		
 		for(String op : ops_editor){
 			RoleOp roleOp = new RoleOp();

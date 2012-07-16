@@ -1,29 +1,24 @@
-package bma.siteone.filestore;
+package bma.siteone.message;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
 import org.springframework.context.support.FileSystemXmlApplicationContext;
+import org.junit.Before;
+import org.junit.After;
+import org.junit.Test;
 
+import bma.common.jdbctemplate.JdbcTemplateUtil;
 import bma.common.langutil.core.ObjectUtil;
 import bma.common.langutil.testcase.SpringTestcaseUtil;
 import bma.common.thrift.ThriftServer;
 
-/**
- * Thrift服务测试用例
- * 
- * @author 关中
- * 
- */
-public class FileStoreServerTest {
+public class MessageServerTest {
 
 	FileSystemXmlApplicationContext context;
-
+	
 	@Before
 	public void setUp() throws Exception {
 		SpringTestcaseUtil.disableDebug();
-		context = new SpringTestcaseUtil.ApplicationContextBuilder().resource(
-				FileStoreServerTest.class, "filestore.xml").build();
+		JdbcTemplateUtil.disableDebug(true);
+		context = new SpringTestcaseUtil.ApplicationContextBuilder().project("src/test/resources/spring_server.xml").build();
 	}
 
 	@After
@@ -31,7 +26,7 @@ public class FileStoreServerTest {
 		if (context != null)
 			context.close();
 	}
-
+	
 	/**
 	 * 测试服务端启动
 	 * 
