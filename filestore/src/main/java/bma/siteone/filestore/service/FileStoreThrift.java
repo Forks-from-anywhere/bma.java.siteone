@@ -1,8 +1,10 @@
 package bma.siteone.filestore.service;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
@@ -15,12 +17,14 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
+import org.apache.thrift.TApplicationException;
 import org.apache.thrift.TException;
 
 import bma.common.langutil.core.DateTimeUtil;
 import bma.common.langutil.core.Preconditions;
 import bma.common.langutil.core.StringUtil;
 import bma.common.langutil.core.VPath;
+import bma.common.langutil.core.ValueUtil;
 import bma.common.langutil.io.IOUtil;
 import bma.siteone.filestore.thrift.TFileStore;
 
@@ -152,7 +156,7 @@ public class FileStoreThrift implements TFileStore.Iface {
 	public String beginSession(String appId) throws TException {
 		FileStoreConfig cfg = configs.get(appId);
 		if (cfg == null) {
-			throw new TException("app '" + appId + "' not exists");
+			throw new TApplicationException("app '" + appId + "' not exists");
 		}
 		final FileStoreSession s = createSession(appId);
 		if (log.isDebugEnabled()) {
@@ -231,10 +235,10 @@ public class FileStoreThrift implements TFileStore.Iface {
 		}
 		FileStoreSession s = getSession(token);
 		if (s == null) {
-			throw new TException("session('" + token + "') invalid");
+			throw new TApplicationException("session('" + token + "') invalid");
 		}
 		if (!check(s, vcode)) {
-			throw new TException("vcode('" + vcode + "') invalid");
+			throw new TApplicationException("vcode('" + vcode + "') invalid");
 		}
 		s.setLastRequestTime(System.currentTimeMillis());
 
@@ -267,7 +271,7 @@ public class FileStoreThrift implements TFileStore.Iface {
 			if (log.isWarnEnabled()) {
 				log.warn("save file(" + file + ") fail", e);
 			}
-			throw new TException("save file(" + path + ") fail - "
+			throw new TApplicationException("save file(" + path + ") fail - "
 					+ e.getMessage());
 		}
 
@@ -296,10 +300,10 @@ public class FileStoreThrift implements TFileStore.Iface {
 		}
 		FileStoreSession s = getSession(token);
 		if (s == null) {
-			throw new TException("session('" + token + "') invalid");
+			throw new TApplicationException("session('" + token + "') invalid");
 		}
 		if (!check(s, vcode)) {
-			throw new TException("vcode('" + vcode + "') invalid");
+			throw new TApplicationException("vcode('" + vcode + "') invalid");
 		}
 		s.setLastRequestTime(System.currentTimeMillis());
 
@@ -325,10 +329,10 @@ public class FileStoreThrift implements TFileStore.Iface {
 		}
 		FileStoreSession s = getSession(token);
 		if (s == null) {
-			throw new TException("session('" + token + "') invalid");
+			throw new TApplicationException("session('" + token + "') invalid");
 		}
 		if (!check(s, vcode)) {
-			throw new TException("vcode('" + vcode + "') invalid");
+			throw new TApplicationException("vcode('" + vcode + "') invalid");
 		}
 		sessions.remove(s.getSessionId());
 
@@ -379,8 +383,82 @@ public class FileStoreThrift implements TFileStore.Iface {
 		}
 
 		if (err.length() > 0) {
-			throw new TException(err + " fail");
+			throw new TApplicationException(err + " fail");
 		}
 	}
 
+	@Override
+	public ByteBuffer readFile(String appId, String path, int pos,
+			int readSize, String vcode) throws TException {
+		if (log.isDebugEnabled()) {
+			log.debug("readFile({}, {},{},{},{})", new Object[] { appId, path,
+					pos, readSize, vcode });
+		}
+
+		FileStoreConfig cfg = configs.get(appId);
+		if (cfg == null) {
+			throw new TApplicationException("app '" + appId + "' not exists");
+		}
+
+		String key = cfg.getKey();
+		if (ValueUtil.notEmpty(key)) {
+			StringBuilder buf = new StringBuilder();
+			buf.append(appId).append(path).append(pos).append(readSize);
+			String m = createVCode(buf.toString(), key);
+
+			if (!StringUtil.equalsIgnoreCase(m, vcode)) {
+				if (log.isWarnEnabled()) {
+					log.warn("vcode invalid - {}/{}", m, vcode);
+				}
+				throw new TApplicationException("vcode('" + vcode
+						+ "') invalid");
+			}
+		}
+
+		File file = getPathFile(cfg.getRoot(), path);
+		try {
+			if (file.exists()) {
+				if (file.isDirectory()) {
+					if (log.isDebugEnabled()) {
+						log.debug("skip read dir - {}", file);
+					}
+					return ByteBuffer.wrap(new byte[0]);
+				} else {
+					long len = file.length();
+					int sz = Math.min(pos + readSize, (int) len) - pos;
+					if (log.isDebugEnabled()) {
+						log.debug(
+								"reading file ({},{}) : {}/{} ",
+								new Object[] { file, len, pos, sz > 0 ? sz : 0 });
+					}
+					if (sz <= 0)
+						return ByteBuffer.wrap(new byte[0]);
+					InputStream in = null;
+					try {
+						in = new FileInputStream(file);
+						if (pos > 0) {
+							in.skip(pos);
+						}
+						byte[] buffer = new byte[sz];
+						in.read(buffer);
+						return ByteBuffer.wrap(buffer);
+					} finally {
+						IOUtil.close(in);
+					}
+				}
+			} else {
+				if (log.isDebugEnabled()) {
+					log.debug("file - {} not exists", file);
+				}
+				return ByteBuffer.wrap(new byte[0]);
+			}
+
+		} catch (Exception e) {
+			String msg = "read file {} fail - " + e.getMessage();
+			if (log.isWarnEnabled()) {
+				log.warn(msg, e);
+			}
+			throw new TApplicationException(msg);
+		}
+	}
 }

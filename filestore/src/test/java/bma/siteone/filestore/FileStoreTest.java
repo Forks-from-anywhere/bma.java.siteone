@@ -93,4 +93,33 @@ public class FileStoreTest {
 		s.commitSession(token, vcode);
 	}
 
+	@Test
+	public void testService_Read() throws Exception {
+		FileStoreThrift s = context.getBean("filestore", FileStoreThrift.class);
+
+		String app = "test2";
+		String vcode = null;
+
+		String file = "/f6.txt";
+		boolean bin = true;
+		file = "/Thunder5.9.10.1144.exe";
+		for (int i = 0;; i++) {
+			int sz = 1000 * 1000;
+
+			if (app.equals("test2")) {
+				StringBuilder sb = new StringBuilder();
+				sb.append("test2/Thunder5.9.10.1144.exe").append(i * sz)
+						.append(sz);
+				vcode = FileStoreThrift.createVCode(sb.toString(), "123456");
+			}
+
+			ByteBuffer bb = s.readFile(app, file, i * sz, sz, vcode);
+			System.out.println(i + ":" + bb.remaining());
+			if (bb.remaining() != sz)
+				break;
+			if (!bin) {
+				System.out.println(new String(bb.array()));
+			}
+		}
+	}
 }

@@ -27,4 +27,6 @@ service TFileStore {
    void removeFile(1:string token, 2:string path, 3:string vcode), 
 
    void commitSession(1:string token, 2:string vcode),
+   
+   binary readFile(1:string appId, 2:string path, 3:i32 pos, 4:i32 readSize, 5:string vcode),
 }
