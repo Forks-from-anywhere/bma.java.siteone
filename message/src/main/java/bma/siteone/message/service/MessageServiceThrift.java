@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.apache.thrift.TException;
 
+import bma.common.langutil.core.DateTimeUtil;
 import bma.common.langutil.core.Function;
 import bma.common.langutil.core.ListUtil;
 import bma.common.langutil.core.PagerResult;
@@ -81,7 +82,7 @@ public class MessageServiceThrift implements TMessageService.Iface{
 						tInfo.setSender(input.getSender());
 						tInfo.setTitle(input.getTitle());
 						tInfo.setContent(input.getContent());
-						tInfo.setSendTime(input.getSendTime().toLocaleString());
+						tInfo.setSendTime(DateTimeUtil.formatDateTime(input.getSendTime()));
 						tInfo.setIsRead(input.getIsRead());
 						return tInfo;
 					}
