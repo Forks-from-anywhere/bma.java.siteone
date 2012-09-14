@@ -16,12 +16,13 @@
 				<prop key="threadpool.keepAliveSeconds">60</prop>
 				<prop key="aithread.corePoolSize">1</prop>
 				<prop key="aithread.maxPoolSize">1</prop>
+				<prop key="runtime.config.path">e:/tmp/</prop>
 				<prop key="netty.client.worker">3</prop>
 				<prop key="netty.server.worker">5</prop>
 				<prop key="thrift.node1.name">testNode1</prop>
 				<prop key="thrift.node1.host">172.19.16.78</prop>
 				<prop key="thrift.node1.port">9080</prop>				
-				<prop key="thrift.whiteAddress"></prop>
+				<prop key="thrift.whiteAddress"></prop>				
 			</props>
 		</property>
 	</bean>
@@ -50,9 +51,62 @@
 							<bean class="bma.siteone.clound.impl.LocalCloundService4Test">
 								<property name="serviceId" value="s1"/>
 							</bean>
+							<bean class="bma.siteone.clound.local.SimpleLocalCloundService">
+								<property name="serviceId" value="manageService"/>
+								<property name="title" value="服务器管理服务"/>
+								<property name="apiMap">
+									<map>
+										<entry key="shutdown">
+											<bean class="bma.siteone.clound.common.CloundApi4Shutdown">
+												<property name="apiId" value="shutdown"/>
+												<property name="confirmWord" value="shutdown"/>
+												<property name="apiDesc">
+													<map>
+														<entry key="phpagent" value="bma\clound\common\Agent4Shutdown"/>
+													</map>
+												</property>
+											</bean>
+										</entry>
+										<entry key="gc">
+											<bean class="bma.siteone.clound.common.CloundApi4GC">
+												<property name="apiId" value="gc"/>
+												<property name="apiDesc">
+													<map>
+														<entry key="phpagent" value="bma\clound\common\Agent4GC"/>
+													</map>
+												</property>
+											</bean>
+										</entry>
+										<entry key="runtimeConfig">
+											<bean class="bma.siteone.clound.common.CloundApi4RuntimeConfig">
+												<property name="apiId" value="runtimeConfig"/>
+												<property name="config" ref="runtimeConfig"/>
+												<property name="fileName" value="config1"/>
+												<property name="apiDesc">
+													<map>
+														<entry key="phpagent" value="bma\clound\common\Agent4RuntimeConfig"/>
+													</map>
+												</property>
+											</bean>
+										</entry>
+									</map>
+								</property>
+							</bean>
 						</list>
 					</property>
-				</bean>				
+				</bean>			
+				<bean class="bma.siteone.clound.local.LocalCloundApp">
+					<property name="appId" value="app2"/>
+					<property name="appName" value="testapp"/>
+					<property name="title" value="test Clound App 2"/>
+					<property name="services">
+						<list>
+							<bean class="bma.siteone.clound.impl.LocalCloundService4Test">
+								<property name="serviceId" value="s1"/>
+							</bean>
+						</list>
+					</property>
+				</bean>
 			</list>
 		</property>
 	</bean>

@@ -8,6 +8,7 @@ import bma.siteone.clound.CloundApi;
 import bma.siteone.clound.CloundEntry;
 import bma.siteone.clound.CloundRequest;
 import bma.siteone.clound.CloundResponse;
+import bma.siteone.clound.local.LocalCloundApi;
 import bma.siteone.clound.local.LocalCloundService;
 
 public class LocalCloundService4Test extends LocalCloundService {
@@ -20,7 +21,7 @@ public class LocalCloundService4Test extends LocalCloundService {
 	@Override
 	public Map<String, CloundApi> createApis() {
 		Map<String, CloundApi> r = new HashMap<String, CloundApi>();
-		r.put("api1", new SimpleCloundApi("api1") {
+		r.put("api1", new LocalCloundApi("api1") {
 
 			@Override
 			public Map<String, Object> getDesc() {
@@ -36,7 +37,7 @@ public class LocalCloundService4Test extends LocalCloundService {
 				return stack.success(rep);
 			}
 		});
-		r.put("api2", new SimpleCloundApi("api2") {
+		r.put("api2", new LocalCloundApi("api2") {
 
 			@Override
 			public Map<String, Object> getDesc() {
@@ -52,7 +53,7 @@ public class LocalCloundService4Test extends LocalCloundService {
 				return stack.success(rep);
 			}
 		});
-		r.put("api3", new SimpleCloundApi("api3") {
+		r.put("api3", new LocalCloundApi("api3") {
 
 			@Override
 			public Map<String, Object> getDesc() {

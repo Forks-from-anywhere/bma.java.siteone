@@ -9,6 +9,7 @@ import bma.common.json.JsonUtil;
 import bma.common.langutil.ai.stack.AIStack;
 import bma.common.langutil.ai.stack.AIStackConvert;
 import bma.common.langutil.core.ExceptionUtil;
+import bma.common.langutil.core.ValueUtil;
 import bma.siteone.clound.CloundApi;
 import bma.siteone.clound.CloundException;
 import bma.siteone.clound.CloundRequest;
@@ -21,7 +22,26 @@ public abstract class LocalCloundService implements CloundService,
 		CloundTrackable {
 
 	protected String serviceId;
+	protected String title;
 	protected Map<String, CloundApi> apiMap;
+
+	private Map<String, String> serviceDesc;
+
+	public Map<String, String> getServiceDesc() {
+		return serviceDesc;
+	}
+
+	public void setServiceDesc(Map<String, String> simpleDesc) {
+		this.serviceDesc = simpleDesc;
+	}
+
+	public String getTitle() {
+		return title;
+	}
+
+	public void setTitle(String title) {
+		this.title = title;
+	}
 
 	@Override
 	public String getServiceId() {
@@ -55,8 +75,10 @@ public abstract class LocalCloundService implements CloundService,
 			desc = new HashMap<String, Object>();
 		}
 		desc.put("serviceId", getServiceId());
-		desc.put("local", true);
-		desc.put("apiSize", sureApis().size());
+		if (ValueUtil.notEmpty(title)) {
+			desc.put("title", title);
+		}
+		
 		try {
 			String r = JsonUtil.getDefaultMapper().writeValueAsString(desc);
 			return stack.success(r);
@@ -65,7 +87,15 @@ public abstract class LocalCloundService implements CloundService,
 		}
 	}
 
-	public abstract Map<String, Object> getDesc();
+	public Map<String, Object> getDesc() {
+		Map<String, Object> r = new HashMap<String, Object>();
+		if (this.serviceDesc != null) {
+			for (Map.Entry<String, String> e : this.serviceDesc.entrySet()) {
+				r.put(e.getKey(), e.getValue());
+			}
+		}
+		return r;
+	}
 
 	@Override
 	public boolean cloundCall(AIStack<CloundResponse> stack,

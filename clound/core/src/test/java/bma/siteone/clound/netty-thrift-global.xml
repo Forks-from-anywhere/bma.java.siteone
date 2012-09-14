@@ -5,7 +5,8 @@
 	http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-3.0.xsd">
 
 	<!-- timer -->
-	<bean id="aitimer" class="bma.common.langutil.concurrent.TimerManager" />
+	<bean id="aitimer" class="bma.common.langutil.concurrent.TimerManager"
+		init-method="startManager" destroy-method="stopManager"/>
 	<!-- main thread -->
 	<bean id="mainThread" class="bma.common.langutil.ai.common.AIExecutorMain" />
 	<!-- sync thread pool -->
@@ -31,6 +32,26 @@
 			</bean>
 		</property>
 	</bean>
+	
+	<!-- runtime config -->
+	<bean id="runtimeConfig" class="bma.common.langutil.runtime.RuntimeConfig"
+		init-method="init" destroy-method="close">
+		<!--
+		<property name="checkTime" value="5s"/>
+		 -->
+		<property name="executor">
+			<bean class="bma.common.langutil.concurrent.ScheduledExecutorTM">
+				<constructor-arg><ref bean="aitimer"/></constructor-arg>
+			</bean>
+		</property>
+		<property name="files">
+			<list>
+				<value>${runtime.config.path}config1.properties</value>
+				<value>${runtime.config.path}config2.properties</value>
+				<value>${runtime.config.path}config3.properties</value>
+			</list>
+		</property>
+	</bean>
 
 	<!-- netty client support -->
 	<bean id="nettyClientBootstrap" class="bma.common.netty.client.NettyClientBootstrap"
@@ -44,11 +65,9 @@
 
 	<!-- ip limit -->
 	<bean id="secureFilter" class="bma.siteone.netty.thrift.common.ThriftIpLimit"
-		init-method="init" destroy-method="close">
+		init-method="init">
 		<property name="whiteAddress" value="${thrift.whiteAddress}"/>
-		<!--
-		<property name="file" value="e:/tmp/hub/iplimit.txt"/>
-		 -->
+		<property name="runtimeConfig" ref="runtimeConfig"/>
 	</bean>
 
 	<bean id="thriftServiceServer" class="bma.siteone.netty.thrift.core.NettyThriftServer"

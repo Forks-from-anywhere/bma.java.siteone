@@ -24,6 +24,15 @@ public class LocalCloundNode implements CloundNode, CloundTrackable {
 	protected String nodeId;
 	protected String title;
 	protected Map<String, CloundApp> appMap;
+	private Map<String, String> nodeDesc;
+
+	public Map<String, String> getNodeDesc() {
+		return nodeDesc;
+	}
+
+	public void setNodeDesc(Map<String, String> nodeDesc) {
+		this.nodeDesc = nodeDesc;
+	}
 
 	@Override
 	public String getNodeId() {
@@ -65,10 +74,11 @@ public class LocalCloundNode implements CloundNode, CloundTrackable {
 	@Override
 	public boolean getDesc(AIStack<String> stack) {
 		Map<String, Object> desc = new HashMap<String, Object>();
+		if (this.nodeDesc != null) {
+			desc.putAll(this.nodeDesc);
+		}
 		desc.put("nodeId", getNodeId());
-		desc.put("title", getTitle());
-		desc.put("local", true);
-		desc.put("appSize", this.appMap == null ? 0 : this.appMap.size());
+		desc.put("title", getTitle());		
 		try {
 			String r = JsonUtil.getDefaultMapper().writeValueAsString(desc);
 			return stack.success(r);

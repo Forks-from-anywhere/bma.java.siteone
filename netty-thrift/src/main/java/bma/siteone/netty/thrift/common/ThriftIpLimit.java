@@ -1,20 +1,13 @@
 package bma.siteone.netty.thrift.common;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
-import java.util.Properties;
 
-import bma.common.langutil.ai.executor.AIExecutor;
-import bma.common.langutil.concurrent.ScheduledExecutorTM;
 import bma.common.langutil.core.ValueUtil;
-import bma.common.langutil.io.FileMonitor;
-import bma.common.langutil.io.FileMonitor.Event;
-import bma.common.langutil.io.FileMonitorListener;
-import bma.common.langutil.io.IOUtil;
 import bma.common.langutil.io.InetNetwork;
+import bma.common.langutil.runtime.RuntimeConfig;
+import bma.common.langutil.runtime.RuntimeConfigListener;
 import bma.common.netty.handler.ChannelHandlerIpFilter;
 
 public class ThriftIpLimit extends ChannelHandlerIpFilter {
@@ -22,24 +15,27 @@ public class ThriftIpLimit extends ChannelHandlerIpFilter {
 	final org.slf4j.Logger log = org.slf4j.LoggerFactory
 			.getLogger(ThriftIpLimit.class);
 
-	protected String file;
-	protected long fileCheckTime = 5 * 1000;
+	protected RuntimeConfig runtimeConfig;
+	protected String configKey = "thrift.iplimit.";
 
 	// runtime
-	protected FileMonitor monitor;
 	protected List<InetNetwork> orgWhiteList;
 	protected List<InetNetwork> orgBlackList;
 
-	public FileMonitor getMonitor() {
-		return monitor;
+	public RuntimeConfig getRuntimeConfig() {
+		return runtimeConfig;
 	}
 
-	public String getFile() {
-		return file;
+	public void setRuntimeConfig(RuntimeConfig runtimeConfig) {
+		this.runtimeConfig = runtimeConfig;
 	}
 
-	public void setFile(String file) {
-		this.file = file;
+	public String getConfigKey() {
+		return configKey;
+	}
+
+	public void setConfigKey(String configKey) {
+		this.configKey = configKey;
 	}
 
 	public void init() {
@@ -49,82 +45,61 @@ public class ThriftIpLimit extends ChannelHandlerIpFilter {
 		if (orgBlackList == null) {
 			orgBlackList = queryBlackList();
 		}
-		if (this.monitor == null) {
-			if (this.file != null) {
-				loadConfigFile(this.file);
+		if (this.runtimeConfig != null) {
+			this.runtimeConfig.addListener(new RuntimeConfigListener() {
 
-				this.monitor = new FileMonitor();
-				this.monitor.setExecutor(new ScheduledExecutorTM(AIExecutor
-						.getTimerManager()));
-				this.monitor.setTime(fileCheckTime);
-				this.monitor.setFile(file);
-				this.monitor.addListener(new FileMonitorListener() {
-
-					@Override
-					public void handleEvent(String fileName, Event event) {
-						loadConfigFile(fileName);
+				@Override
+				public void runtimeConfigChange(Collection<String> keys) {
+					for (String k : keys) {
+						if (k.startsWith(configKey)) {
+							readRuntimeConfig();
+							return;
+						}
 					}
-				});
-				this.monitor.start();
-			}
+				}
+			});
+			readRuntimeConfig();
 		}
 	}
 
-	protected void loadConfigFile(String fileName) {
-		if (log.isInfoEnabled()) {
-			log.info("load IpLimit config");
-		}
-		File f = new File(fileName);
-		if (!f.exists()) {
-			replaceWhiteList(orgWhiteList);
-			replaceBlackList(orgBlackList);
+	protected void readRuntimeConfig() {
+		if (this.runtimeConfig == null)
 			return;
+
+		if (log.isInfoEnabled()) {
+			log.info("read IpLimit runtime config");
 		}
 
 		List<InetNetwork> wlist = new ArrayList<InetNetwork>();
 		List<InetNetwork> blist = new ArrayList<InetNetwork>();
-		Properties prop = new Properties();
-		InputStream in = null;
-		try {
-			in = new FileInputStream(f);
-			prop.load(in);
 
-			int c;
-
-			wlist.addAll(orgWhiteList);
-			c = ValueUtil.intValue(prop.getProperty("whiteList.count"), 0);
-			for (int i = 0; i < c; i++) {
-				String s = prop.getProperty("whiteList." + i);
+		int c;
+		wlist.addAll(orgWhiteList);
+		c = ValueUtil.intValue(
+				runtimeConfig.getConfig(configKey + "whiteList.count"), 0);
+		for (int i = 1; i <= c; i++) {
+			String s = runtimeConfig.getConfig(configKey + "whiteList." + i);
+			if (ValueUtil.notEmpty(s)) {
 				List<InetNetwork> tmp = create(s);
 				if (tmp != null)
 					wlist.addAll(tmp);
 			}
+		}
 
-			blist.addAll(orgBlackList);
-			c = ValueUtil.intValue(prop.getProperty("blackList.count"), 0);
-			for (int i = 0; i < c; i++) {
-				String s = prop.getProperty("blackList." + i);
+		blist.addAll(orgBlackList);
+		c = ValueUtil.intValue(
+				runtimeConfig.getConfig(configKey + "blackList.count"), 0);
+		for (int i = 1; i <= c; i++) {
+			String s = runtimeConfig.getConfig(configKey + "blackList." + i);
+			if (ValueUtil.notEmpty(s)) {
 				List<InetNetwork> tmp = create(s);
 				if (tmp != null)
 					blist.addAll(tmp);
 			}
-
-			replaceWhiteList(wlist);
-			replaceBlackList(blist);
-
-		} catch (Exception e) {
-			if (log.isWarnEnabled()) {
-				log.warn("load IpLimit config(" + fileName + ") fail", e);
-			}
-		} finally {
-			IOUtil.close(in);
 		}
-	}
 
-	public void close() {
-		if (this.monitor != null) {
-			this.monitor.stop();
-			this.monitor = null;
-		}
+		replaceWhiteList(wlist);
+		replaceBlackList(blist);
+
 	}
 }

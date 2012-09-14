@@ -24,7 +24,16 @@ public class LocalCloundApp implements CloundApp, CloundTrackable {
 	protected String appId;
 	protected String appName;
 	protected String title;
+	private Map<String, String> appDesc;
 	protected Map<String, CloundService> serviceMap;
+
+	public Map<String, String> getAppDesc() {
+		return appDesc;
+	}
+
+	public void setAppDesc(Map<String, String> simpleDesc) {
+		this.appDesc = simpleDesc;
+	}
 
 	public String getAppId() {
 		return appId;
@@ -73,12 +82,12 @@ public class LocalCloundApp implements CloundApp, CloundTrackable {
 	@Override
 	public boolean getDesc(AIStack<String> stack) {
 		Map<String, Object> desc = new HashMap<String, Object>();
+		if (this.appDesc != null) {
+			desc.putAll(this.appDesc);
+		}
 		desc.put("appId", getAppId());
 		desc.put("appName", getAppName());
-		desc.put("title", getTitle());
-		desc.put("local", true);
-		desc.put("serviceSize",
-				this.serviceMap == null ? 0 : this.serviceMap.size());
+		desc.put("title", getTitle());	
 		try {
 			String r = JsonUtil.getDefaultMapper().writeValueAsString(desc);
 			return stack.success(r);
