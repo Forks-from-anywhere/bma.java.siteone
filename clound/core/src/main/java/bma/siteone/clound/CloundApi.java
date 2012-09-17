@@ -1,10 +1,7 @@
 package bma.siteone.clound;
 
-import bma.common.langutil.ai.stack.AIStack;
 
-public interface CloundApi {
+public interface CloundApi extends CloundElement {
 	
-	public boolean getDesc(AIStack<String> stack);
-
-	public boolean cloundCall(AIStack<CloundResponse> stack, CloundRequest req);
+	public String getApiId();
 }

@@ -60,6 +60,18 @@ public abstract class LocalCloundService implements CloundService,
 		this.apiMap = apiMap;
 	}
 
+	public void setApis(List<CloundApi> list) {
+		if (this.apiMap == null)
+			this.apiMap = new HashMap<String, CloundApi>();
+		for (CloundApi s : list) {
+			String id = s.getApiId();
+			if (ValueUtil.empty(id)) {
+				throw new IllegalArgumentException(s + " apiId is empty");
+			}
+			this.apiMap.put(id, s);
+		}
+	}
+
 	public Map<String, CloundApi> sureApis() {
 		if (this.apiMap == null)
 			this.apiMap = createApis();
@@ -78,7 +90,7 @@ public abstract class LocalCloundService implements CloundService,
 		if (ValueUtil.notEmpty(title)) {
 			desc.put("title", title);
 		}
-		
+
 		try {
 			String r = JsonUtil.getDefaultMapper().writeValueAsString(desc);
 			return stack.success(r);

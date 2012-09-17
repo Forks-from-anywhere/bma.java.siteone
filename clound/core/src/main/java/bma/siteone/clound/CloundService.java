@@ -4,7 +4,7 @@ import java.util.List;
 
 import bma.common.langutil.ai.stack.AIStack;
 
-public interface CloundService extends CloundApi {
+public interface CloundService extends CloundElement {
 
 	public String getServiceId();
 

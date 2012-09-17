@@ -54,42 +54,36 @@
 							<bean class="bma.siteone.clound.local.SimpleLocalCloundService">
 								<property name="serviceId" value="manageService"/>
 								<property name="title" value="服务器管理服务"/>
-								<property name="apiMap">
-									<map>
-										<entry key="shutdown">
-											<bean class="bma.siteone.clound.common.CloundApi4Shutdown">
-												<property name="apiId" value="shutdown"/>
-												<property name="confirmWord" value="shutdown"/>
-												<property name="apiDesc">
-													<map>
-														<entry key="phpagent" value="bma\clound\common\Agent4Shutdown"/>
-													</map>
-												</property>
-											</bean>
-										</entry>
-										<entry key="gc">
-											<bean class="bma.siteone.clound.common.CloundApi4GC">
-												<property name="apiId" value="gc"/>
-												<property name="apiDesc">
-													<map>
-														<entry key="phpagent" value="bma\clound\common\Agent4GC"/>
-													</map>
-												</property>
-											</bean>
-										</entry>
-										<entry key="runtimeConfig">
-											<bean class="bma.siteone.clound.common.CloundApi4RuntimeConfig">
-												<property name="apiId" value="runtimeConfig"/>
-												<property name="config" ref="runtimeConfig"/>
-												<property name="fileName" value="config1"/>
-												<property name="apiDesc">
-													<map>
-														<entry key="phpagent" value="bma\clound\common\Agent4RuntimeConfig"/>
-													</map>
-												</property>
-											</bean>
-										</entry>
-									</map>
+								<property name="apis">
+									<list>
+										<bean class="bma.siteone.clound.common.CloundApi4Shutdown">
+											<property name="apiId" value="shutdown"/>
+											<property name="confirmWord" value="shutdown"/>
+											<property name="apiDesc">
+												<map>
+													<entry key="phpagent" value="bma\clound\common\Agent4Shutdown"/>
+												</map>
+											</property>
+										</bean>										
+										<bean class="bma.siteone.clound.common.CloundApi4GC">
+											<property name="apiId" value="gc"/>
+											<property name="apiDesc">
+												<map>
+													<entry key="phpagent" value="bma\clound\common\Agent4GC"/>
+												</map>
+											</property>
+										</bean>										
+										<bean class="bma.siteone.clound.common.CloundApi4RuntimeConfig">
+											<property name="apiId" value="runtimeConfig"/>
+											<property name="config" ref="runtimeConfig"/>
+											<property name="fileName" value="config1"/>
+											<property name="apiDesc">
+												<map>
+													<entry key="phpagent" value="bma\clound\common\Agent4RuntimeConfig"/>
+												</map>
+											</property>
+										</bean>										
+									</list>
 								</property>
 							</bean>
 						</list>

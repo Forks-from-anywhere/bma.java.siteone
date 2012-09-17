@@ -2,16 +2,16 @@ package bma.siteone.clound.impl;
 
 import bma.common.langutil.ai.stack.AIStack;
 import bma.common.langutil.ai.stack.AIStackFilter;
-import bma.siteone.clound.CloundApi;
+import bma.siteone.clound.CloundElement;
 import bma.siteone.clound.CloundRequest;
 import bma.siteone.clound.CloundResponse;
 import bma.siteone.clound.CloundTrackable;
 
 public class LogTrack {
 
-	public static boolean call(CloundApi api, AIStack<CloundResponse> stack,
+	public static boolean call(CloundElement el, AIStack<CloundResponse> stack,
 			CloundRequest req, CloundTrackable ct) {
-		return api.cloundCall(filter(stack, req, ct), req);
+		return el.cloundCall(filter(stack, req, ct), req);
 	}
 
 	public static boolean response(AIStack<CloundResponse> stack,

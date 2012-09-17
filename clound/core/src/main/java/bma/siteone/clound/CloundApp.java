@@ -4,7 +4,7 @@ import java.util.List;
 
 import bma.common.langutil.ai.stack.AIStack;
 
-public interface CloundApp extends CloundApi {
+public interface CloundApp extends CloundElement {
 
 	public String getAppId();
 
