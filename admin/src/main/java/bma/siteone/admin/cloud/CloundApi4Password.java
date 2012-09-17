@@ -1,4 +1,4 @@
-package bma.siteone.admin.clound;
+package bma.siteone.admin.cloud;
 
 import bma.common.langutil.core.ExceptionUtil;
 import bma.common.langutil.core.StringUtil;
