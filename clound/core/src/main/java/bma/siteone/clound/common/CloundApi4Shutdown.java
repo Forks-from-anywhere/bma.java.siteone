@@ -49,7 +49,11 @@ public class CloundApi4Shutdown extends SimpleLocalCloundApi<String, Boolean> {
 
 			@Override
 			public void run() {
-				AIExecutor.postShutdown();
+				if(AIExecutor.postShutdown()) {
+					log.info("POST shutdown done");					
+				} else {
+					log.warn("POST shutdown fail");
+				}
 			}
 		}, 1000);
 		AIExecutor.getTimerManager().postTimerTask(task);
