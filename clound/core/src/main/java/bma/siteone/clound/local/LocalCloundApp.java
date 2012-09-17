@@ -87,7 +87,7 @@ public class LocalCloundApp implements CloundApp, CloundTrackable {
 		}
 		desc.put("appId", getAppId());
 		desc.put("appName", getAppName());
-		desc.put("title", getTitle());	
+		desc.put("title", getTitle());
 		try {
 			String r = JsonUtil.getDefaultMapper().writeValueAsString(desc);
 			return stack.success(r);
@@ -122,18 +122,20 @@ public class LocalCloundApp implements CloundApp, CloundTrackable {
 	@Override
 	public boolean getService(AIStack<CloundService> stack, String id) {
 		CloundService s = null;
-		if (this.serviceMap != null)
-			s = this.serviceMap.get(id);
+		Map<String, CloundService> m = getServiceMap();
+		if (m != null)
+			s = m.get(id);
 		return stack.success(s);
 	}
 
 	@Override
 	public boolean listService(AIStack<List<CloundService>> stack) {
 		List<CloundService> r = null;
-		if (this.serviceMap == null) {
+		Map<String, CloundService> m = getServiceMap();
+		if (m == null) {
 			r = Collections.emptyList();
 		} else {
-			r = new ArrayList<CloundService>(this.serviceMap.values());
+			r = new ArrayList<CloundService>(m.values());
 		}
 		return stack.success(r);
 	}

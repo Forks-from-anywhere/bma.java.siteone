@@ -42,6 +42,11 @@
 		<property name="title" value="test CloundNode"/>
 		<property name="apps">
 			<list>
+				<bean class="bma.siteone.clound.common.CloundApp4ThriftView">
+					<property name="appId" value="thrift_view"/>
+					<property name="appName" value="testapp"/>
+					<property name="thriftNodeBean" value="thriftServiceNode"/>
+				</bean>
 				<bean class="bma.siteone.clound.local.LocalCloundApp">
 					<property name="appId" value="app1"/>
 					<property name="appName" value="testapp"/>
