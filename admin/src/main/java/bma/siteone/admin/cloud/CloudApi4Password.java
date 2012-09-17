@@ -2,12 +2,12 @@ package bma.siteone.admin.cloud;
 
 import bma.common.langutil.core.ExceptionUtil;
 import bma.common.langutil.core.StringUtil;
-import bma.siteone.clound.local.SimpleLocalCloundApi;
+import bma.siteone.cloud.local.SimpleLocalCloudApi;
 
-public class CloundApi4Password extends SimpleLocalCloundApi<String, String> {
+public class CloudApi4Password extends SimpleLocalCloudApi<String, String> {
 
 	final org.slf4j.Logger log = org.slf4j.LoggerFactory
-			.getLogger(CloundApi4Password.class);
+			.getLogger(CloudApi4Password.class);
 
 	private String confirmWord;
 
@@ -19,7 +19,7 @@ public class CloundApi4Password extends SimpleLocalCloundApi<String, String> {
 		this.confirmWord = confirmWord;
 	}
 
-	public CloundApi4Password() {
+	public CloudApi4Password() {
 		super();
 		setTitle("计算密码校验数值");
 	}

@@ -44,7 +44,7 @@
 		</dependency>
 		<dependency>
 			<groupId>bma.java.siteone</groupId>
-			<artifactId>clound-core</artifactId>
+			<artifactId>cloud-core</artifactId>
 			<version>1.0.0</version>
 			<optional>true</optional>
 		</dependency>
