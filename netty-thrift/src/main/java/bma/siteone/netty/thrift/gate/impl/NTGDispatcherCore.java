@@ -9,6 +9,7 @@ import org.jboss.netty.buffer.ChannelBuffer;
 
 import bma.common.langutil.ai.stack.AIStack;
 import bma.common.langutil.io.HostPort;
+import bma.common.netty.pool.NettyChannelPool;
 import bma.siteone.netty.thrift.gate.GateUtil;
 import bma.siteone.netty.thrift.gate.MessageContext;
 import bma.siteone.netty.thrift.gate.NTGAgent;
@@ -21,13 +22,25 @@ public class NTGDispatcherCore implements NTGDispatcher {
 			.getLogger(NTGDispatcherCore.class);
 
 	private Map<String, NTGAgentFactory> agentFactoryMap;
+	private NettyChannelPool pool;
+
+	public NettyChannelPool getPool() {
+		return pool;
+	}
+
+	public void setPool(NettyChannelPool pool) {
+		this.pool = pool;
+	}
 
 	public Map<String, NTGAgentFactory> getAgentFactoryMap() {
 		return agentFactoryMap;
 	}
 
 	public void setAgentFactoryMap(Map<String, NTGAgentFactory> agentFactoryMap) {
-		this.agentFactoryMap = agentFactoryMap;
+		if (agentFactoryMap == null) {
+			agentFactoryMap = new HashMap<String, NTGAgentFactory>();
+		}
+		this.agentFactoryMap.putAll(agentFactoryMap);
 	}
 
 	public void setServiceHost(Map<String, String> shost) {
@@ -38,6 +51,7 @@ public class NTGDispatcherCore implements NTGDispatcher {
 			HostPort host = new HostPort();
 			host.setHostString(e.getValue(), 9090);
 			NTGAgentFactoryCore fac = new NTGAgentFactoryCore();
+			fac.setPool(pool);
 			fac.setHost(host);
 			agentFactoryMap.put(e.getKey(), fac);
 		}

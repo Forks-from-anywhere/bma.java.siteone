@@ -15,7 +15,6 @@ import bma.common.langutil.core.SizeUtil.Unit;
 import bma.common.netty.NettyServer;
 import bma.common.netty.NettyUtil;
 import bma.common.netty.handler.ChannelHandlerExceptionClose;
-import bma.common.netty.pool.NettyChannelPool;
 import bma.siteone.netty.thrift.core.NCHFramed;
 import bma.siteone.netty.thrift.gate.impl.SimpleMessageContext;
 
@@ -26,7 +25,6 @@ public class NettyThriftGate extends NettyServer {
 
 	protected int maxLength;
 	private NTGDispatcher dispatcher;
-	private NettyChannelPool pool;
 
 	public NettyThriftGate() {
 		super();
@@ -54,14 +52,6 @@ public class NettyThriftGate extends NettyServer {
 
 	public void setDispatcher(NTGDispatcher dispatcher) {
 		this.dispatcher = dispatcher;
-	}
-
-	public NettyChannelPool getPool() {
-		return pool;
-	}
-
-	public void setPool(NettyChannelPool pool) {
-		this.pool = pool;
 	}
 
 	@Override
@@ -99,7 +89,7 @@ public class NettyThriftGate extends NettyServer {
 					@Override
 					public boolean success(NTGAgent result) {
 						if (result != null) {
-							return result.process(pool, mctx);
+							return result.process(mctx);
 						}
 						if (log.isDebugEnabled()) {
 							log.debug("dispatch ["

@@ -166,9 +166,9 @@ public class AIThriftClientFactoryNetty extends ThriftClientFactoryConfig
 					@Override
 					protected void logException(ChannelHandlerContext ctx,
 							ExceptionEvent e) {
-						if (log.isWarnEnabled()) {
+						if (log.isDebugEnabled()) {
 							Throwable t = ExceptionUtil.cause(e.getCause());
-							log.warn("{} error {}/{}", new Object[] {
+							log.debug("{} error {}/{}", new Object[] {
 									ctx.getChannel().getRemoteAddress(),
 									t.getClass().getName(), t.getMessage() });
 						}

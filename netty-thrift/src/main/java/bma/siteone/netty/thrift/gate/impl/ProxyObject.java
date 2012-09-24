@@ -18,22 +18,29 @@ import bma.common.langutil.io.HostPort;
 import bma.common.netty.pool.NettyChannelPool;
 import bma.siteone.netty.thrift.core.NCHFramed;
 import bma.siteone.netty.thrift.gate.MessageContext;
+import bma.siteone.netty.thrift.remote.RemoteBreakException;
+import bma.siteone.netty.thrift.remote.RuntimeRemote;
 
 public class ProxyObject {
 
 	final org.slf4j.Logger log = org.slf4j.LoggerFactory
 			.getLogger(ProxyObject.class);
 
-	private NettyChannelPool pool;
-	private HostPort host;
-	private Channel remote;
-	private MessageContext context;
+	protected NettyChannelPool pool;
+	protected RuntimeRemote runtimeRemote;
+	protected HostPort host;
+	protected Channel remoteChannel;
+	protected MessageContext context;
 
 	enum STAGE {
 		INIT, CREATE, WRITE2REMOTE, WAIT, WRITE2PEER, END
 	}
 
 	private STAGE stage = STAGE.INIT;
+
+	public ProxyObject(NettyChannelPool pool, HostPort host) {
+		this(pool, host, null);
+	}
 
 	public ProxyObject(NettyChannelPool pool, HostPort host,
 			MessageContext context) {
@@ -43,13 +50,29 @@ public class ProxyObject {
 		this.context = context;
 	}
 
+	public RuntimeRemote getRuntimeRemote() {
+		return runtimeRemote;
+	}
+
+	public void setRuntimeRemote(RuntimeRemote runtimeRemote) {
+		this.runtimeRemote = runtimeRemote;
+	}
+
+	public MessageContext getContext() {
+		return context;
+	}
+
+	public void setContext(MessageContext context) {
+		this.context = context;
+	}
+
 	public void close() {
-		if (remote != null) {
+		if (remoteChannel != null) {
 			if (log.isDebugEnabled()) {
 				log.debug("force close remote {}", host);
 			}
-			Channel ch = remote;
-			remote = null;
+			Channel ch = remoteChannel;
+			remoteChannel = null;
 
 			ch.close();
 			pool.returnObject(host, ch);
@@ -57,12 +80,12 @@ public class ProxyObject {
 	}
 
 	public void returnChannel() {
-		if (remote != null) {
+		if (remoteChannel != null) {
 			if (log.isDebugEnabled()) {
 				log.debug("return channel at {}", stage);
 			}
-			remote.getPipeline().remove("netty_thrift_gate_proxy");
-			pool.returnObject(host, remote);
+			remoteChannel.getPipeline().remove("netty_thrift_gate_proxy");
+			pool.returnObject(host, remoteChannel);
 		}
 	}
 
@@ -73,21 +96,33 @@ public class ProxyObject {
 			@Override
 			protected boolean next(Channel result) {
 				if (result == null) {
-					if (log.isDebugEnabled()) {
-						log.debug("connect remote[{}] fail", host);
-					}
-					return successForward(false);
+					return this.delegate().failure(
+							new RemoteBreakException("connect remote[" + host
+									+ "] fail"));
 				}
-				remote = result;
+				remoteChannel = result;
 				return proxy(delegate());
 			}
+
+			@Override
+			public boolean failure(Throwable t) {
+				if (!(t instanceof RemoteBreakException)) {
+					t = new RemoteBreakException("connect remote[" + host
+							+ "] fail - " + t.getMessage(), t);
+				}
+				return super.failure(t);
+			}
 		};
+		if (runtimeRemote != null && runtimeRemote.isRemoteBreak(host)) {
+			return stack.failure(new RemoteBreakException("remote[" + host
+					+ "] check break"));
+		}
 		this.stage = STAGE.CREATE;
 		return pool.borrowObject(step, host);
 	}
 
 	protected boolean proxy(final AIStack<Boolean> stack) {
-		Channel ch = remote;
+		Channel ch = remoteChannel;
 		ch.getPipeline().addAfter("handlerPlaceholder",
 				"netty_thrift_gate_proxy", new SimpleChannelUpstreamHandler() {
 

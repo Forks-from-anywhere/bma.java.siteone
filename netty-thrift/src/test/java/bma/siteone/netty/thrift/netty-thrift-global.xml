@@ -44,11 +44,10 @@
 
 	<!-- ip limit -->
 	<bean id="secureFilter" class="bma.siteone.netty.thrift.common.ThriftIpLimit"
-		init-method="init" destroy-method="close">
+		init-method="init">
 		<property name="whiteAddress">
 			<value></value>
 		</property>
-		<property name="file" value="e:/tmp/hub/iplimit.txt"/>
 	</bean>
 
 	<bean id="thriftServiceServer" class="bma.siteone.netty.thrift.core.NettyThriftServer"
@@ -64,19 +63,5 @@
 		<property name="node" ref="thriftServiceNode" />
 		<property name="processExecutor" ref="syncExecutor" />
 	</bean>
-
-	<bean id="thriftManageServer" class="bma.siteone.netty.thrift.core.NettyThriftServer"
-		destroy-method="close">
-		<property name="name" value="thriftManage" />
-		<property name="worker" value="2" />
-		<property name="traceBufferSize" value="0" />
-		<property name="Pipelines">
-			<list>
-				<ref bean="secureFilter" />
-			</list>
-		</property>
-		<property name="node" ref="thriftManageNode" />
-		<property name="processExecutor" ref="syncExecutor" />
-	</bean>
-
+	
 </beans>

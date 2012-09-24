@@ -27,6 +27,13 @@ public class NettyThriftStandardTC {
 				"classpath:bma/siteone/netty/thrift/netty-thrift-gate.xml");
 		AIServerBoot.main(new String[0]);
 	}
+	
+	@Test
+	public void remoteInfo() {
+		System.setProperty("spring_server_xml",
+				"classpath:bma/siteone/netty/thrift/netty-thrift-remoteinfo.xml");
+		AIServerBoot.main(new String[0]);
+	}
 
 	@Test
 	public void serviceHub() {

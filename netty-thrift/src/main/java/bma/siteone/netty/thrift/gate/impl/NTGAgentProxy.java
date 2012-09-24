@@ -1,59 +1,48 @@
 package bma.siteone.netty.thrift.gate.impl;
 
-import bma.common.langutil.ai.stack.AIStackROOT;
+import bma.common.langutil.ai.stack.AIStack;
+import bma.common.langutil.ai.stack.AIStackAbstractDelegate;
 import bma.common.langutil.io.HostPort;
-import bma.common.netty.NettyUtil;
 import bma.common.netty.pool.NettyChannelPool;
+import bma.siteone.netty.thrift.gate.MessageContext;
 import bma.siteone.netty.thrift.gate.NTGAgent;
+import bma.siteone.netty.thrift.remote.RuntimeRemote;
 
-public class NTGAgentProxy implements NTGAgent {
+public class NTGAgentProxy extends ProxyObject implements NTGAgent,
+		NTGAgentProcess {
 
 	final org.slf4j.Logger log = org.slf4j.LoggerFactory
 			.getLogger(NTGAgentProxy.class);
 
-	protected HostPort host;
-	protected ProxyObject proxy;
-
-	public NTGAgentProxy(HostPort host) {
-		super();
-		this.host = host;
-	}
-
-	public HostPort getHost() {
-		return host;
-	}
-
-	public void setHost(HostPort host) {
-		this.host = host;
+	public NTGAgentProxy(NettyChannelPool pool, HostPort host, RuntimeRemote rr) {
+		super(pool, host);
+		setRuntimeRemote(rr);
 	}
 
 	@Override
-	public boolean process(final NettyChannelPool pool,
-			final SimpleMessageContext ctx) {
-
-		AIStackROOT<Boolean> root = new AIStackROOT<Boolean>() {
-
-			@Override
-			public boolean end(Boolean result, Throwable t) {
-				if (log.isDebugEnabled()) {
-					if (t != null) {
-						log.debug("process fail", t);
-					} else {
-						log.debug("process end - {}", result);
-					}
-				}
-				if (proxy != null) {
-					proxy.returnChannel();
-				}
-				if (t != null || !result) {
-					NettyUtil.closeOnFlush(ctx.getNettyChannel());
-				}
-				return true;
-			}
-		};
-
-		proxy = new ProxyObject(pool, host, ctx);
-		return proxy.create(root);
+	public boolean process(final MessageContext ctx) {
+		AIStackAgentROOT root = new AIStackAgentROOT(log, ctx);
+		return process(root, ctx);
 	}
 
+	@Override
+	public boolean process(AIStack<Boolean> stack, MessageContext ctx) {
+		
+		setContext(ctx);
+		
+		AIStackAbstractDelegate<Boolean> callStack = new AIStackAbstractDelegate<Boolean>(stack) {
+
+			@Override
+			protected boolean done() {
+				returnChannel();
+				return super.done();
+			}
+		};
+		return create(callStack);
+	}
+
+	@Override
+	public String toString() {
+		return "Proxy[" + super.host + "]";
+	}
 }

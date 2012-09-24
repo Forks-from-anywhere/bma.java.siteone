@@ -52,6 +52,7 @@
 		</property>
 	</bean>
 	
+	<!-- NettyPool -->
 	<bean id="nettyPool" class="bma.common.netty.pool.NettyChannelPool" destroy-method="close">
 		<property name="maxActive" value="10"/>
 		<property name="idleMaxTime" value="300000"/>
@@ -62,13 +63,49 @@
 			</bean>
 		</property>
 	</bean>
+	
+	<!-- RuntimeRemote -->
+	<bean id="runtimeRemote" class="bma.siteone.netty.thrift.remote.impl.RuntimeRemoteImpl" 
+			init-method="start" destroy-method="close">
+		<property name="thriftEntry">
+			<bean class="bma.siteone.netty.thrift.client.AIThriftEntryNetty">
+				<property name="bootstrap" ref="nettyClientBootstrap"/>
+			</bean>
+		</property>
+		<property name="maxIdleTime" value="60000"/>
+		<property name="initCheckList">
+			<list>
+				<value>172.19.16.195:9191</value>
+				<value>172.19.16.195:9192</value>
+			</list>
+		</property>
+	</bean>
+	
+	<!-- GateAgent -->
+	<bean id="failoverFac" class="bma.siteone.netty.thrift.gate.impl.NTGAgentFactoryCore">
+		<property name="pool" ref="nettyPool"/>
+		<property name="runtimeRemote" ref="runtimeRemote"/>
+		<property name="hostString" value="172.19.16.195:9191"/>
+		<property name="failoverHostString" value="172.19.16.195:9192"/>
+	</bean>
 	<bean id="gateDispatcher" class="bma.siteone.netty.thrift.gate.impl.NTGDispatcherCore">
+		<property name="pool" ref="nettyPool" />
 		<property name="serviceHost">
 			<map>
-				<entry key="cloud" value="172.19.16.195:9192"/>
-				<entry key="admin" value="172.19.16.195:9191"/>
+				<entry key="cloud" value="172.19.16.195:9193"/>
+			</map>
+		</property>		
+		<property name="agentFactoryMap">
+			<map>
+				<entry key="admin" value-ref="failoverFac"/>
 			</map>
 		</property>
+	</bean>
+	
+	<bean id="tester" class="bma.siteone.netty.thrift.gate.impl.NTGDispatcherSimple">
+		<!-- 
+		<property name="agentFactory" ref="abc"/>
+		 -->
 	</bean>
 
 	<bean id="thriftGateServer" class="bma.siteone.netty.thrift.gate.NettyThriftGate"
@@ -82,8 +119,7 @@
 				<ref bean="secureFilter" />
 			</list>
 		</property>		
-		<property name="frameSize" value="10m"/>
-		<property name="pool" ref="nettyPool" />
+		<property name="frameSize" value="10m"/>		
 		<property name="dispatcher" ref="gateDispatcher" />
 	</bean>	
 	
