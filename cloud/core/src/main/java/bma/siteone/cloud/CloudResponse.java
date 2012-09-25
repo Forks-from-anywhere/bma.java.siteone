@@ -13,7 +13,8 @@ public class CloudResponse {
 	public static final int TYPE_REDIRECT = 2;
 
 	private int type;
-	private String content;
+	private String contentType;
+	private byte[] content;
 	private List<String> logTrack;
 
 	public int getType() {
@@ -24,11 +25,19 @@ public class CloudResponse {
 		this.type = type;
 	}
 
-	public String getContent() {
+	public String getContentType() {
+		return contentType;
+	}
+
+	public void setContentType(String contentType) {
+		this.contentType = contentType;
+	}
+
+	public byte[] getContent() {
 		return content;
 	}
 
-	public void setContent(String content) {
+	public void setContent(byte[] content) {
 		this.content = content;
 	}
 

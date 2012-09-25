@@ -1,7 +1,5 @@
 package bma.siteone.cloud.impl;
 
-import bma.common.json.JsonUtil;
-import bma.common.langutil.core.ExceptionUtil;
 import bma.common.langutil.core.ToStringUtil;
 import bma.siteone.cloud.CloudEntry;
 
@@ -57,11 +55,4 @@ public class BaseCloudEntry implements CloudEntry {
 		return ToStringUtil.fieldReflect(this);
 	}
 
-	public String toEntryString() {
-		try {
-			return JsonUtil.getDefaultMapper().writeValueAsString(this);
-		} catch (Exception e) {
-			throw ExceptionUtil.throwRuntime(e);
-		}
-	}
 }

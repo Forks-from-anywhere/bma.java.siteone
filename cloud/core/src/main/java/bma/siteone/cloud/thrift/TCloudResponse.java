@@ -31,8 +31,9 @@ public class TCloudResponse implements org.apache.thrift.TBase<TCloudResponse, T
   private static final org.apache.thrift.protocol.TStruct STRUCT_DESC = new org.apache.thrift.protocol.TStruct("TCloudResponse");
 
   private static final org.apache.thrift.protocol.TField TYPE_FIELD_DESC = new org.apache.thrift.protocol.TField("type", org.apache.thrift.protocol.TType.I32, (short)1);
-  private static final org.apache.thrift.protocol.TField CONTENT_FIELD_DESC = new org.apache.thrift.protocol.TField("content", org.apache.thrift.protocol.TType.STRING, (short)2);
-  private static final org.apache.thrift.protocol.TField LOGTRACK_FIELD_DESC = new org.apache.thrift.protocol.TField("logtrack", org.apache.thrift.protocol.TType.LIST, (short)3);
+  private static final org.apache.thrift.protocol.TField CONTENT_TYPE_FIELD_DESC = new org.apache.thrift.protocol.TField("contentType", org.apache.thrift.protocol.TType.STRING, (short)2);
+  private static final org.apache.thrift.protocol.TField CONTENT_FIELD_DESC = new org.apache.thrift.protocol.TField("content", org.apache.thrift.protocol.TType.STRING, (short)3);
+  private static final org.apache.thrift.protocol.TField LOGTRACK_FIELD_DESC = new org.apache.thrift.protocol.TField("logtrack", org.apache.thrift.protocol.TType.LIST, (short)4);
 
   private static final Map<Class<? extends IScheme>, SchemeFactory> schemes = new HashMap<Class<? extends IScheme>, SchemeFactory>();
   static {
@@ -41,14 +42,16 @@ public class TCloudResponse implements org.apache.thrift.TBase<TCloudResponse, T
   }
 
   public int type; // required
-  public String content; // required
+  public String contentType; // required
+  public ByteBuffer content; // required
   public List<String> logtrack; // required
 
   /** The set of fields this struct contains, along with convenience methods for finding and manipulating them. */
   public enum _Fields implements org.apache.thrift.TFieldIdEnum {
     TYPE((short)1, "type"),
-    CONTENT((short)2, "content"),
-    LOGTRACK((short)3, "logtrack");
+    CONTENT_TYPE((short)2, "contentType"),
+    CONTENT((short)3, "content"),
+    LOGTRACK((short)4, "logtrack");
 
     private static final Map<String, _Fields> byName = new HashMap<String, _Fields>();
 
@@ -65,9 +68,11 @@ public class TCloudResponse implements org.apache.thrift.TBase<TCloudResponse, T
       switch(fieldId) {
         case 1: // TYPE
           return TYPE;
-        case 2: // CONTENT
+        case 2: // CONTENT_TYPE
+          return CONTENT_TYPE;
+        case 3: // CONTENT
           return CONTENT;
-        case 3: // LOGTRACK
+        case 4: // LOGTRACK
           return LOGTRACK;
         default:
           return null;
@@ -116,8 +121,10 @@ public class TCloudResponse implements org.apache.thrift.TBase<TCloudResponse, T
     Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
     tmpMap.put(_Fields.TYPE, new org.apache.thrift.meta_data.FieldMetaData("type", org.apache.thrift.TFieldRequirementType.DEFAULT, 
         new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
-    tmpMap.put(_Fields.CONTENT, new org.apache.thrift.meta_data.FieldMetaData("content", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+    tmpMap.put(_Fields.CONTENT_TYPE, new org.apache.thrift.meta_data.FieldMetaData("contentType", org.apache.thrift.TFieldRequirementType.DEFAULT, 
         new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.STRING)));
+    tmpMap.put(_Fields.CONTENT, new org.apache.thrift.meta_data.FieldMetaData("content", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+        new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.STRING        , true)));
     tmpMap.put(_Fields.LOGTRACK, new org.apache.thrift.meta_data.FieldMetaData("logtrack", org.apache.thrift.TFieldRequirementType.DEFAULT, 
         new org.apache.thrift.meta_data.ListMetaData(org.apache.thrift.protocol.TType.LIST, 
             new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.STRING))));
@@ -130,12 +137,14 @@ public class TCloudResponse implements org.apache.thrift.TBase<TCloudResponse, T
 
   public TCloudResponse(
     int type,
-    String content,
+    String contentType,
+    ByteBuffer content,
     List<String> logtrack)
   {
     this();
     this.type = type;
     setTypeIsSet(true);
+    this.contentType = contentType;
     this.content = content;
     this.logtrack = logtrack;
   }
@@ -147,8 +156,12 @@ public class TCloudResponse implements org.apache.thrift.TBase<TCloudResponse, T
     __isset_bit_vector.clear();
     __isset_bit_vector.or(other.__isset_bit_vector);
     this.type = other.type;
+    if (other.isSetContentType()) {
+      this.contentType = other.contentType;
+    }
     if (other.isSetContent()) {
-      this.content = other.content;
+      this.content = org.apache.thrift.TBaseHelper.copyBinary(other.content);
+;
     }
     if (other.isSetLogtrack()) {
       List<String> __this__logtrack = new ArrayList<String>();
@@ -167,6 +180,7 @@ public class TCloudResponse implements org.apache.thrift.TBase<TCloudResponse, T
   public void clear() {
     setTypeIsSet(false);
     this.type = 0;
+    this.contentType = null;
     this.content = null;
     this.logtrack = null;
   }
@@ -194,11 +208,45 @@ public class TCloudResponse implements org.apache.thrift.TBase<TCloudResponse, T
     __isset_bit_vector.set(__TYPE_ISSET_ID, value);
   }
 
-  public String getContent() {
-    return this.content;
+  public String getContentType() {
+    return this.contentType;
   }
 
-  public TCloudResponse setContent(String content) {
+  public TCloudResponse setContentType(String contentType) {
+    this.contentType = contentType;
+    return this;
+  }
+
+  public void unsetContentType() {
+    this.contentType = null;
+  }
+
+  /** Returns true if field contentType is set (has been assigned a value) and false otherwise */
+  public boolean isSetContentType() {
+    return this.contentType != null;
+  }
+
+  public void setContentTypeIsSet(boolean value) {
+    if (!value) {
+      this.contentType = null;
+    }
+  }
+
+  public byte[] getContent() {
+    setContent(org.apache.thrift.TBaseHelper.rightSize(content));
+    return content == null ? null : content.array();
+  }
+
+  public ByteBuffer bufferForContent() {
+    return content;
+  }
+
+  public TCloudResponse setContent(byte[] content) {
+    setContent(content == null ? (ByteBuffer)null : ByteBuffer.wrap(content));
+    return this;
+  }
+
+  public TCloudResponse setContent(ByteBuffer content) {
     this.content = content;
     return this;
   }
@@ -267,11 +315,19 @@ public class TCloudResponse implements org.apache.thrift.TBase<TCloudResponse, T
       }
       break;
 
+    case CONTENT_TYPE:
+      if (value == null) {
+        unsetContentType();
+      } else {
+        setContentType((String)value);
+      }
+      break;
+
     case CONTENT:
       if (value == null) {
         unsetContent();
       } else {
-        setContent((String)value);
+        setContent((ByteBuffer)value);
       }
       break;
 
@@ -290,6 +346,9 @@ public class TCloudResponse implements org.apache.thrift.TBase<TCloudResponse, T
     switch (field) {
     case TYPE:
       return Integer.valueOf(getType());
+
+    case CONTENT_TYPE:
+      return getContentType();
 
     case CONTENT:
       return getContent();
@@ -310,6 +369,8 @@ public class TCloudResponse implements org.apache.thrift.TBase<TCloudResponse, T
     switch (field) {
     case TYPE:
       return isSetType();
+    case CONTENT_TYPE:
+      return isSetContentType();
     case CONTENT:
       return isSetContent();
     case LOGTRACK:
@@ -337,6 +398,15 @@ public class TCloudResponse implements org.apache.thrift.TBase<TCloudResponse, T
       if (!(this_present_type && that_present_type))
         return false;
       if (this.type != that.type)
+        return false;
+    }
+
+    boolean this_present_contentType = true && this.isSetContentType();
+    boolean that_present_contentType = true && that.isSetContentType();
+    if (this_present_contentType || that_present_contentType) {
+      if (!(this_present_contentType && that_present_contentType))
+        return false;
+      if (!this.contentType.equals(that.contentType))
         return false;
     }
 
@@ -380,6 +450,16 @@ public class TCloudResponse implements org.apache.thrift.TBase<TCloudResponse, T
     }
     if (isSetType()) {
       lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.type, typedOther.type);
+      if (lastComparison != 0) {
+        return lastComparison;
+      }
+    }
+    lastComparison = Boolean.valueOf(isSetContentType()).compareTo(typedOther.isSetContentType());
+    if (lastComparison != 0) {
+      return lastComparison;
+    }
+    if (isSetContentType()) {
+      lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.contentType, typedOther.contentType);
       if (lastComparison != 0) {
         return lastComparison;
       }
@@ -428,11 +508,19 @@ public class TCloudResponse implements org.apache.thrift.TBase<TCloudResponse, T
     sb.append(this.type);
     first = false;
     if (!first) sb.append(", ");
+    sb.append("contentType:");
+    if (this.contentType == null) {
+      sb.append("null");
+    } else {
+      sb.append(this.contentType);
+    }
+    first = false;
+    if (!first) sb.append(", ");
     sb.append("content:");
     if (this.content == null) {
       sb.append("null");
     } else {
-      sb.append(this.content);
+      org.apache.thrift.TBaseHelper.toString(this.content, sb);
     }
     first = false;
     if (!first) sb.append(", ");
@@ -495,24 +583,32 @@ public class TCloudResponse implements org.apache.thrift.TBase<TCloudResponse, T
               org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
             }
             break;
-          case 2: // CONTENT
+          case 2: // CONTENT_TYPE
             if (schemeField.type == org.apache.thrift.protocol.TType.STRING) {
-              struct.content = iprot.readString();
+              struct.contentType = iprot.readString();
+              struct.setContentTypeIsSet(true);
+            } else { 
+              org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
+            }
+            break;
+          case 3: // CONTENT
+            if (schemeField.type == org.apache.thrift.protocol.TType.STRING) {
+              struct.content = iprot.readBinary();
               struct.setContentIsSet(true);
             } else { 
               org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
             }
             break;
-          case 3: // LOGTRACK
+          case 4: // LOGTRACK
             if (schemeField.type == org.apache.thrift.protocol.TType.LIST) {
               {
-                org.apache.thrift.protocol.TList _list0 = iprot.readListBegin();
-                struct.logtrack = new ArrayList<String>(_list0.size);
-                for (int _i1 = 0; _i1 < _list0.size; ++_i1)
+                org.apache.thrift.protocol.TList _list10 = iprot.readListBegin();
+                struct.logtrack = new ArrayList<String>(_list10.size);
+                for (int _i11 = 0; _i11 < _list10.size; ++_i11)
                 {
-                  String _elem2; // required
-                  _elem2 = iprot.readString();
-                  struct.logtrack.add(_elem2);
+                  String _elem12; // required
+                  _elem12 = iprot.readString();
+                  struct.logtrack.add(_elem12);
                 }
                 iprot.readListEnd();
               }
@@ -539,18 +635,23 @@ public class TCloudResponse implements org.apache.thrift.TBase<TCloudResponse, T
       oprot.writeFieldBegin(TYPE_FIELD_DESC);
       oprot.writeI32(struct.type);
       oprot.writeFieldEnd();
+      if (struct.contentType != null) {
+        oprot.writeFieldBegin(CONTENT_TYPE_FIELD_DESC);
+        oprot.writeString(struct.contentType);
+        oprot.writeFieldEnd();
+      }
       if (struct.content != null) {
         oprot.writeFieldBegin(CONTENT_FIELD_DESC);
-        oprot.writeString(struct.content);
+        oprot.writeBinary(struct.content);
         oprot.writeFieldEnd();
       }
       if (struct.logtrack != null) {
         oprot.writeFieldBegin(LOGTRACK_FIELD_DESC);
         {
           oprot.writeListBegin(new org.apache.thrift.protocol.TList(org.apache.thrift.protocol.TType.STRING, struct.logtrack.size()));
-          for (String _iter3 : struct.logtrack)
+          for (String _iter13 : struct.logtrack)
           {
-            oprot.writeString(_iter3);
+            oprot.writeString(_iter13);
           }
           oprot.writeListEnd();
         }
@@ -577,25 +678,31 @@ public class TCloudResponse implements org.apache.thrift.TBase<TCloudResponse, T
       if (struct.isSetType()) {
         optionals.set(0);
       }
-      if (struct.isSetContent()) {
+      if (struct.isSetContentType()) {
         optionals.set(1);
       }
-      if (struct.isSetLogtrack()) {
+      if (struct.isSetContent()) {
         optionals.set(2);
       }
-      oprot.writeBitSet(optionals, 3);
+      if (struct.isSetLogtrack()) {
+        optionals.set(3);
+      }
+      oprot.writeBitSet(optionals, 4);
       if (struct.isSetType()) {
         oprot.writeI32(struct.type);
       }
+      if (struct.isSetContentType()) {
+        oprot.writeString(struct.contentType);
+      }
       if (struct.isSetContent()) {
-        oprot.writeString(struct.content);
+        oprot.writeBinary(struct.content);
       }
       if (struct.isSetLogtrack()) {
         {
           oprot.writeI32(struct.logtrack.size());
-          for (String _iter4 : struct.logtrack)
+          for (String _iter14 : struct.logtrack)
           {
-            oprot.writeString(_iter4);
+            oprot.writeString(_iter14);
           }
         }
       }
@@ -604,24 +711,28 @@ public class TCloudResponse implements org.apache.thrift.TBase<TCloudResponse, T
     @Override
     public void read(org.apache.thrift.protocol.TProtocol prot, TCloudResponse struct) throws org.apache.thrift.TException {
       TTupleProtocol iprot = (TTupleProtocol) prot;
-      BitSet incoming = iprot.readBitSet(3);
+      BitSet incoming = iprot.readBitSet(4);
       if (incoming.get(0)) {
         struct.type = iprot.readI32();
         struct.setTypeIsSet(true);
       }
       if (incoming.get(1)) {
-        struct.content = iprot.readString();
-        struct.setContentIsSet(true);
+        struct.contentType = iprot.readString();
+        struct.setContentTypeIsSet(true);
       }
       if (incoming.get(2)) {
+        struct.content = iprot.readBinary();
+        struct.setContentIsSet(true);
+      }
+      if (incoming.get(3)) {
         {
-          org.apache.thrift.protocol.TList _list5 = new org.apache.thrift.protocol.TList(org.apache.thrift.protocol.TType.STRING, iprot.readI32());
-          struct.logtrack = new ArrayList<String>(_list5.size);
-          for (int _i6 = 0; _i6 < _list5.size; ++_i6)
+          org.apache.thrift.protocol.TList _list15 = new org.apache.thrift.protocol.TList(org.apache.thrift.protocol.TType.STRING, iprot.readI32());
+          struct.logtrack = new ArrayList<String>(_list15.size);
+          for (int _i16 = 0; _i16 < _list15.size; ++_i16)
           {
-            String _elem7; // required
-            _elem7 = iprot.readString();
-            struct.logtrack.add(_elem7);
+            String _elem17; // required
+            _elem17 = iprot.readString();
+            struct.logtrack.add(_elem17);
           }
         }
         struct.setLogtrackIsSet(true);

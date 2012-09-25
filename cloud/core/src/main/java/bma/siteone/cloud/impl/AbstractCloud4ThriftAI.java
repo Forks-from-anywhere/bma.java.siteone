@@ -1,5 +1,6 @@
 package bma.siteone.cloud.impl;
 
+import java.util.HashMap;
 import java.util.List;
 
 import org.apache.thrift.TException;
@@ -280,7 +281,11 @@ public abstract class AbstractCloud4ThriftAI implements Iface, CloudTrackable {
 
 		final CloudRequest creq = new CloudRequest();
 		creq.setCallback(from(req.getEntry()));
+		creq.setContentType(req.getContentType());
 		creq.setContent(req.getContent());
+		HashMap<String, String> context = req.getContext() == null ? null
+				: new HashMap<String, String>(req.getContext());
+		creq.setContext(context);
 		creq.setEntry(from(req.getEntry()));
 		creq.setLogtrack(req.isLogtrack());
 
@@ -293,6 +298,7 @@ public abstract class AbstractCloud4ThriftAI implements Iface, CloudTrackable {
 					return successConvert(null);
 				}
 				TCloudResponse rep = new TCloudResponse();
+				rep.setContentType(result.getContentType());
 				rep.setContent(result.getContent());
 				rep.setType(result.getType());
 				List<String> tlist = result.getLogTrack();

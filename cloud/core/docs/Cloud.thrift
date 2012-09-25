@@ -27,16 +27,18 @@ struct TCloudEntry {
 
 struct TCloudRequest {
   1: TCloudEntry entry,
-  2: string content,
-  3: TCloudEntry callback,
-  4: bool logtrack,
-  5: TCloudEntry referer,
+  2: string contentType,
+  3: binary content,
+  4: map<string,string> context,
+  5: TCloudEntry callback,
+  6: bool logtrack,  
 }
 
 struct TCloudResponse {
-  1: i32 type,
-  2: string content,
-  3: list<string> logtrack,
+  1: i32 type,				// TYPE_ERROR = -1;TYPE_AICALL = 0;TYPE_DONE = 1;TYPE_REDIRECT = 2;
+  2: string contentType,
+  3: binary content,
+  4: list<string> logtrack,
 }
 
 service TCloud {

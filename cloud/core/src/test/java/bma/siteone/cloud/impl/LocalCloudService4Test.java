@@ -8,7 +8,7 @@ import bma.siteone.cloud.CloudApi;
 import bma.siteone.cloud.CloudEntry;
 import bma.siteone.cloud.CloudRequest;
 import bma.siteone.cloud.CloudResponse;
-import bma.siteone.cloud.impl.BaseCloudEntry;
+import bma.siteone.cloud.CloudUtil;
 import bma.siteone.cloud.local.LocalCloudApi;
 import bma.siteone.cloud.local.LocalCloudService;
 
@@ -50,7 +50,7 @@ public class LocalCloudService4Test extends LocalCloudService {
 					CloudRequest req) {
 				CloudResponse rep = new CloudResponse();
 				rep.setType(CloudResponse.TYPE_DONE);
-				rep.setContent(req.toString());
+				CloudUtil.setTextContent(rep, req.toString());
 				return stack.success(rep);
 			}
 		});
@@ -74,8 +74,7 @@ public class LocalCloudService4Test extends LocalCloudService {
 				e.setApiId("api2");
 
 				CloudResponse rep = new CloudResponse();
-				rep.setType(CloudResponse.TYPE_REDIRECT);
-				rep.setContent(e.toEntryString());
+				CloudUtil.setRedirect(rep, e);				
 				return stack.success(rep);
 			}
 		});

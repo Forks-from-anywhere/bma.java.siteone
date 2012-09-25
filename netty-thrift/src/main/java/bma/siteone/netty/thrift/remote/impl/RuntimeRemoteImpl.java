@@ -8,6 +8,7 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+import org.apache.thrift.transport.TTransport;
 import org.jboss.netty.channel.Channel;
 import org.jboss.netty.channel.ChannelFuture;
 import org.jboss.netty.channel.ChannelFutureListener;
@@ -65,23 +66,28 @@ public class RuntimeRemoteImpl implements RuntimeRemote {
 		public boolean querySupport = true;
 		public boolean closed;
 		public long activeTime;
+		public LogLatch logLatch = new LogLatch();
 
 		public void close() {
 			ThriftClient ch = client;
 			if (ch != null) {
 				client = null;
+				TTransport tr = ch.getTransport();
+				if (tr != null && tr instanceof SupportedNettyChannel) {
+					Channel o = ((SupportedNettyChannel) tr).getChannel();
+					if (o.isOpen()) {
+						o.close();
+					}
+				}
 				ch.close();
 			}
 		}
 	}
 
-	private LogLatch logLatch = new LogLatch(128);
-
 	private ConcurrentHashMap<HostPort, INFO> remoteInfoMap = new ConcurrentHashMap<HostPort, INFO>();
 
 	public RuntimeRemoteImpl() {
 		super();
-		logLatch.setSilencePeriod(1);
 	}
 
 	public boolean isDefaultQuery() {
@@ -134,7 +140,6 @@ public class RuntimeRemoteImpl implements RuntimeRemote {
 
 	public void setLogLatchPeriod(int retryLogPeriod) {
 		this.logLatchPeriod = retryLogPeriod;
-		logLatch.setSilencePeriod(this.logLatchPeriod);
 	}
 
 	public int getRetryPeriod() {
@@ -314,8 +319,8 @@ public class RuntimeRemoteImpl implements RuntimeRemote {
 		info.remoteInfo.setValid(false);
 		info.client = null;
 		info.service = null;
-		if (log.isDebugEnabled() && logLatch.checkLogable("retry-" + host)) {
-			log.debug("connect [" + host + "] retry...");
+		if (log.isInfoEnabled() && info.logLatch.checkLogable("retry")) {
+			log.info("connect [" + host + "] retry...");
 		}
 		ProcessTimerTask task = TimerManager.delay(new Runnable() {
 
@@ -329,7 +334,7 @@ public class RuntimeRemoteImpl implements RuntimeRemote {
 	}
 
 	protected void connect(final HostPort host, final INFO info) {
-		if (log.isDebugEnabled() && logLatch.checkLogable("connect-" + host)) {
+		if (log.isDebugEnabled() && info.logLatch.checkLogable("connect")) {
 			log.debug("connect remote({}) ...", host);
 		}
 		// create a remoteInfo client
@@ -351,7 +356,7 @@ public class RuntimeRemoteImpl implements RuntimeRemote {
 
 				if (t != null) {
 					if (log.isDebugEnabled()
-							&& logLatch.checkLogable("connect_fail-" + host)) {
+							&& info.logLatch.checkLogable("connect_fail")) {
 						log.debug("connect [" + host + "] fail", t);
 					}
 					retry(host, info);
@@ -422,7 +427,7 @@ public class RuntimeRemoteImpl implements RuntimeRemote {
 			return;
 		}
 
-		if (log.isDebugEnabled() && logLatch.checkLogable("query-" + host)) {
+		if (log.isDebugEnabled() && info.logLatch.checkLogable("query")) {
 			log.debug("query remote({},{}) ...", host, closeAfterEnd);
 		}
 
@@ -445,7 +450,7 @@ public class RuntimeRemoteImpl implements RuntimeRemote {
 					}
 				} else {
 					if (log.isDebugEnabled()
-							&& logLatch.checkLogable("query_resp-" + host)) {
+							&& info.logLatch.checkLogable("query_resp")) {
 						log.debug("query remoteInfo [{}] => {}", host, result);
 					}
 					info.remoteInfo = result;
@@ -469,6 +474,8 @@ public class RuntimeRemoteImpl implements RuntimeRemote {
 	public void newRemote(HostPort host) {
 		INFO info = new INFO();
 		info.activeTime = System.currentTimeMillis();
+		info.logLatch = new LogLatch();
+		info.logLatch.setSilencePeriod(this.logLatchPeriod);
 		info.querySupport = defaultQuery;
 		remoteInfoMap.putIfAbsent(host, info);
 		if (info == remoteInfoMap.get(host)) {
