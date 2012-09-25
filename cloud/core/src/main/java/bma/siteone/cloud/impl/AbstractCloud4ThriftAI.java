@@ -280,7 +280,7 @@ public abstract class AbstractCloud4ThriftAI implements Iface, CloudTrackable {
 		}
 
 		final CloudRequest creq = new CloudRequest();
-		creq.setCallback(from(req.getEntry()));
+		creq.setCallback(from(req.getCallback()));
 		creq.setContentType(req.getContentType());
 		creq.setContent(req.getContent());
 		HashMap<String, String> context = req.getContext() == null ? null
