@@ -32,8 +32,9 @@ public class LocalCloudService4Test extends LocalCloudService {
 			@Override
 			public boolean cloudCall(AIStack<CloudResponse> stack,
 					CloudRequest req) {
-				CloudResponse rep = new CloudResponse();
+				CloudResponse rep = new CloudResponse();				
 				rep.setType(CloudResponse.TYPE_DONE);
+				rep.setContentType(req.getContentType());
 				rep.setContent(req.getContent());
 				return stack.success(rep);
 			}

@@ -67,13 +67,15 @@ public class CloudUtil {
 
 	public static String getEncodingFromContentType(String contentType) {
 		String[] list = explodeContentType(contentType);
-		for (String s : list) {
-			s = s.trim();
-			if (s.equalsIgnoreCase("text")) {
-				return "UTF-8";
-			}
-			if (s.toLowerCase().startsWith("text/")) {
-				return s.substring(5).trim();
+		if (list != null) {
+			for (String s : list) {
+				s = s.trim();
+				if (s.equalsIgnoreCase("text")) {
+					return "UTF-8";
+				}
+				if (s.toLowerCase().startsWith("text/")) {
+					return s.substring(5).trim();
+				}
 			}
 		}
 		return null;
