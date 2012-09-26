@@ -10,8 +10,8 @@ import org.apache.thrift.transport.TTransport;
 import org.jboss.netty.buffer.ChannelBuffer;
 import org.jboss.netty.channel.Channel;
 
-import bma.siteone.netty.thrift.client.TNettyChannelFramedTransport;
 import bma.siteone.netty.thrift.core.TNettyChannelBufferTransport;
+import bma.siteone.netty.thrift.core.TNettyServerFramedTransport;
 import bma.siteone.netty.thrift.gate.impl.SimpleMessageContext;
 
 public class GateUtil {
@@ -43,7 +43,7 @@ public class GateUtil {
 	}
 
 	public static void responseError(Channel ch, TMessage req, Throwable t) {
-		TTransport transport = new TNettyChannelFramedTransport(ch,
+		TTransport transport = new TNettyServerFramedTransport(ch, null,
 				Integer.MAX_VALUE);
 		TProtocol out = new TBinaryProtocol(transport);
 

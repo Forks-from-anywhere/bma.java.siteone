@@ -1,4 +1,4 @@
-package bma.siteone.netty.thrift.core;
+package bma.siteone.netty.thrift.client;
 
 import org.apache.thrift.transport.TTransport;
 import org.apache.thrift.transport.TTransportException;
@@ -18,7 +18,7 @@ import bma.common.netty.SupportedNettyChannel;
  * Netty Channel implementation of the TTransport interface.
  * 
  */
-public class TNettyChannelTransport extends TTransport implements
+public class TNettyClientTransport extends TTransport implements
 		SupportedNettyChannel {
 
 	protected Channel channel;
@@ -26,7 +26,7 @@ public class TNettyChannelTransport extends TTransport implements
 	protected long readTimeout = Long.MAX_VALUE;
 	protected Event event;
 
-	public TNettyChannelTransport(Channel channel) {
+	public TNettyClientTransport(Channel channel) {
 		super();
 		this.channel = channel;
 		event = Event.createManulResetEvent();
@@ -77,8 +77,9 @@ public class TNettyChannelTransport extends TTransport implements
 			return 0;
 		int got = Math.min(readBuffer.readableBytes(), len);
 		readBuffer.readBytes(buf, off, got);
-		if (readBuffer.readableBytes() == 0)
+		if (readBuffer.readableBytes() == 0) {
 			event.resetEvent();
+		}
 		return got;
 	}
 

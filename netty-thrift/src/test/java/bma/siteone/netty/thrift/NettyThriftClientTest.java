@@ -22,8 +22,8 @@ import bma.common.netty.handler.ChannelHandlerLog.TYPE;
 import bma.common.thrift.sample.Hello;
 import bma.common.thrift.sample.Hello4AI;
 import bma.siteone.netty.thrift.client.AIThriftClientFactoryNetty;
-import bma.siteone.netty.thrift.client.TNettyChannelFramedTransport;
-import bma.siteone.netty.thrift.core.TNettyChannelTransport;
+import bma.siteone.netty.thrift.client.TNettyClientTransport;
+import bma.siteone.netty.thrift.client.TNettyClientFramedTransport;
 
 public class NettyThriftClientTest {
 
@@ -59,7 +59,7 @@ public class NettyThriftClientTest {
 		cf.awaitUninterruptibly();
 		if (cf.isSuccess()) {
 			Channel ch = cf.getChannel();
-			TNettyChannelTransport t = new TNettyChannelTransport(ch);
+			TNettyClientTransport t = new TNettyClientTransport(ch);
 			t.bindHandler();
 
 			return new TFramedTransport(t);
@@ -88,7 +88,7 @@ public class NettyThriftClientTest {
 		cf.awaitUninterruptibly();
 		if (cf.isSuccess()) {
 			Channel ch = cf.getChannel();
-			TNettyChannelFramedTransport t = new TNettyChannelFramedTransport(
+			TNettyClientFramedTransport t = new TNettyClientFramedTransport(
 					ch, 1024 * 1024);
 			t.bindHandler();
 

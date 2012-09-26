@@ -1,8 +1,10 @@
 package bma.siteone.netty.thrift.client;
 
+import java.net.MalformedURLException;
+import java.net.URL;
+
 import org.apache.thrift.TException;
 import org.apache.thrift.protocol.TProtocol;
-import org.apache.thrift.transport.TTransport;
 import org.jboss.netty.channel.Channel;
 import org.jboss.netty.channel.ChannelFuture;
 import org.jboss.netty.channel.ChannelFutureListener;
@@ -19,6 +21,7 @@ import bma.common.langutil.ai.AIUtil;
 import bma.common.langutil.ai.stack.AIStack;
 import bma.common.langutil.ai.stack.AIStackSimple;
 import bma.common.langutil.core.ExceptionUtil;
+import bma.common.langutil.io.HostPort;
 import bma.common.langutil.log.LogPrinter.LEVEL;
 import bma.common.langutil.pipeline.CommonPipelineBuilder;
 import bma.common.netty.NettyChannelPipeline;
@@ -32,7 +35,6 @@ import bma.common.thrift.ThriftClient;
 import bma.common.thrift.ThriftClientFactory;
 import bma.common.thrift.ThriftClientFactoryConfig;
 import bma.common.thrift.ai.AIThriftClientFactory;
-import bma.siteone.netty.thrift.core.TNettyChannelTransport;
 
 public class AIThriftClientFactoryNetty extends ThriftClientFactoryConfig
 		implements ThriftClientFactory, AIThriftClientFactory {
@@ -93,7 +95,7 @@ public class AIThriftClientFactoryNetty extends ThriftClientFactoryConfig
 	public boolean createThriftClient(final AIStack<ThriftClient> stack)
 			throws TException {
 		if (TYPE_HTTP.equals(type)) {
-			return false;
+			return createHttpThriftClient(stack);
 		} else {
 			return createSocketThriftClient(stack);
 		}
@@ -115,7 +117,7 @@ public class AIThriftClientFactoryNetty extends ThriftClientFactoryConfig
 					pipeline.addLast("showConnect",
 							new ChannelHandlerShowConnect(log, LEVEL.DEBUG));
 				}
-				pipeline.addLast(TNettyChannelTransport.PIPELINE_NAME,
+				pipeline.addLast(TNettyClientTransport.PIPELINE_NAME,
 						new ChannelHandlerPlaceholder());
 				ChannelHandler sch = new SimpleChannelUpstreamHandler() {
 					@Override
@@ -123,12 +125,12 @@ public class AIThriftClientFactoryNetty extends ThriftClientFactoryConfig
 							ChannelStateEvent e) throws Exception {
 						try {
 							Channel ch = ctx.getChannel();
-							TNettyChannelTransport transport = null;
+							TNettyClientTransport transport = null;
 							if (frameMaxLength > 0) {
-								transport = new TNettyChannelFramedTransport(
-										ch, frameMaxLength);
+								transport = new TNettyClientFramedTransport(ch,
+										frameMaxLength);
 							} else {
-								transport = new TNettyChannelTransport(ch);
+								transport = new TNettyClientTransport(ch);
 							}
 							transport.bindHandler();
 							TProtocol pro = createProtocol(transport);
@@ -140,7 +142,7 @@ public class AIThriftClientFactoryNetty extends ThriftClientFactoryConfig
 						super.channelConnected(ctx, e);
 					}
 				};
-				pipeline.addLast("startu[", sch);
+				pipeline.addLast("startup", sch);
 				if (traceBufferSize > 0) {
 					pipeline.addLast("downlog", new ChannelHandlerLog(log,
 							LEVEL.DEBUG, TYPE.DOWNSTREAM, traceBufferSize));
@@ -167,6 +169,93 @@ public class AIThriftClientFactoryNetty extends ThriftClientFactoryConfig
 			}
 		};
 
+		bootstrap.connect(host.createInetSocketAddress(), null, fac)
+				.addListener(new ChannelFutureListener() {
+
+					@Override
+					public void operationComplete(ChannelFuture cf)
+							throws Exception {
+						if (cf.isSuccess()) {
+
+						} else {
+							AIUtil.safeFailure(stack, cf.getCause());
+						}
+					}
+				});
+		return false;
+	}
+
+	public boolean createHttpThriftClient(final AIStack<ThriftClient> stack)
+			throws TException {
+
+		ChannelPipelineFactory fac = new ChannelPipelineFactory() {
+
+			@Override
+			public ChannelPipeline getPipeline() throws Exception {
+				ChannelPipeline pipeline = Channels.pipeline();
+				beforeBuildPipeline(pipeline);
+				if (traceBufferSize > 0) {
+					pipeline.addLast("uplog", new ChannelHandlerLog(log,
+							LEVEL.DEBUG, TYPE.UPSTREAM, traceBufferSize));
+				} else {
+					pipeline.addLast("showConnect",
+							new ChannelHandlerShowConnect(log, LEVEL.DEBUG));
+				}
+				pipeline.addLast(TNettyClientTransport.PIPELINE_NAME,
+						new ChannelHandlerPlaceholder());
+				ChannelHandler sch = new SimpleChannelUpstreamHandler() {
+					@Override
+					public void channelConnected(ChannelHandlerContext ctx,
+							ChannelStateEvent e) throws Exception {
+						try {
+							Channel ch = ctx.getChannel();
+							TNettyClientHttpTransport transport = new TNettyClientHttpTransport(
+									ch, new URL(url));
+							transport.bindHandler();
+							TProtocol pro = createProtocol(transport);
+							AIUtil.safeSuccess(stack, new ThriftClient(
+									transport, pro));
+						} catch (Exception err) {
+							AIUtil.safeFailure(stack, err);
+						}
+						super.channelConnected(ctx, e);
+					}
+				};
+				pipeline.addLast("startup", sch);
+				if (traceBufferSize > 0) {
+					pipeline.addLast("downlog", new ChannelHandlerLog(log,
+							LEVEL.DEBUG, TYPE.DOWNSTREAM, traceBufferSize));
+				}
+				pipeline.addLast("error", new ChannelHandlerExceptionClose() {
+					@Override
+					protected void logException(ChannelHandlerContext ctx,
+							ExceptionEvent e) {
+						if (log.isDebugEnabled()) {
+							Throwable t = ExceptionUtil.cause(e.getCause());
+							log.debug("{} error {}/{}", new Object[] {
+									ctx.getChannel().getRemoteAddress(),
+									t.getClass().getName(), t.getMessage() });
+						}
+					}
+				});
+
+				if (pipelineBuilder != null) {
+					pipelineBuilder.buildPipeline(new NettyChannelPipeline(
+							pipeline));
+				}
+				afterBuildPipeline(pipeline);
+				return pipeline;
+			}
+		};
+
+		URL url;
+		try {
+			url = new URL(this.url);
+		} catch (MalformedURLException e) {
+			throw new TException(e);
+		}
+		HostPort host = new HostPort(url.getHost(), url.getPort() == -1 ? 80
+				: url.getPort());
 		bootstrap.connect(host.createInetSocketAddress(), null, fac)
 				.addListener(new ChannelFutureListener() {
 
