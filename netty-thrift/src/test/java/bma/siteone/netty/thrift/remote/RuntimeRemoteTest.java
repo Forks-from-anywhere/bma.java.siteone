@@ -11,7 +11,7 @@ import bma.common.langutil.ai.executor.AIExecutor;
 import bma.common.langutil.concurrent.TimerManager;
 import bma.common.langutil.io.HostPort;
 import bma.common.netty.client.NettyClientBootstrap;
-import bma.siteone.netty.thrift.client.AIThriftEntryNetty;
+import bma.siteone.netty.thrift.client.AIThriftClientProviderNetty;
 import bma.siteone.netty.thrift.remote.impl.RuntimeRemoteImpl;
 
 public class RuntimeRemoteTest {
@@ -47,7 +47,7 @@ public class RuntimeRemoteTest {
 
 	public RuntimeRemoteImpl runtimeRemote() {
 
-		AIThriftEntryNetty te = new AIThriftEntryNetty();
+		AIThriftClientProviderNetty te = new AIThriftClientProviderNetty();
 		te.setBootstrap(boot());
 
 		RuntimeRemoteImpl r = new RuntimeRemoteImpl();

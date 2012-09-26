@@ -27,7 +27,7 @@ import bma.common.langutil.log.LogLatch;
 import bma.common.netty.SupportedNettyChannel;
 import bma.common.thrift.ThriftClient;
 import bma.common.thrift.ThriftClientFactoryConfig;
-import bma.common.thrift.entry.AIThriftEntry;
+import bma.common.thrift.provider.AIThriftClientProvider;
 import bma.siteone.netty.thrift.remote.RuntimeRemote;
 import bma.siteone.netty.thrift.remote.thrift.TAIRemoteInfoService;
 import bma.siteone.netty.thrift.remote.thrift.TAIRemoteInfoService.Client;
@@ -39,7 +39,7 @@ public class RuntimeRemoteImpl implements RuntimeRemote {
 			.getLogger(RuntimeRemoteImpl.class);
 
 	// config
-	private AIThriftEntry thriftEntry;
+	private AIThriftClientProvider thriftEntry;
 	private int frameMaxLength = 1024 * 1024;
 	private String module = "remoteInfo";
 
@@ -166,11 +166,11 @@ public class RuntimeRemoteImpl implements RuntimeRemote {
 		this.queryPeriod = pingPeriod;
 	}
 
-	public AIThriftEntry getThriftEntry() {
+	public AIThriftClientProvider getThriftEntry() {
 		return thriftEntry;
 	}
 
-	public void setThriftEntry(AIThriftEntry thriftEntry) {
+	public void setThriftEntry(AIThriftClientProvider thriftEntry) {
 		this.thriftEntry = thriftEntry;
 	}
 

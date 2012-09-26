@@ -105,7 +105,7 @@ public class NettyThriftClientTest {
 		AIThriftClientFactoryNetty fac = new AIThriftClientFactoryNetty();
 		fac.setBootstrap(bootstrap);
 		fac.setTraceBufferSize(128);
-		fac.setHostPort("localhost:9091");
+		fac.setHostPort("localhost:9093");
 		fac.setFrameSize("10m");
 		fac.setModule("hello");
 		return fac.createThriftClient().getTransport();
@@ -173,7 +173,7 @@ public class NettyThriftClientTest {
 	@Test
 	public void aiThriftClient() throws Exception {
 
-		TTransport trans = trans2();
+		TTransport trans = trans3();
 		if (trans != null) {
 			TProtocol p = new TBinaryProtocol(trans);
 

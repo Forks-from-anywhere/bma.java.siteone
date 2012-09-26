@@ -2,9 +2,6 @@ package bma.siteone.netty.thrift.client;
 
 import org.apache.thrift.TException;
 import org.apache.thrift.protocol.TProtocol;
-import org.apache.thrift.transport.TFramedTransport;
-import org.apache.thrift.transport.THttpClient;
-import org.apache.thrift.transport.TSocket;
 import org.apache.thrift.transport.TTransport;
 import org.jboss.netty.channel.Channel;
 import org.jboss.netty.channel.ChannelFuture;
@@ -22,7 +19,6 @@ import bma.common.langutil.ai.AIUtil;
 import bma.common.langutil.ai.stack.AIStack;
 import bma.common.langutil.ai.stack.AIStackSimple;
 import bma.common.langutil.core.ExceptionUtil;
-import bma.common.langutil.core.Preconditions;
 import bma.common.langutil.log.LogPrinter.LEVEL;
 import bma.common.langutil.pipeline.CommonPipelineBuilder;
 import bma.common.netty.NettyChannelPipeline;
@@ -73,28 +69,6 @@ public class AIThriftClientFactoryNetty extends ThriftClientFactoryConfig
 		this.traceBufferSize = traceBufferSize;
 	}
 
-	protected TTransport createTransport() throws TException {
-		TTransport transport = null;
-		if (TYPE_HTTP.equals(type)) {
-			Preconditions.checkNotNull(url);
-			if (log.isDebugEnabled()) {
-				log.debug("create http client - {}", url);
-			}
-			transport = new THttpClient(url);
-		} else {
-			Preconditions.checkNotNull(host);
-			if (log.isDebugEnabled()) {
-				log.debug("create socket client - {}", host);
-			}
-			transport = new TSocket(host.getHost(), host.getPort(9090));
-		}
-		transport.open();
-		if (frameMaxLength > 0) {
-			transport = new TFramedTransport(transport, frameMaxLength);
-		}
-		return transport;
-	}
-
 	@Override
 	public ThriftClient createThriftClient() throws TException {
 		AIStackSimple<ThriftClient> stack = new AIStackSimple<ThriftClient>(
@@ -117,6 +91,15 @@ public class AIThriftClientFactoryNetty extends ThriftClientFactoryConfig
 
 	@Override
 	public boolean createThriftClient(final AIStack<ThriftClient> stack)
+			throws TException {
+		if (TYPE_HTTP.equals(type)) {
+			return false;
+		} else {
+			return createSocketThriftClient(stack);
+		}
+	}
+
+	public boolean createSocketThriftClient(final AIStack<ThriftClient> stack)
 			throws TException {
 
 		ChannelPipelineFactory fac = new ChannelPipelineFactory() {

@@ -159,7 +159,7 @@ public class TNettyChannelFramedTransport extends TNettyChannelTransport
 			return s.success(null);
 		final AIStack<TYPE> stack = AIUtil.fork(s);
 		Request<TYPE> r = new Request<TYPE>(in, name, seqid, result, stack);
-		synchronized (receiverList) {
+		synchronized (this) {
 			receiverList.add(r);
 		}
 		return processReceiver();

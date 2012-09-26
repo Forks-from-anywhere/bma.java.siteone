@@ -5,10 +5,9 @@
 	http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-3.0.xsd">
 	
 	<import resource="netty-thrift-global.xml"/>
-	<import resource="netty-thrift-peer.xml"/>
 
 	<!-- ThriftServiceNode -->
-	<bean id="serviceHello" class="bma.common.thrift.sample.HelloHandler">
+	<bean id="serviceHello" class="bma.common.thrift.sample.HelloImpl">
 		<property name="executor" ref="aiExecutor"/>
 	</bean>
 	<bean id="atpHello" class="bma.common.thrift.sample.Hello4AI.Processor">		
@@ -31,51 +30,6 @@
 			</list>
 		</property>
 	</bean>
-	
-	<!-- TMBean -->
-	<bean id="tmbean" class="bma.common.thrift.servicehub.impl.ThriftCommonManagableService">
-		<property name="executor" ref="aiExecutor"/>
-		<property name="beanList">
-			<list>
-				<ref bean="tbeanHello"/>
-			</list>
-		</property>
-		<property name="infoList">
-			<list>
-				<bean class="bma.common.thrift.tmbean.TMBeanInfo">
-					<property name="serviceName" value="file"/>
-					<property name="mbean">
-						<bean class="bma.common.thrift.common.FileTMBean">
-							<property name="config">
-								<bean class="bma.common.thrift.common.FileTMBeanConfig">
-									<property name="key" value=""/>
-									<property name="rootFile" value="e:/tmp/hub"/>									
-								</bean>
-							</property>
-						</bean>
-					</property>
-				</bean>
-			</list>
-		</property>
-	</bean>
-	<bean id="atpTMBean" class="bma.common.thrift.servicehub.protocol.TAIServiceCommonManage.Processor">
-		<constructor-arg ref="tmbean" />
-	</bean>		
-	
-	<!-- ThriftManageNode -->
-	<bean id="thriftManageNode" class="bma.common.thrift.servicehub.ThriftServiceNode">
-		<property name="name" value="nodeName-manage"/>
-		<property name="type" value="socket"/>
-		<property name="port" value="9193" />				
-		<property name="frameSize" value="10m"/>
-		<property name="defaultModule" value="hubPeerListener"/>
-		<property name="serviceMap">
-			<map>
-				<entry key="hubPeerListener" value-ref="atpListener" />
-				<entry key="tmbean" value-ref="atpTMBean" />
-			</map>
-		</property>
-	</bean>
 
 	<!-- BOOT -->
 	<!-- bma.common.langutil.ai.boot.AIServerBoot -->	
@@ -83,9 +37,7 @@
 	<bean id="booter" class="bma.common.langutil.spring.SimpleServerBooter">
         <property name="mainList">
         	<list>
-        		<ref bean="thriftManageServer"/>
         		<ref bean="thriftServiceServer"/>   
-        		<ref bean="hubPeer"/>
         	</list>
         </property>
     </bean>	  
