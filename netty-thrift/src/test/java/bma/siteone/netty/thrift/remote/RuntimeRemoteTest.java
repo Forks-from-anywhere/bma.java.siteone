@@ -52,7 +52,7 @@ public class RuntimeRemoteTest {
 
 		RuntimeRemoteImpl r = new RuntimeRemoteImpl();
 		r.setFrameMaxLength(1024 * 1024);
-		r.setThriftEntry(te);
+		r.setThriftClientProvider(te);
 		return r;
 	}
 

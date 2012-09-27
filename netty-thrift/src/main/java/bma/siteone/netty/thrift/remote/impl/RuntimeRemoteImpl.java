@@ -39,7 +39,7 @@ public class RuntimeRemoteImpl implements RuntimeRemote {
 			.getLogger(RuntimeRemoteImpl.class);
 
 	// config
-	private AIThriftClientProvider thriftEntry;
+	private AIThriftClientProvider thriftClientProvider;
 	private int frameMaxLength = 1024 * 1024;
 	private String module = "remoteInfo";
 
@@ -166,12 +166,12 @@ public class RuntimeRemoteImpl implements RuntimeRemote {
 		this.queryPeriod = pingPeriod;
 	}
 
-	public AIThriftClientProvider getThriftEntry() {
-		return thriftEntry;
+	public AIThriftClientProvider getThriftClientProvider() {
+		return thriftClientProvider;
 	}
 
-	public void setThriftEntry(AIThriftClientProvider thriftEntry) {
-		this.thriftEntry = thriftEntry;
+	public void setThriftClientProvider(AIThriftClientProvider thriftEntry) {
+		this.thriftClientProvider = thriftEntry;
 	}
 
 	public String getModule() {
@@ -394,7 +394,7 @@ public class RuntimeRemoteImpl implements RuntimeRemote {
 			}
 		};
 		try {
-			thriftEntry.createClient(stack, cfg.toEntry());
+			thriftClientProvider.createClient(stack, cfg.toEntry());
 		} catch (Exception e) {
 			AIUtil.safeFailure(stack, e);
 		}

@@ -39,7 +39,7 @@
 		init-method="init">
 		<property name="worker" value="3" />
 	</bean>
-	<bean id="aiThriftEntry" class="bma.siteone.netty.thrift.client.AIThriftEntryNetty">
+	<bean id="aiThriftClientProvider" class="bma.siteone.netty.thrift.client.AIThriftClientProviderNetty">
 		<property name="bootstrap" ref="nettyClientBootstrap" />
 		<property name="traceBufferSize" value="0" />
 	</bean>
@@ -67,11 +67,7 @@
 	<!-- RuntimeRemote -->
 	<bean id="runtimeRemote" class="bma.siteone.netty.thrift.remote.impl.RuntimeRemoteImpl" 
 			init-method="start" destroy-method="close">
-		<property name="thriftEntry">
-			<bean class="bma.siteone.netty.thrift.client.AIThriftEntryNetty">
-				<property name="bootstrap" ref="nettyClientBootstrap"/>
-			</bean>
-		</property>
+		<property name="thriftClientProvider" ref="aiThriftClientProvider"/>
 		<property name="maxIdleTime" value="60000"/>
 		<property name="initCheckList">
 			<list>
@@ -82,11 +78,18 @@
 	</bean>
 	
 	<!-- GateAgent -->
-	<bean id="failoverFac" class="bma.siteone.netty.thrift.gate.impl.NTGAgentFactoryCore">
+	<bean id="failoverFac1" class="bma.siteone.netty.thrift.gate.impl.NTGAgentFactoryCore">
 		<property name="pool" ref="nettyPool"/>
 		<property name="runtimeRemote" ref="runtimeRemote"/>
 		<property name="hostString" value="172.19.16.195:9191"/>
 		<property name="failoverHostString" value="172.19.16.195:9192"/>
+	</bean>
+	<bean id="failoverFac2" class="bma.siteone.netty.thrift.gate.impl.NTGAgentFactoryCore">
+		<property name="pool" ref="nettyPool"/>
+		<property name="urlString" value="http://localhost:8080/common.test/thrift/thrift_service.php"/>
+		<!--
+		<property name="failoverUrlString" value="http://localhost:8080/common.test/thrift/thrift_service.php"/>
+		 -->
 	</bean>
 	<bean id="gateDispatcher" class="bma.siteone.netty.thrift.gate.impl.NTGDispatcherCore">
 		<property name="pool" ref="nettyPool" />
@@ -97,7 +100,8 @@
 		</property>		
 		<property name="agentFactoryMap">
 			<map>
-				<entry key="admin" value-ref="failoverFac"/>
+				<entry key="admin" value-ref="failoverFac1"/>
+				<entry key="hello" value-ref="failoverFac2"/>
 			</map>
 		</property>
 	</bean>

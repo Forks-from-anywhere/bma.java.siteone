@@ -1,24 +1,6 @@
-/*
- * Licensed to the Apache Software Foundation (ASF) under one
- * or more contributor license agreements. See the NOTICE file
- * distributed with this work for additional information
- * regarding copyright ownership. The ASF licenses this file
- * to you under the Apache License, Version 2.0 (the
- * "License"); you may not use this file except in compliance
- * with the License. You may obtain a copy of the License at
- *
- *   http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing,
- * software distributed under the License is distributed on an
- * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
- * KIND, either express or implied. See the License for the
- * specific language governing permissions and limitations
- * under the License.
- */
-
 package bma.siteone.netty.thrift.client;
 
+import java.io.IOException;
 import java.net.URL;
 
 import org.apache.thrift.transport.TTransportException;
@@ -41,6 +23,9 @@ import org.jboss.netty.handler.codec.http.HttpRequest;
 import org.jboss.netty.handler.codec.http.HttpResponse;
 import org.jboss.netty.handler.codec.http.HttpResponseStatus;
 import org.jboss.netty.handler.codec.http.HttpVersion;
+import org.jboss.netty.util.CharsetUtil;
+
+import bma.siteone.netty.thrift.core.NCHFramed;
 
 public class TNettyClientHttpTransport extends TAINettyClientTransport {
 
@@ -76,6 +61,8 @@ public class TNettyClientHttpTransport extends TAINettyClientTransport {
 		ChannelBuffer content = writeBuffer;
 		writeBuffer = null;
 		try {
+			
+			// copyto ProxyObjectHttp
 			HttpRequest request = new DefaultHttpRequest(HttpVersion.HTTP_1_1,
 					HttpMethod.POST, url.toURI().getRawPath());
 			StringBuilder host = new StringBuilder(url.getHost());
@@ -114,6 +101,7 @@ public class TNettyClientHttpTransport extends TAINettyClientTransport {
 			public void messageReceived(ChannelHandlerContext ctx,
 					MessageEvent e) throws Exception {
 				Object obj = e.getMessage();
+				// copyto ProxyObjectHttp
 				if (obj instanceof HttpResponse) {
 					HttpResponse response = (HttpResponse) e.getMessage();
 
@@ -123,10 +111,21 @@ public class TNettyClientHttpTransport extends TAINettyClientTransport {
 					}
 
 					ChannelBuffer content = response.getContent();
-					if (content.readable()) {
-						addReadBuffer(content);
+					if (content.readableBytes() > 4) {
+						content.markReaderIndex();
+						byte[] buf = new byte[4];
+						content.readBytes(buf);
+						int size = NCHFramed.decodeFrameSize(buf);
+						if (size <= content.readableBytes()) {
+							content.resetReaderIndex();
+							addReadBuffer(content);
+							return;
+						}
 					}
-
+					processError(new TTransportException(
+							"response content error", new IOException(
+									content.toString(CharsetUtil.UTF_8))));
+					return;
 				}
 				super.messageReceived(ctx, e);
 			}
@@ -147,5 +146,4 @@ public class TNettyClientHttpTransport extends TAINettyClientTransport {
 			p.addLast(PIPELINE_NAME, ch);
 		}
 	}
-
 }

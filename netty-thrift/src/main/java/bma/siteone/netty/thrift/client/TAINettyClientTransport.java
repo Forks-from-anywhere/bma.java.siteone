@@ -42,9 +42,13 @@ public abstract class TAINettyClientTransport extends TNettyClientTransport
 
 	protected void processError(Throwable t) {
 		synchronized (this) {
-			while (!receiverList.isEmpty()) {
-				Request r = receiverList.remove();
-				r.error(t);
+			if (receiverList.isEmpty()) {
+				setError(t);
+			} else {
+				while (!receiverList.isEmpty()) {
+					Request r = receiverList.remove();
+					r.error(t);
+				}
 			}
 		}
 	}

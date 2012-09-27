@@ -1,5 +1,7 @@
 package bma.siteone.netty.thrift.gate.impl;
 
+import java.net.URL;
+
 import bma.common.langutil.ai.stack.AIStack;
 import bma.common.langutil.ai.stack.AIStackAbstractDelegate;
 import bma.common.langutil.io.HostPort;
@@ -8,15 +10,30 @@ import bma.siteone.netty.thrift.gate.MessageContext;
 import bma.siteone.netty.thrift.gate.NTGAgent;
 import bma.siteone.netty.thrift.remote.RuntimeRemote;
 
-public class NTGAgentProxy extends ProxyObject implements NTGAgent,
-		NTGAgentProcess {
+public class NTGAgentProxy implements NTGAgent, NTGAgentProcess {
 
 	final org.slf4j.Logger log = org.slf4j.LoggerFactory
 			.getLogger(NTGAgentProxy.class);
 
+	protected ProxyObjectBase proxy;
+
 	public NTGAgentProxy(NettyChannelPool pool, HostPort host, RuntimeRemote rr) {
-		super(pool, host);
-		setRuntimeRemote(rr);
+		super();
+		proxy = new ProxyObjectSocket(pool, host);
+		proxy.setRuntimeRemote(rr);
+	}
+
+	public NTGAgentProxy(NettyChannelPool pool, URL url) {
+		super();
+		proxy = new ProxyObjectHttp(pool, url);
+	}
+
+	public boolean isSocket() {
+		return proxy instanceof ProxyObjectSocket;
+	}
+
+	public void setRuntimeRemote(RuntimeRemote rr) {
+		proxy.setRuntimeRemote(rr);
 	}
 
 	@Override
@@ -27,22 +44,30 @@ public class NTGAgentProxy extends ProxyObject implements NTGAgent,
 
 	@Override
 	public boolean process(AIStack<Boolean> stack, MessageContext ctx) {
-		
-		setContext(ctx);
-		
-		AIStackAbstractDelegate<Boolean> callStack = new AIStackAbstractDelegate<Boolean>(stack) {
+
+		proxy.setContext(ctx);
+
+		AIStackAbstractDelegate<Boolean> callStack = new AIStackAbstractDelegate<Boolean>(
+				stack) {
 
 			@Override
 			protected boolean done() {
-				returnChannel();
+				proxy.returnChannel();
 				return super.done();
 			}
 		};
-		return create(callStack);
+		return proxy.create(callStack);
 	}
 
 	@Override
 	public String toString() {
-		return "Proxy[" + super.host + "]";
+		return proxy.toString();
+	}
+
+	public void setVHost(String vhost) {
+		if (proxy instanceof ProxyObjectHttp) {
+			ProxyObjectHttp o = (ProxyObjectHttp) proxy;
+			o.setVhost(vhost);
+		}
 	}
 }

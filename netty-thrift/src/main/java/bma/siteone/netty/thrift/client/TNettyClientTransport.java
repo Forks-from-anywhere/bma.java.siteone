@@ -25,6 +25,7 @@ public class TNettyClientTransport extends TTransport implements
 	protected ChannelBuffer readBuffer;
 	protected long readTimeout = Long.MAX_VALUE;
 	protected Event event;
+	protected Throwable error;
 
 	public TNettyClientTransport(Channel channel) {
 		super();
@@ -72,15 +73,39 @@ public class TNettyClientTransport extends TTransport implements
 		channel.close();
 	}
 
+	public Throwable getError() {
+		return error;
+	}
+
+	public void setError(Throwable error) {
+		this.error = error;
+		event.setEvent(true);
+	}
+
 	public int read(byte[] buf, int off, int len) throws TTransportException {
 		if (!event.checkAndWait(readTimeout))
 			return 0;
-		int got = Math.min(readBuffer.readableBytes(), len);
-		readBuffer.readBytes(buf, off, got);
-		if (readBuffer.readableBytes() == 0) {
-			event.resetEvent();
+		if (error != null) {
+			if (readBuffer != null && readBuffer.readableBytes() == 0) {
+				readBuffer.clear();
+				event.resetEvent();
+			}
+			Throwable t = error;
+			error = null;
+			if (t instanceof TTransportException) {
+				throw (TTransportException) t;
+			} else {
+				throw new TTransportException(t);
+			}
+		} else {
+			int got = Math.min(readBuffer.readableBytes(), len);
+			readBuffer.readBytes(buf, off, got);
+			if (readBuffer.readableBytes() == 0) {
+				readBuffer.clear();
+				event.resetEvent();
+			}
+			return got;
 		}
-		return got;
 	}
 
 	@Override

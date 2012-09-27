@@ -1,5 +1,9 @@
 package bma.siteone.netty.thrift.gate.impl;
 
+import java.net.MalformedURLException;
+import java.net.URL;
+
+import bma.common.langutil.core.ExceptionUtil;
 import bma.common.langutil.io.HostPort;
 import bma.common.netty.pool.NettyChannelPool;
 import bma.siteone.netty.thrift.gate.NTGAgent;
@@ -13,21 +17,48 @@ public class NTGAgentFactoryCore implements NTGAgentFactory,
 
 	protected NettyChannelPool pool;
 	protected RuntimeRemote runtimeRemote;
-	protected HostPort host;
-	protected HostPort failoverHost;
 
-	public HostPort getHost() {
-		return host;
+	protected ProxyInfo mainInfo;
+	protected ProxyInfo failoverInfo;
+
+	public void setUrl(URL url) {
+		mainInfo = new ProxyInfo();
+		mainInfo.setType("http");
+		mainInfo.setUrl(url);
+	}
+
+	public void setUrlString(String url) {
+		try {
+			setUrl(new URL(url));
+		} catch (MalformedURLException e) {
+			throw ExceptionUtil.throwRuntime(e);
+		}
+	}
+
+	public void setFailoverUrl(URL failoverUrl) {
+		failoverInfo = new ProxyInfo();
+		failoverInfo.setType("http");
+		failoverInfo.setUrl(failoverUrl);
+	}
+
+	public void setFailoverUrlString(String url) {
+		try {
+			setFailoverUrl(new URL(url));
+		} catch (MalformedURLException e) {
+			throw ExceptionUtil.throwRuntime(e);
+		}
 	}
 
 	public void setHost(HostPort host) {
-		this.host = host;
+		mainInfo = new ProxyInfo();
+		mainInfo.setType("socket");
+		mainInfo.setHost(host);
 	}
 
 	public void setHostString(String v) {
 		HostPort host = new HostPort();
 		host.setHostString(v, 9090);
-		this.host = host;
+		setHost(host);
 	}
 
 	@Override
@@ -64,28 +95,54 @@ public class NTGAgentFactoryCore implements NTGAgentFactory,
 		this.runtimeRemote = runtimeRemote;
 	}
 
-	public HostPort getFailoverHost() {
-		return failoverHost;
-	}
-
 	public void setFailoverHost(HostPort failoverHost) {
-		this.failoverHost = failoverHost;
+		failoverInfo = new ProxyInfo();
+		failoverInfo.setType("socket");
+		failoverInfo.setHost(failoverHost);
 	}
 
 	public void setFailoverHostString(String v) {
 		HostPort host = new HostPort();
 		host.setHostString(v, 9090);
-		this.failoverHost = host;
+		setFailoverHost(host);
+	}
+
+	public ProxyInfo getMainInfo() {
+		return mainInfo;
+	}
+
+	public void setMainInfo(ProxyInfo mainInfo) {
+		this.mainInfo = mainInfo;
+	}
+
+	public ProxyInfo getFailoverInfo() {
+		return failoverInfo;
+	}
+
+	public void setFailoverInfo(ProxyInfo failoverInfo) {
+		this.failoverInfo = failoverInfo;
+	}
+
+	public NTGAgentProxy create(ProxyInfo info, boolean rr) {
+		if (info.isSocket()) {
+			return new NTGAgentProxy(pool, info.getHost(), rr
+					&& info.isCheckRuntimeRemote() ? this.runtimeRemote : null);
+		} else {
+			NTGAgentProxy proxy = new NTGAgentProxy(pool, info.getUrl());
+			proxy.setVHost(info.getVhost());
+			return proxy;
+		}
 	}
 
 	@Override
 	public NTGAgent newAgent() {
-		NTGAgentProxy main = new NTGAgentProxy(pool, host, null);
+		NTGAgentProxy main = create(mainInfo, false);
 		NTGAgent r = main;
-		if (failoverHost != null) {
-			main.setRuntimeRemote(runtimeRemote);
-			NTGAgentProxy second = new NTGAgentProxy(pool, failoverHost,
-					runtimeRemote);
+		if (failoverInfo != null) {
+			if (mainInfo.isCheckRuntimeRemote()) {
+				main.setRuntimeRemote(runtimeRemote);
+			}
+			NTGAgentProxy second = create(failoverInfo, true);
 			r = new NTGAgentFailover(main, second);
 		}
 		return r;

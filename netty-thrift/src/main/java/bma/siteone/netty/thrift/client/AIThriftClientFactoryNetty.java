@@ -211,6 +211,9 @@ public class AIThriftClientFactoryNetty extends ThriftClientFactoryConfig
 							Channel ch = ctx.getChannel();
 							TNettyClientHttpTransport transport = new TNettyClientHttpTransport(
 									ch, new URL(url));
+							if (frameMaxLength > 0) {
+								transport.setMaxContent(frameMaxLength);
+							}
 							transport.bindHandler();
 							TProtocol pro = createProtocol(transport);
 							AIUtil.safeSuccess(stack, new ThriftClient(
