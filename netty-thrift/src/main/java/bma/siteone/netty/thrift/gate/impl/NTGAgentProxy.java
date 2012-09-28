@@ -10,17 +10,23 @@ import bma.siteone.netty.thrift.gate.MessageContext;
 import bma.siteone.netty.thrift.gate.NTGAgent;
 import bma.siteone.netty.thrift.remote.RuntimeRemote;
 
-public class NTGAgentProxy implements NTGAgent, NTGAgentProcess {
+public class NTGAgentProxy implements NTGAgent, NTGAgentProcess,
+		RuntimeRemoteAware {
 
 	final org.slf4j.Logger log = org.slf4j.LoggerFactory
 			.getLogger(NTGAgentProxy.class);
 
 	protected ProxyObjectBase proxy;
+	protected boolean checkRuntimeRemote;
 
-	public NTGAgentProxy(NettyChannelPool pool, HostPort host, RuntimeRemote rr) {
+	public NTGAgentProxy(NettyChannelPool pool, HostPort host, boolean crr,
+			RuntimeRemote rr) {
 		super();
 		proxy = new ProxyObjectSocket(pool, host);
-		proxy.setRuntimeRemote(rr);
+		checkRuntimeRemote = crr;
+		if (crr) {
+			proxy.setRuntimeRemote(rr);
+		}
 	}
 
 	public NTGAgentProxy(NettyChannelPool pool, URL url) {
@@ -32,8 +38,19 @@ public class NTGAgentProxy implements NTGAgent, NTGAgentProcess {
 		return proxy instanceof ProxyObjectSocket;
 	}
 
+	public boolean isCheckRuntimeRemote() {
+		return checkRuntimeRemote;
+	}
+
+	public void setCheckRuntimeRemote(boolean checkRuntimeRemote) {
+		this.checkRuntimeRemote = checkRuntimeRemote;
+	}
+
+	@Override
 	public void setRuntimeRemote(RuntimeRemote rr) {
-		proxy.setRuntimeRemote(rr);
+		if (checkRuntimeRemote) {
+			proxy.setRuntimeRemote(rr);
+		}
 	}
 
 	@Override

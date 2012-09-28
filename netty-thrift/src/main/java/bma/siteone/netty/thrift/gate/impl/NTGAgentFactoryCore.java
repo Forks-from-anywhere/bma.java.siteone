@@ -18,13 +18,30 @@ public class NTGAgentFactoryCore implements NTGAgentFactory,
 	protected NettyChannelPool pool;
 	protected RuntimeRemote runtimeRemote;
 
-	protected ProxyInfo mainInfo;
-	protected ProxyInfo failoverInfo;
+	protected ProxyInfoGroup mainInfoGroup;
+	protected ProxyInfoGroup failoverInfoGroup;
+
+	public ProxyInfoGroup getMainInfoGroup() {
+		return mainInfoGroup;
+	}
+
+	public void setMainInfoGroup(ProxyInfoGroup mainInfoGroup) {
+		this.mainInfoGroup = mainInfoGroup;
+	}
+
+	public ProxyInfoGroup getFailoverInfoGroup() {
+		return failoverInfoGroup;
+	}
+
+	public void setFailoverInfoGroup(ProxyInfoGroup failoverInfoGroup) {
+		this.failoverInfoGroup = failoverInfoGroup;
+	}
 
 	public void setUrl(URL url) {
-		mainInfo = new ProxyInfo();
-		mainInfo.setType("http");
-		mainInfo.setUrl(url);
+		ProxyInfo pi = new ProxyInfo();
+		pi.setType("http");
+		pi.setUrl(url);
+		setMainInfo(pi);
 	}
 
 	public void setUrlString(String url) {
@@ -36,9 +53,10 @@ public class NTGAgentFactoryCore implements NTGAgentFactory,
 	}
 
 	public void setFailoverUrl(URL failoverUrl) {
-		failoverInfo = new ProxyInfo();
-		failoverInfo.setType("http");
-		failoverInfo.setUrl(failoverUrl);
+		ProxyInfo pi = new ProxyInfo();
+		pi.setType("http");
+		pi.setUrl(failoverUrl);
+		setFailoverInfo(pi);
 	}
 
 	public void setFailoverUrlString(String url) {
@@ -50,9 +68,10 @@ public class NTGAgentFactoryCore implements NTGAgentFactory,
 	}
 
 	public void setHost(HostPort host) {
-		mainInfo = new ProxyInfo();
-		mainInfo.setType("socket");
-		mainInfo.setHost(host);
+		ProxyInfo pi = new ProxyInfo();
+		pi.setType("socket");
+		pi.setHost(host);
+		setMainInfo(pi);
 	}
 
 	public void setHostString(String v) {
@@ -96,9 +115,10 @@ public class NTGAgentFactoryCore implements NTGAgentFactory,
 	}
 
 	public void setFailoverHost(HostPort failoverHost) {
-		failoverInfo = new ProxyInfo();
-		failoverInfo.setType("socket");
-		failoverInfo.setHost(failoverHost);
+		ProxyInfo pi = new ProxyInfo();
+		pi.setType("socket");
+		pi.setHost(failoverHost);
+		setFailoverInfo(pi);
 	}
 
 	public void setFailoverHostString(String v) {
@@ -107,42 +127,26 @@ public class NTGAgentFactoryCore implements NTGAgentFactory,
 		setFailoverHost(host);
 	}
 
-	public ProxyInfo getMainInfo() {
-		return mainInfo;
+	public void setMainInfo(ProxyInfo pi) {
+		mainInfoGroup = ProxyInfoGroup.single(pi);
 	}
 
-	public void setMainInfo(ProxyInfo mainInfo) {
-		this.mainInfo = mainInfo;
-	}
-
-	public ProxyInfo getFailoverInfo() {
-		return failoverInfo;
-	}
-
-	public void setFailoverInfo(ProxyInfo failoverInfo) {
-		this.failoverInfo = failoverInfo;
-	}
-
-	public NTGAgentProxy create(ProxyInfo info, boolean rr) {
-		if (info.isSocket()) {
-			return new NTGAgentProxy(pool, info.getHost(), rr
-					&& info.isCheckRuntimeRemote() ? this.runtimeRemote : null);
-		} else {
-			NTGAgentProxy proxy = new NTGAgentProxy(pool, info.getUrl());
-			proxy.setVHost(info.getVhost());
-			return proxy;
-		}
+	public void setFailoverInfo(ProxyInfo pi) {
+		failoverInfoGroup = ProxyInfoGroup.single(pi);
 	}
 
 	@Override
 	public NTGAgent newAgent() {
-		NTGAgentProxy main = create(mainInfo, false);
+		if (mainInfoGroup == null) {
+			return null;
+		}
+
+		NTGAgentProcess main = mainInfoGroup.create(pool, runtimeRemote,
+				failoverInfoGroup != null);
 		NTGAgent r = main;
-		if (failoverInfo != null) {
-			if (mainInfo.isCheckRuntimeRemote()) {
-				main.setRuntimeRemote(runtimeRemote);
-			}
-			NTGAgentProxy second = create(failoverInfo, true);
+		if (failoverInfoGroup != null) {
+			NTGAgentProcess second = failoverInfoGroup.create(pool,
+					runtimeRemote, false);
 			r = new NTGAgentFailover(main, second);
 		}
 		return r;

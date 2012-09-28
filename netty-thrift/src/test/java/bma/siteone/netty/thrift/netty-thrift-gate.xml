@@ -68,7 +68,7 @@
 	<bean id="runtimeRemote" class="bma.siteone.netty.thrift.remote.impl.RuntimeRemoteImpl" 
 			init-method="start" destroy-method="close">
 		<property name="thriftClientProvider" ref="aiThriftClientProvider"/>
-		<property name="maxIdleTime" value="60000"/>
+		<property name="maxIdleTime" value="10000"/>
 		<property name="initCheckList">
 			<list>
 				<value>172.19.16.195:9191</value>
@@ -81,8 +81,24 @@
 	<bean id="failoverFac1" class="bma.siteone.netty.thrift.gate.impl.NTGAgentFactoryCore">
 		<property name="pool" ref="nettyPool"/>
 		<property name="runtimeRemote" ref="runtimeRemote"/>
+		<property name="mainInfoGroup">
+			<bean class="bma.siteone.netty.thrift.gate.impl.ProxyInfoGroup">
+				<property name="infoList">
+					<list>
+						<bean class="bma.siteone.netty.thrift.gate.impl.ProxyInfo">
+							<property name="hostString" value="172.19.16.195:9191"/>
+						</bean>
+						<bean class="bma.siteone.netty.thrift.gate.impl.ProxyInfo">
+							<property name="hostString" value="172.19.16.195:9192"/>
+						</bean>
+					</list>
+				</property>
+			</bean>
+		</property>
+		<!-- 
 		<property name="hostString" value="172.19.16.195:9191"/>
-		<property name="failoverHostString" value="172.19.16.195:9192"/>
+		 -->
+		<property name="failoverHostString" value="172.19.16.195:9192"/>		
 	</bean>
 	<bean id="failoverFac2" class="bma.siteone.netty.thrift.gate.impl.NTGAgentFactoryCore">
 		<property name="pool" ref="nettyPool"/>

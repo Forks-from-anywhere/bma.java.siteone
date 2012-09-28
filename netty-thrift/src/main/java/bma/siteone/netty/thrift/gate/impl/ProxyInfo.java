@@ -4,6 +4,8 @@ import java.net.URL;
 
 import bma.common.langutil.core.StringUtil;
 import bma.common.langutil.io.HostPort;
+import bma.common.netty.pool.NettyChannelPool;
+import bma.siteone.netty.thrift.remote.RuntimeRemote;
 
 public class ProxyInfo {
 
@@ -46,6 +48,11 @@ public class ProxyInfo {
 	public void setHost(HostPort host) {
 		this.host = host;
 	}
+	
+	public void setHostString(String s) {
+		this.host =new HostPort();
+		this.host.setHostString(s, 9090);
+	}
 
 	public URL getUrl() {
 		return url;
@@ -63,4 +70,15 @@ public class ProxyInfo {
 		this.vhost = vhost;
 	}
 
+	public NTGAgentProxy create(NettyChannelPool pool, RuntimeRemote rr,
+			boolean suggestRR) {
+		if (isSocket()) {
+			return new NTGAgentProxy(pool, getHost(), isCheckRuntimeRemote(),
+					suggestRR ? rr : null);
+		} else {
+			NTGAgentProxy proxy = new NTGAgentProxy(pool, getUrl());
+			proxy.setVHost(getVhost());
+			return proxy;
+		}
+	}
 }
