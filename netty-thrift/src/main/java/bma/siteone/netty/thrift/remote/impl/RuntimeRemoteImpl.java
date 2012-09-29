@@ -59,7 +59,7 @@ public class RuntimeRemoteImpl implements RuntimeRemote {
 
 	public static class CheckInfo {
 		private HostPort host;
-		private boolean query;
+		private Boolean query;
 
 		public HostPort getHost() {
 			return host;
@@ -69,11 +69,11 @@ public class RuntimeRemoteImpl implements RuntimeRemote {
 			this.host = host;
 		}
 
-		public boolean isQuery() {
+		public Boolean getQuery() {
 			return query;
 		}
 
-		public void setQuery(boolean query) {
+		public void setQuery(Boolean query) {
 			this.query = query;
 		}
 	}
@@ -156,7 +156,10 @@ public class RuntimeRemoteImpl implements RuntimeRemote {
 
 			if (params != null) {
 				QueryStringDecoder query = new QueryStringDecoder(params);
-				ci.setQuery(ValueUtil.booleanValue(query.getParameter("query"),false));
+				String v = query.getParameter("query");
+				if (ValueUtil.notEmpty(v)) {
+					ci.setQuery(ValueUtil.booleanValue(v, defaultQuery));
+				}
 			}
 			this.initCheckHostList.add(ci);
 
@@ -244,7 +247,10 @@ public class RuntimeRemoteImpl implements RuntimeRemote {
 				@Override
 				public void run() {
 					for (CheckInfo ci : initCheckHostList) {
-						checkRemoteBreak(ci.getHost(), ci.isQuery());
+						checkRemoteBreak(
+								ci.getHost(),
+								ci.getQuery() == null ? defaultQuery : ci
+										.getQuery());
 					}
 				}
 			}, initCheckDelay);
@@ -327,7 +333,7 @@ public class RuntimeRemoteImpl implements RuntimeRemote {
 		}
 	}
 
-	protected boolean validInfo(HostPort host, INFO info) {
+	protected boolean validInfo(HostPort host, INFO info, boolean conn) {
 		INFO cur = remoteInfoMap.get(host);
 		if (info != cur || info.closed) {
 			info.close();
@@ -337,7 +343,7 @@ public class RuntimeRemoteImpl implements RuntimeRemote {
 			if (log.isDebugEnabled()) {
 				log.debug("host[{}] max idle time reach, closeIt", host);
 			}
-			remoteInfoMap.remove(host);
+			remoteInfoMap.remove(host);			
 			info.close();
 			return false;
 		}
@@ -345,10 +351,11 @@ public class RuntimeRemoteImpl implements RuntimeRemote {
 	}
 
 	protected void retry(final HostPort host, final INFO info) {
-		if (!validInfo(host, info)) {
+		if (!validInfo(host, info, true)) {
 			if (log.isDebugEnabled()) {
 				log.debug("remoteRetry [{}] stop", host);
 			}
+			return;
 		}
 		if (!info.retry.compareAndSet(false, true)) {
 			if (log.isDebugEnabled()) {
@@ -390,7 +397,7 @@ public class RuntimeRemoteImpl implements RuntimeRemote {
 
 			@Override
 			public boolean end(ThriftClient client, Throwable t) {
-				if (!validInfo(host, info)) {
+				if (!validInfo(host, info, true)) {
 					if (log.isDebugEnabled()) {
 						log.debug("connect [{}] stop", host);
 					}
@@ -445,10 +452,11 @@ public class RuntimeRemoteImpl implements RuntimeRemote {
 
 	protected void requery(final HostPort host, final INFO info,
 			final boolean closeAfterEnd) {
-		if (!validInfo(host, info)) {
+		if (!validInfo(host, info, false)) {
 			if (log.isDebugEnabled()) {
 				log.debug("remoteQuery [{}] stop", host);
 			}
+			return;
 		}
 		ProcessTimerTask task = TimerManager.delay(new Runnable() {
 
@@ -462,7 +470,7 @@ public class RuntimeRemoteImpl implements RuntimeRemote {
 
 	protected void query(final HostPort host, final INFO info,
 			final boolean closeAfterEnd) {
-		if (!validInfo(host, info)) {
+		if (!validInfo(host, info, false)) {
 			return;
 		}
 		Client service = info.service;
@@ -478,7 +486,7 @@ public class RuntimeRemoteImpl implements RuntimeRemote {
 
 			@Override
 			public boolean end(TRemoteInfo result, Throwable t) {
-				if (!validInfo(host, info)) {
+				if (!validInfo(host, info, false)) {
 					if (log.isDebugEnabled()) {
 						log.debug("query [{}] stop", host);
 					}
