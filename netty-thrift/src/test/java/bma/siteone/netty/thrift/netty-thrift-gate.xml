@@ -72,7 +72,9 @@
 		<property name="initCheckList">
 			<list>
 				<value>172.19.16.195:9191</value>
+				<!--
 				<value>172.19.16.195:9192</value>
+				 -->
 			</list>
 		</property>
 	</bean>

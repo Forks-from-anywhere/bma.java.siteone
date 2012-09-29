@@ -22,6 +22,7 @@ import bma.common.langutil.core.ExceptionUtil;
 import bma.common.langutil.core.SizeUtil;
 import bma.common.langutil.core.SizeUtil.Unit;
 import bma.common.langutil.core.ValueUtil;
+import bma.common.langutil.http.QueryStringDecoder;
 import bma.common.langutil.io.HostPort;
 import bma.common.langutil.log.LogLatch;
 import bma.common.netty.SupportedNettyChannel;
@@ -50,12 +51,34 @@ public class RuntimeRemoteImpl implements RuntimeRemote {
 	private int logLatchPeriod = 5 * 60 * 1000;
 
 	// query support
-	private boolean defaultQuery = false;
+	private boolean defaultQuery = true;
 	private int queryPeriod = 5 * 1000;
 
 	// init connect
 	private int initCheckDelay = 5 * 1000;
-	private List<HostPort> initCheckHostList;
+
+	public static class CheckInfo {
+		private HostPort host;
+		private boolean query;
+
+		public HostPort getHost() {
+			return host;
+		}
+
+		public void setHost(HostPort host) {
+			this.host = host;
+		}
+
+		public boolean isQuery() {
+			return query;
+		}
+
+		public void setQuery(boolean query) {
+			this.query = query;
+		}
+	}
+
+	private List<CheckInfo> initCheckHostList;
 
 	// runtime
 	private class INFO {
@@ -106,21 +129,37 @@ public class RuntimeRemoteImpl implements RuntimeRemote {
 		this.initCheckDelay = initCheckDelay;
 	}
 
-	public List<HostPort> getInitCheckHostList() {
+	public List<CheckInfo> getInitCheckHostList() {
 		return initCheckHostList;
 	}
 
-	public void setInitCheckHostList(List<HostPort> initCheckList) {
-		this.initCheckHostList = initCheckList;
+	public void setInitCheckHostList(List<CheckInfo> initCheckHostList) {
+		this.initCheckHostList = initCheckHostList;
 	}
 
 	public void setInitCheckList(List<String> list) {
 		if (this.initCheckHostList == null)
-			this.initCheckHostList = new ArrayList<HostPort>();
+			this.initCheckHostList = new ArrayList<CheckInfo>();
 		for (String s : list) {
+			String params = null;
+			int idx = s.indexOf('?');
+			if (idx != -1) {
+				params = s.substring(idx + 1);
+				s = s.substring(0, idx);
+			}
+
+			CheckInfo ci = new CheckInfo();
+
 			HostPort h = new HostPort();
 			h.setHostString(s, 9090);
-			this.initCheckHostList.add(h);
+			ci.setHost(h);
+
+			if (params != null) {
+				QueryStringDecoder query = new QueryStringDecoder(params);
+				ci.setQuery(ValueUtil.booleanValue(query.getParameter("query"),false));
+			}
+			this.initCheckHostList.add(ci);
+
 		}
 	}
 
@@ -204,8 +243,8 @@ public class RuntimeRemoteImpl implements RuntimeRemote {
 
 				@Override
 				public void run() {
-					for (HostPort h : initCheckHostList) {
-						isRemoteBreak(h);
+					for (CheckInfo ci : initCheckHostList) {
+						checkRemoteBreak(ci.getHost(), ci.isQuery());
 					}
 				}
 			}, initCheckDelay);
@@ -225,9 +264,13 @@ public class RuntimeRemoteImpl implements RuntimeRemote {
 
 	@Override
 	public boolean isRemoteBreak(HostPort host) {
+		return checkRemoteBreak(host, defaultQuery);
+	}
+
+	public boolean checkRemoteBreak(HostPort host, boolean query) {
 		INFO info = remoteInfoMap.get(host);
 		if (info == null) {
-			newRemote(host);
+			newRemote(host, query);
 		}
 		if (info != null && info.remoteInfo != null) {
 			info.activeTime = System.currentTimeMillis();
@@ -241,7 +284,7 @@ public class RuntimeRemoteImpl implements RuntimeRemote {
 	public boolean isRemoteValid(HostPort host) {
 		INFO info = remoteInfoMap.get(host);
 		if (info == null) {
-			newRemote(host);
+			newRemote(host, defaultQuery);
 		}
 		if (info != null && info.remoteInfo != null) {
 			info.activeTime = System.currentTimeMillis();
@@ -254,7 +297,7 @@ public class RuntimeRemoteImpl implements RuntimeRemote {
 	public Map<String, String> getRemoteInfo(HostPort host) {
 		INFO info = remoteInfoMap.get(host);
 		if (info == null) {
-			newRemote(host);
+			newRemote(host, defaultQuery);
 		}
 		if (info != null && info.remoteInfo != null) {
 			Map<String, String> p = info.remoteInfo.getProperties();
@@ -471,12 +514,12 @@ public class RuntimeRemoteImpl implements RuntimeRemote {
 		}
 	}
 
-	public void newRemote(HostPort host) {
+	public void newRemote(HostPort host, boolean query) {
 		INFO info = new INFO();
 		info.activeTime = System.currentTimeMillis();
 		info.logLatch = new LogLatch();
 		info.logLatch.setSilencePeriod(this.logLatchPeriod);
-		info.querySupport = defaultQuery;
+		info.querySupport = query;
 		remoteInfoMap.putIfAbsent(host, info);
 		if (info == remoteInfoMap.get(host)) {
 			if (log.isDebugEnabled()) {
