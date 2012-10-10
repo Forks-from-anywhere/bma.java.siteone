@@ -5,7 +5,6 @@ import java.util.Map;
 
 import org.apache.thrift.TException;
 import org.apache.thrift.protocol.TMessage;
-import org.jboss.netty.buffer.ChannelBuffer;
 
 import bma.common.langutil.ai.stack.AIStack;
 import bma.common.langutil.io.HostPort;
@@ -36,11 +35,11 @@ public class NTGDispatcherCore implements NTGDispatcher {
 		return agentFactoryMap;
 	}
 
-	public void setAgentFactoryMap(Map<String, NTGAgentFactory> agentFactoryMap) {
-		if (agentFactoryMap == null) {
-			agentFactoryMap = new HashMap<String, NTGAgentFactory>();
+	public void setAgentFactoryMap(Map<String, NTGAgentFactory> map) {
+		if (this.agentFactoryMap == null) {
+			this.agentFactoryMap = new HashMap<String, NTGAgentFactory>();
 		}
-		this.agentFactoryMap.putAll(agentFactoryMap);
+		this.agentFactoryMap.putAll(map);
 	}
 
 	public void setServiceHost(Map<String, String> shost) {
@@ -59,19 +58,11 @@ public class NTGDispatcherCore implements NTGDispatcher {
 
 	@Override
 	public boolean dispatch(AIStack<NTGAgent> stack, MessageContext ctx) {
-		ChannelBuffer buf = ctx.getMessage();
-		TMessage msg = null;
 		try {
-			msg = GateUtil.readTMessage(buf);
-			GateUtil.setTMessage(ctx, msg);
+			TMessage msg = GateUtil.readTMessage(ctx);
 			return dispatchByMessage(stack, ctx, msg);
 		} catch (Exception e) {
-			if (msg != null) {
-				GateUtil.responseError(ctx.getNettyChannel(), msg, e);
-				return stack.success(null);
-			} else {
-				return stack.failure(e);
-			}
+			return stack.failure(e);
 		}
 	}
 
@@ -86,10 +77,10 @@ public class NTGDispatcherCore implements NTGDispatcher {
 			name = name.substring(idx + 1);
 		}
 		if (module == null) {
-			// source module by name
+			// find module by name
 		}
 		if (module == null) {
-			String emsg = "thrift method['" + name + "'] not found";
+			String emsg = "thrift method['" + name + "'] unknow";
 			if (log.isWarnEnabled()) {
 				log.warn("{} - {}", emsg, ctx.getNettyChannel()
 						.getRemoteAddress());

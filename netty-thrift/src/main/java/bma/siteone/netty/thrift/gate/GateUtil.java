@@ -12,33 +12,35 @@ import org.jboss.netty.channel.Channel;
 
 import bma.siteone.netty.thrift.core.TNettyChannelBufferTransport;
 import bma.siteone.netty.thrift.core.TNettyServerFramedTransport;
-import bma.siteone.netty.thrift.gate.impl.SimpleMessageContext;
 
 public class GateUtil {
 
-	public static void responseException(SimpleMessageContext ctx, Throwable t) {
-		Channel ch = ctx.getNettyChannel();
-		if (ch != null && ch.isOpen()) {
-
+	public static TMessage readTMessage(MessageContext ctx) throws TException {
+		TMessage msg = getTMessage(ctx);
+		if (msg != null) {
+			return msg;
 		}
-	}
-
-	public static TMessage readTMessage(ChannelBuffer buf) throws TException {
+		ChannelBuffer buf = ctx.getMessage();
 		TNettyChannelBufferTransport transport = new TNettyChannelBufferTransport(
 				buf);
 		TBinaryProtocol prop = new TBinaryProtocol(transport);
 		buf.markReaderIndex();
 		try {
-			return prop.readMessageBegin();
+			TMessage r = prop.readMessageBegin();
+			setTMessage(ctx, r);
+			return r;
 		} finally {
 			buf.resetReaderIndex();
 		}
 	}
 
 	public static void responseError(MessageContext ctx, Throwable t) {
-		TMessage msg = getTMessage(ctx);
-		if (msg != null) {
-			responseError(ctx.getNettyChannel(), msg, t);
+		try {
+			TMessage msg = readTMessage(ctx);
+			if (msg != null) {
+				responseError(ctx.getNettyChannel(), msg, t);
+			}
+		} catch (TException e) {
 		}
 	}
 

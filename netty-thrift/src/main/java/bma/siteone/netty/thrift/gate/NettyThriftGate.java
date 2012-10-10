@@ -17,6 +17,7 @@ import bma.common.netty.NettyUtil;
 import bma.common.netty.handler.ChannelHandlerExceptionClose;
 import bma.siteone.netty.thrift.core.NCHFramed;
 import bma.siteone.netty.thrift.gate.impl.SimpleMessageContext;
+import bma.siteone.netty.thrift.remote.RemoteBreakException;
 
 public class NettyThriftGate extends NettyServer {
 
@@ -89,13 +90,27 @@ public class NettyThriftGate extends NettyServer {
 					@Override
 					public boolean success(NTGAgent result) {
 						if (result != null) {
-							return result.process(mctx);
+							try {
+								return result.process(mctx);
+							} catch (Exception err) {
+								if (log.isDebugEnabled()) {
+									log.debug("process ["
+											+ mctx.getNettyChannel()
+													.getRemoteAddress()
+											+ "] fails", err);
+								}
+								GateUtil.responseError(mctx, err);
+								NettyUtil.closeOnFlush(mctx.getNettyChannel());
+								return true;
+							}
 						}
 						if (log.isDebugEnabled()) {
 							log.debug("dispatch ["
 									+ mctx.getNettyChannel().getRemoteAddress()
 									+ "] null");
 						}
+						GateUtil.responseError(mctx, new RemoteBreakException(
+								"dispatch fail"));
 						return true;
 					}
 
@@ -111,6 +126,7 @@ public class NettyThriftGate extends NettyServer {
 									+ mctx.getNettyChannel().getRemoteAddress()
 									+ "] fail", t);
 						}
+						GateUtil.responseError(mctx, t);
 						NettyUtil.closeOnFlush(mctx.getNettyChannel());
 						return true;
 					}

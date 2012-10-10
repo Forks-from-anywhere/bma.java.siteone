@@ -3,8 +3,12 @@ package bma.siteone.netty.thrift.gate.impl;
 import java.net.MalformedURLException;
 import java.net.URL;
 
+import bma.common.langutil.ai.executor.AIExecutor;
+import bma.common.langutil.concurrent.TimerManager;
+import bma.common.langutil.core.DateTimeUtil;
 import bma.common.langutil.core.ExceptionUtil;
 import bma.common.langutil.io.HostPort;
+import bma.common.langutil.runtime.RuntimeConfig;
 import bma.common.netty.pool.NettyChannelPool;
 import bma.siteone.netty.thrift.gate.NTGAgent;
 import bma.siteone.netty.thrift.gate.NTGAgentFactory;
@@ -20,6 +24,39 @@ public class NTGAgentFactoryCore implements NTGAgentFactory,
 
 	protected ProxyInfoGroup mainInfoGroup;
 	protected ProxyInfoGroup failoverInfoGroup;
+
+	protected Long timeout;
+	protected TimerManager timer;
+
+	@Override
+	public long getTimeout() {
+		if (this.timeout != null)
+			return this.timeout.longValue();
+		if (parent != null)
+			return parent.getTimeout();
+		return 0;
+	}
+
+	public void setTimeout(long timeout) {
+		this.timeout = timeout;
+	}
+
+	public void setTimeoutValue(String v) {
+		this.timeout = DateTimeUtil.parsePeriodValue(v,
+				this.timeout == null ? 0 : this.timeout);
+	}
+
+	public TimerManager getTimerManager() {
+		if (this.timer != null)
+			return this.timer;
+		if (this.parent != null)
+			return parent.getTimerManager();
+		return AIExecutor.getTimerManager();
+	}
+
+	public void setTimer(TimerManager timer) {
+		this.timer = timer;
+	}
 
 	public ProxyInfoGroup getMainInfoGroup() {
 		return mainInfoGroup;
@@ -141,14 +178,33 @@ public class NTGAgentFactoryCore implements NTGAgentFactory,
 			return null;
 		}
 
-		NTGAgentProcess main = mainInfoGroup.create(pool, runtimeRemote,
-				failoverInfoGroup != null);
-		NTGAgent r = main;
+		NTGAgentProcess main = mainInfoGroup.create(getPool(),
+				getRuntimeRemote(), failoverInfoGroup != null);
+		NTGAgentProcess r = main;
 		if (failoverInfoGroup != null) {
-			NTGAgentProcess second = failoverInfoGroup.create(pool,
-					runtimeRemote, false);
+			NTGAgentProcess second = failoverInfoGroup.create(getPool(),
+					getRuntimeRemote(), false);
 			r = new NTGAgentFailover(main, second);
 		}
-		return r;
+		NTGAgentTimeout agentTimeout = new NTGAgentTimeout(r, getTimeout());
+		agentTimeout.setTimer(getTimerManager());
+		return agentTimeout;
+	}
+
+	public void readFromConfig(RuntimeConfig cfg, String mkey) {
+		mainInfoGroup = ProxyInfoGroup.readFromConfig(cfg, mkey + ".main");
+		failoverInfoGroup = ProxyInfoGroup.readFromConfig(cfg, mkey
+				+ ".failover");
+	}
+
+	@Override
+	public String toString() {
+		StringBuilder sb = new StringBuilder();
+		sb.append("main=").append(mainInfoGroup).append(";");
+		if (failoverInfoGroup != null) {
+			sb.append("failover=").append(failoverInfoGroup).append(";");
+		}
+		sb.append("timeout=").append(getTimeout()).append(";");
+		return sb.toString();
 	}
 }

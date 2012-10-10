@@ -1,9 +1,13 @@
 package bma.siteone.netty.thrift.gate.impl;
 
+import java.net.MalformedURLException;
 import java.net.URL;
 
+import bma.common.langutil.core.ExceptionUtil;
 import bma.common.langutil.core.StringUtil;
+import bma.common.langutil.core.ValueUtil;
 import bma.common.langutil.io.HostPort;
+import bma.common.langutil.runtime.RuntimeConfig;
 import bma.common.netty.pool.NettyChannelPool;
 import bma.siteone.netty.thrift.remote.RuntimeRemote;
 
@@ -48,9 +52,9 @@ public class ProxyInfo {
 	public void setHost(HostPort host) {
 		this.host = host;
 	}
-	
+
 	public void setHostString(String s) {
-		this.host =new HostPort();
+		this.host = new HostPort();
 		this.host.setHostString(s, 9090);
 	}
 
@@ -80,5 +84,49 @@ public class ProxyInfo {
 			proxy.setVHost(getVhost());
 			return proxy;
 		}
+	}
+
+	public static ProxyInfo readFromConfig(RuntimeConfig cfg, String mkey) {
+		ProxyInfo o = new ProxyInfo();
+		o.type = cfg.getConfig(mkey + ".type");
+		String host = cfg.getConfig(mkey + ".host");
+		if (ValueUtil.notEmpty(host)) {
+			o.host = new HostPort();
+			o.host.setHostString(host, 9090);
+		}
+		String url = cfg.getConfig(mkey + ".url");
+		if (ValueUtil.notEmpty(url)) {
+			try {
+				o.url = new URL(url);
+			} catch (MalformedURLException e) {
+				throw ExceptionUtil.throwRuntime(e);
+			}
+		}
+		if (o.host == null && o.url == null) {
+			return null;
+		}
+		o.vhost = cfg.getConfig(mkey + ".vhost");
+		o.checkRuntimeRemote = ValueUtil.booleanValue(
+				cfg.getConfig(mkey + ".check"), true);
+		return o;
+	}
+
+	@Override
+	public String toString() {
+		StringBuilder sb = new StringBuilder();
+		sb.append("[");
+		if (isSocket()) {
+			sb.append(host);
+		} else {
+			sb.append(url);
+			if (ValueUtil.notEmpty(vhost)) {
+				sb.append(";").append("vhost=").append(vhost);
+			}			
+		}
+		if (checkRuntimeRemote) {
+			sb.append(";CHECK");
+		}
+		sb.append("]");
+		return sb.toString();
 	}
 }

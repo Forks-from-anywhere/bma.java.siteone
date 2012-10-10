@@ -1,10 +1,11 @@
 package bma.siteone.netty.thrift.gate.impl;
 
+import bma.common.langutil.ai.stack.AIStack;
+import bma.common.langutil.ai.stack.AIStackWrap;
 import bma.siteone.netty.thrift.gate.MessageContext;
-import bma.siteone.netty.thrift.gate.NTGAgent;
 import bma.siteone.netty.thrift.remote.RemoteBreakException;
 
-public class NTGAgentFailover implements NTGAgent {
+public class NTGAgentFailover implements NTGAgentProcess {
 
 	final org.slf4j.Logger log = org.slf4j.LoggerFactory
 			.getLogger(NTGAgentFailover.class);
@@ -36,21 +37,26 @@ public class NTGAgentFailover implements NTGAgent {
 
 	@Override
 	public boolean process(final MessageContext ctx) {
+		AIStackAgentROOT root = new AIStackAgentROOT(log, ctx);
+		return process(root, ctx);
+	}
 
-		AIStackAgentROOT root = new AIStackAgentROOT(log, ctx) {
+	@Override
+	public boolean process(final AIStack<Boolean> root, final MessageContext ctx) {
+
+		AIStackWrap<Boolean> stack = new AIStackWrap<Boolean>(root) {
 			public boolean failure(Throwable t) {
 				if (t instanceof RemoteBreakException) {
 					if (log.isDebugEnabled()) {
-						log.debug("{} break, switch to {} - {}",
-								new Object[] { main, second, t });
+						log.debug("{} break, switch to {} - {}", new Object[] {
+								main, second, t });
 					}
-					AIStackAgentROOT root = new AIStackAgentROOT(log, ctx);
 					return second.process(root, ctx);
 				}
 				return super.failure(t);
 			}
 		};
-		return main.process(root, ctx);
+		return main.process(stack, ctx);
 
 	}
 
