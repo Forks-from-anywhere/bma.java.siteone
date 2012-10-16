@@ -8,11 +8,6 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import org.apache.thrift.transport.TTransport;
-import org.jboss.netty.channel.Channel;
-import org.jboss.netty.channel.ChannelFuture;
-import org.jboss.netty.channel.ChannelFutureListener;
-
 import bma.common.langutil.ai.AIUtil;
 import bma.common.langutil.ai.executor.AIExecutor;
 import bma.common.langutil.ai.stack.AIStackROOT;
@@ -25,12 +20,10 @@ import bma.common.langutil.core.ValueUtil;
 import bma.common.langutil.http.QueryStringDecoder;
 import bma.common.langutil.io.HostPort;
 import bma.common.langutil.log.LogLatch;
-import bma.common.netty.SupportedNettyChannel;
 import bma.common.thrift.ThriftClient;
-import bma.common.thrift.ThriftClientFactoryConfig;
-import bma.common.thrift.provider.AIThriftClientProvider;
+import bma.common.thrift.ThriftClientConfig;
+import bma.common.thrift.ai.AIThriftClientFactory;
 import bma.siteone.netty.thrift.remote.RuntimeRemote;
-import bma.siteone.netty.thrift.remote.thrift.TAIRemoteInfoService;
 import bma.siteone.netty.thrift.remote.thrift.TAIRemoteInfoService.Client;
 import bma.siteone.netty.thrift.remote.thrift.TRemoteInfo;
 
@@ -40,7 +33,7 @@ public class RuntimeRemoteImpl implements RuntimeRemote {
 			.getLogger(RuntimeRemoteImpl.class);
 
 	// config
-	private AIThriftClientProvider thriftClientProvider;
+	private AIThriftClientFactory thriftClientFactory;
 	private int frameMaxLength = 1024 * 1024;
 	private String module = "remoteInfo";
 
@@ -95,13 +88,13 @@ public class RuntimeRemoteImpl implements RuntimeRemote {
 			ThriftClient ch = client;
 			if (ch != null) {
 				client = null;
-				TTransport tr = ch.getTransport();
-				if (tr != null && tr instanceof SupportedNettyChannel) {
-					Channel o = ((SupportedNettyChannel) tr).getChannel();
-					if (o.isOpen()) {
-						o.close();
-					}
-				}
+				// TTransport tr = ch.getTransport();
+				// if (tr != null && tr instanceof SupportedNettyChannel) {
+				// Channel o = ((SupportedNettyChannel) tr).getChannel();
+				// if (o.isOpen()) {
+				// o.close();
+				// }
+				// }
 				ch.close();
 			}
 		}
@@ -208,12 +201,12 @@ public class RuntimeRemoteImpl implements RuntimeRemote {
 		this.queryPeriod = pingPeriod;
 	}
 
-	public AIThriftClientProvider getThriftClientProvider() {
-		return thriftClientProvider;
+	public AIThriftClientFactory getThriftClientFactory() {
+		return thriftClientFactory;
 	}
 
-	public void setThriftClientProvider(AIThriftClientProvider thriftEntry) {
-		this.thriftClientProvider = thriftEntry;
+	public void setThriftClientFactory(AIThriftClientFactory thriftClientFactory) {
+		this.thriftClientFactory = thriftClientFactory;
 	}
 
 	public String getModule() {
@@ -287,6 +280,10 @@ public class RuntimeRemoteImpl implements RuntimeRemote {
 	}
 
 	@Override
+	public void setRemoteBreak(HostPort host, boolean isBreak) {
+	}
+
+	@Override
 	public boolean isRemoteValid(HostPort host) {
 		INFO info = remoteInfoMap.get(host);
 		if (info == null) {
@@ -343,7 +340,7 @@ public class RuntimeRemoteImpl implements RuntimeRemote {
 			if (log.isDebugEnabled()) {
 				log.debug("host[{}] max idle time reach, closeIt", host);
 			}
-			remoteInfoMap.remove(host);			
+			remoteInfoMap.remove(host);
 			info.close();
 			return false;
 		}
@@ -388,7 +385,7 @@ public class RuntimeRemoteImpl implements RuntimeRemote {
 			log.debug("connect remote({}) ...", host);
 		}
 		// create a remoteInfo client
-		ThriftClientFactoryConfig cfg = new ThriftClientFactoryConfig();
+		ThriftClientConfig cfg = new ThriftClientConfig();
 		cfg.setHost(host);
 		cfg.setModule(module);
 		cfg.setFrameMaxLength(frameMaxLength);
@@ -411,40 +408,41 @@ public class RuntimeRemoteImpl implements RuntimeRemote {
 					}
 					retry(host, info);
 				} else {
-					Channel channel = null;
-					if (client.getTransport() instanceof SupportedNettyChannel) {
-						channel = ((SupportedNettyChannel) client
-								.getTransport()).getChannel();
-						channel.getCloseFuture().addListener(
-								new ChannelFutureListener() {
-
-									@Override
-									public void operationComplete(
-											ChannelFuture future)
-											throws Exception {
-										retry(host, info);
-									}
-								});
-					}
-					info.client = client;
-					info.service = client
-							.createAIClient(TAIRemoteInfoService.Client.class);
-					if (info.remoteInfo != null) {
-						info.remoteInfo.setValid(true);
-					}
-					if (info.querySupport) {
-						requery(host, info, channel == null);
-					} else {
-						if (log.isDebugEnabled()) {
-							log.debug("query not support, skip");
-						}
-					}
+					// Channel channel = null;
+					// if (client.getTransport() instanceof
+					// SupportedNettyChannel) {
+					// channel = ((SupportedNettyChannel) client
+					// .getTransport()).getChannel();
+					// channel.getCloseFuture().addListener(
+					// new ChannelFutureListener() {
+					//
+					// @Override
+					// public void operationComplete(
+					// ChannelFuture future)
+					// throws Exception {
+					// retry(host, info);
+					// }
+					// });
+					// }
+					// info.client = client;
+					// info.service = client
+					// .createAIObject(TAIRemoteInfoService.Client.class);
+					// if (info.remoteInfo != null) {
+					// info.remoteInfo.setValid(true);
+					// }
+					// if (info.querySupport) {
+					// requery(host, info, channel == null);
+					// } else {
+					// if (log.isDebugEnabled()) {
+					// log.debug("query not support, skip");
+					// }
+					// }
 				}
 				return false;
 			}
 		};
 		try {
-			thriftClientProvider.createClient(stack, cfg.toEntry());
+			// thriftClientProvider.createClient(stack, cfg.toEntry());
 		} catch (Exception e) {
 			AIUtil.safeFailure(stack, e);
 		}

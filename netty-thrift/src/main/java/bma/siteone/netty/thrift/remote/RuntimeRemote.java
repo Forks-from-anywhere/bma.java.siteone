@@ -10,6 +10,8 @@ public interface RuntimeRemote {
 
 	public boolean isRemoteValid(HostPort host);
 
+	public void setRemoteBreak(HostPort host, boolean isBreak);
+
 	public Map<String, String> getRemoteInfo(HostPort host);
 
 	public String getRemoteInfo(HostPort host, String name, String def);

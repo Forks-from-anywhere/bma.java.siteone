@@ -15,6 +15,7 @@ import org.apache.thrift.TException;
 
 import bma.common.langutil.ai.stack.AIStack;
 import bma.common.thrift.ai.AIBaseStack;
+import bma.common.thrift.ai.AIThriftInvoker;
 import bma.common.thrift.ai.TAIBaseProcessor;
 import bma.common.thrift.ai.TAIBaseServiceClient;
 import bma.common.thrift.ai.TAIProcessFunction;
@@ -82,13 +83,8 @@ public class TAICloud {
 
 	public static class Client extends TAIBaseServiceClient implements Iface {
 
-		public Client(org.apache.thrift.protocol.TProtocol prot) {
-			super(prot, prot);
-		}
-
-		public Client(org.apache.thrift.protocol.TProtocol iprot,
-				org.apache.thrift.protocol.TProtocol oprot) {
-			super(iprot, oprot);
+		public Client(AIThriftInvoker invoker) {
+			super(invoker);
 		}
 
 		public boolean getCloudNodeDesc(AIStack<String> stack, String nodeId)
@@ -143,8 +139,7 @@ public class TAICloud {
 		public boolean getCloudAppDesc(AIStack<String> stack, String nodeId,
 				String appId) throws TException {
 			return super.invoke(stack, new getCloudAppDesc_result(),
-					"getCloudAppDesc",
-					new getCloudAppDesc_args(nodeId, appId));
+					"getCloudAppDesc", new getCloudAppDesc_args(nodeId, appId));
 		}
 
 		@Override
@@ -152,16 +147,16 @@ public class TAICloud {
 				String nodeId, String appId, String serviceId)
 				throws TException {
 			return super.invoke(stack, new getCloudServiceDesc_result(),
-					"getCloudServiceDesc", new getCloudServiceDesc_args(
-							nodeId, appId, serviceId));
+					"getCloudServiceDesc", new getCloudServiceDesc_args(nodeId,
+							appId, serviceId));
 		}
 
 		@Override
 		public boolean getCloudApiDesc(AIStack<String> stack, String nodeId,
 				String appId, String serviceId, String apiId) throws TException {
 			return super.invoke(stack, new getCloudServiceDesc_result(),
-					"getCloudApiDesc", new getCloudApiDesc_args(nodeId,
-							appId, serviceId, apiId));
+					"getCloudApiDesc", new getCloudApiDesc_args(nodeId, appId,
+							serviceId, apiId));
 		}
 
 	}
@@ -181,8 +176,7 @@ public class TAICloud {
 			processMap.put("listCloudAppDesc", new listCloudAppDesc());
 			processMap.put("createCloudApp", new createCloudApp());
 			processMap.put("closeCloudApp", new closeCloudApp());
-			processMap
-					.put("listCloudServiceDesc", new listCloudServiceDesc());
+			processMap.put("listCloudServiceDesc", new listCloudServiceDesc());
 			processMap.put("listCloudApiDesc", new listCloudApiDesc());
 			processMap.put("cloudCall", new cloudCall());
 
@@ -361,8 +355,8 @@ public class TAICloud {
 			protected boolean getResult(AIStack<TBase> stack, I iface,
 					getCloudServiceDesc_args args) throws TException {
 				getCloudServiceDesc_result result = new getCloudServiceDesc_result();
-				return iface.getCloudServiceDesc(new AIBaseStack<String>(
-						stack, result), args.getNodeId(), args.getAppId(), args
+				return iface.getCloudServiceDesc(new AIBaseStack<String>(stack,
+						result), args.getNodeId(), args.getAppId(), args
 						.getServiceId());
 			}
 

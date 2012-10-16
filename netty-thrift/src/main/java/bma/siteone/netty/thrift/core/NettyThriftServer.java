@@ -18,7 +18,7 @@ import bma.common.langutil.core.ValueUtil;
 import bma.common.netty.NettyServer;
 import bma.common.netty.handler.ChannelHandlerExceptionClose;
 import bma.common.thrift.TProcessorRouter;
-import bma.common.thrift.ThriftClientFactorySimple;
+import bma.common.thrift.ThriftClientConfig;
 import bma.common.thrift.servicehub.ThriftServiceNode;
 
 public class NettyThriftServer extends NettyServer {
@@ -70,7 +70,7 @@ public class NettyThriftServer extends NettyServer {
 
 		String type = node.getType();
 		if (!(ValueUtil.empty(type) || StringUtil.equals(
-				ThriftClientFactorySimple.TYPE_SOCKET, type))) {
+				ThriftClientConfig.TYPE_SOCKET, type))) {
 			throw new IllegalArgumentException("type(" + type
 					+ ") must 'socket'");
 		}

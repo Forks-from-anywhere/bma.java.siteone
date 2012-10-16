@@ -14,6 +14,7 @@ import org.apache.thrift.TException;
 
 import bma.common.langutil.ai.stack.AIStack;
 import bma.common.thrift.ai.AIBaseStack;
+import bma.common.thrift.ai.AIThriftInvoker;
 import bma.common.thrift.ai.TAIBaseProcessor;
 import bma.common.thrift.ai.TAIBaseServiceClient;
 import bma.common.thrift.ai.TAIProcessFunction;
@@ -31,13 +32,8 @@ public class TAIRemoteInfoService {
 
 	public static class Client extends TAIBaseServiceClient implements Iface {
 
-		public Client(org.apache.thrift.protocol.TProtocol prot) {
-			super(prot, prot);
-		}
-
-		public Client(org.apache.thrift.protocol.TProtocol iprot,
-				org.apache.thrift.protocol.TProtocol oprot) {
-			super(iprot, oprot);
+		public Client(AIThriftInvoker invoker) {
+			super(invoker);
 		}
 
 		@Override

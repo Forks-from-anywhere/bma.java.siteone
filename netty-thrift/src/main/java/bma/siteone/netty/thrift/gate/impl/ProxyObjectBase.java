@@ -100,6 +100,8 @@ public abstract class ProxyObjectBase {
 			@Override
 			protected boolean next(Channel result) {
 				if (result == null) {
+					if (runtimeRemote != null)
+						runtimeRemote.setRemoteBreak(host, true);
 					return this.delegate().failure(
 							new RemoteBreakException("connect remote[" + host
 									+ "] fail"));
@@ -111,6 +113,8 @@ public abstract class ProxyObjectBase {
 			@Override
 			public boolean failure(Throwable t) {
 				if (!(t instanceof RemoteBreakException)) {
+					if (runtimeRemote != null)
+						runtimeRemote.setRemoteBreak(host, true);
 					t = new RemoteBreakException("connect remote[" + host
 							+ "] fail - " + t.getMessage(), t);
 				}
@@ -144,6 +148,8 @@ public abstract class ProxyObjectBase {
 		try {
 			writeMessage(ch, data);
 		} catch (Exception e) {
+			if (runtimeRemote != null)
+				runtimeRemote.setRemoteBreak(host, true);
 			throw new RemoteBreakException("write to remote fail", e);
 		}
 		// after write to remote,clear the request content

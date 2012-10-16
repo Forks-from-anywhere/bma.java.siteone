@@ -37,7 +37,7 @@
 		init-method="init">
 		<property name="worker" value="3" />
 	</bean>
-	<bean id="aiThriftEntry" class="bma.siteone.netty.thrift.client.AIThriftClientProviderNetty">
+	<bean id="aiThriftClientFactory" class="bma.siteone.netty.thrift.client.AIThriftClientFactoryNetty">
 		<property name="bootstrap" ref="nettyClientBootstrap" />
 		<property name="traceBufferSize" value="0" />
 	</bean>
