@@ -15,22 +15,45 @@ public class NTGAgentRoundRobin implements NTGAgentProcess, RuntimeRemoteAware {
 	final org.slf4j.Logger log = org.slf4j.LoggerFactory
 			.getLogger(NTGAgentRoundRobin.class);
 
-	protected List<NTGAgentProcess> agentList;
-	protected RoundRobinInteger roundRobin;
-
-	public NTGAgentRoundRobin(RoundRobinInteger counter,
-			List<NTGAgentProcess> agentList) {
-		super();
-		this.roundRobin = counter;
-		this.agentList = agentList;
+	public static class INFO {
+		public int weight;
+		public int totalWeight;
+		public NTGAgentProcess agent;
 	}
 
-	public List<NTGAgentProcess> getAgentList() {
+	protected int totalWeight;
+	protected List<INFO> agentList;
+	protected RoundRobinInteger roundRobin;
+
+	public NTGAgentRoundRobin(RoundRobinInteger counter, List<INFO> agentList) {
+		super();
+		this.roundRobin = counter;
+		setAgentList(agentList);
+	}
+
+	public List<INFO> getAgentList() {
 		return agentList;
 	}
 
-	public void setAgentList(List<NTGAgentProcess> agentList) {
-		this.agentList = new ArrayList<NTGAgentProcess>(agentList);
+	public void setAgentList(List<INFO> agentList) {
+		this.agentList = new ArrayList<INFO>(agentList);
+		totalWeight = 0;
+		for (INFO info : this.agentList) {
+			totalWeight += info.weight;
+			info.totalWeight = totalWeight;
+		}
+	}
+
+	public int posByWeight(int w) {
+		int pos = 0;
+		if (this.agentList != null) {
+			for (INFO info : this.agentList) {
+				if (w < info.totalWeight)
+					return pos;
+				pos++;
+			}
+		}
+		return pos;
 	}
 
 	@Override
@@ -39,7 +62,8 @@ public class NTGAgentRoundRobin implements NTGAgentProcess, RuntimeRemoteAware {
 			throw new RemoteBreakException("agentList is empty");
 		}
 
-		final int start = roundRobin.next(agentList.size());
+		int weight = roundRobin.next(totalWeight);
+		final int start = posByWeight(weight);
 
 		AIStackAbstractDelegate<Boolean> callStack = new AIStackAbstractDelegate<Boolean>(
 				root) {
@@ -60,18 +84,18 @@ public class NTGAgentRoundRobin implements NTGAgentProcess, RuntimeRemoteAware {
 					}
 					if (log.isDebugEnabled()) {
 						log.debug("remote break, roundRobin next[{}] - {}",
-								new Object[] { cur, t.getMessage() });
+								cur, t.getMessage());
 					}
-					NTGAgentProcess agent = agentList.get(cur);
+					NTGAgentProcess agent = agentList.get(cur).agent;
 					return agent.process(this, ctx);
 				}
 				return super.failure(t);
 			}
 		};
 		if (log.isDebugEnabled()) {
-			log.debug("roundRobin[{}]", new Object[] { start });
+			log.debug("roundRobin[{}/{}]", start, weight);
 		}
-		NTGAgentProcess agent = agentList.get(start);
+		NTGAgentProcess agent = agentList.get(start).agent;
 		return agent.process(callStack, ctx);
 	}
 
@@ -84,7 +108,8 @@ public class NTGAgentRoundRobin implements NTGAgentProcess, RuntimeRemoteAware {
 	@Override
 	public void setRuntimeRemote(RuntimeRemote rr) {
 		if (agentList != null) {
-			for (NTGAgentProcess p : agentList) {
+			for (INFO info : agentList) {
+				NTGAgentProcess p = info.agent;
 				if (p instanceof RuntimeRemoteAware) {
 					RuntimeRemoteAware a = (RuntimeRemoteAware) p;
 					a.setRuntimeRemote(rr);

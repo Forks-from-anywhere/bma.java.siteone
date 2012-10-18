@@ -8,6 +8,7 @@ import bma.common.langutil.core.RoundRobinInteger;
 import bma.common.langutil.core.ValueUtil;
 import bma.common.langutil.runtime.RuntimeConfig;
 import bma.common.netty.pool.NettyChannelPool;
+import bma.siteone.netty.thrift.gate.impl.NTGAgentRoundRobin.INFO;
 import bma.siteone.netty.thrift.remote.RuntimeRemote;
 
 public class ProxyInfoGroup {
@@ -39,10 +40,13 @@ public class ProxyInfoGroup {
 			return infoList.get(0).create(pool, rr, suggestRR);
 		}
 		if (infoList.size() > 1) {
-			List<NTGAgentProcess> list = new ArrayList<NTGAgentProcess>();
+			List<INFO> list = new ArrayList<INFO>();
 			for (ProxyInfo pi : infoList) {
 				NTGAgentProcess p = pi.create(pool, rr, true);
-				list.add(p);
+				INFO info = new INFO();
+				info.weight = pi.getWeight();
+				info.agent = p;
+				list.add(info);
 			}
 			NTGAgentRoundRobin r = new NTGAgentRoundRobin(roundRobin, list);
 			return r;

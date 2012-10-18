@@ -17,6 +17,7 @@ public class ProxyInfo {
 	private HostPort host;
 	private URL url;
 	private String vhost;
+	private int weight = 1;
 	private boolean checkRuntimeRemote = true;
 
 	public boolean isSocket() {
@@ -35,6 +36,14 @@ public class ProxyInfo {
 
 	public void setCheckRuntimeRemote(boolean checkRuntimeRemote) {
 		this.checkRuntimeRemote = checkRuntimeRemote;
+	}
+
+	public int getWeight() {
+		return weight;
+	}
+
+	public void setWeight(int weight) {
+		this.weight = weight;
 	}
 
 	public String getType() {
@@ -106,8 +115,10 @@ public class ProxyInfo {
 			return null;
 		}
 		o.vhost = cfg.getConfig(mkey + ".vhost");
+		o.weight = ValueUtil
+				.intValue(cfg.getConfig(mkey + ".weight"), o.weight);
 		o.checkRuntimeRemote = ValueUtil.booleanValue(
-				cfg.getConfig(mkey + ".check"), true);
+				cfg.getConfig(mkey + ".check"), o.checkRuntimeRemote);
 		return o;
 	}
 
@@ -121,7 +132,7 @@ public class ProxyInfo {
 			sb.append(url);
 			if (ValueUtil.notEmpty(vhost)) {
 				sb.append(";").append("vhost=").append(vhost);
-			}			
+			}
 		}
 		if (checkRuntimeRemote) {
 			sb.append(";CHECK");
