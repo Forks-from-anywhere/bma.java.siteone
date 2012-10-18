@@ -59,8 +59,8 @@ public class NTGAgentRoundRobin implements NTGAgentProcess, RuntimeRemoteAware {
 										+ "] all break"));
 					}
 					if (log.isDebugEnabled()) {
-						log.debug("remote break, roundRobin next[{}]",
-								new Object[] { cur });
+						log.debug("remote break, roundRobin next[{}] - {}",
+								new Object[] { cur, t.getMessage() });
 					}
 					NTGAgentProcess agent = agentList.get(cur);
 					return agent.process(this, ctx);

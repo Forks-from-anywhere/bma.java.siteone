@@ -57,7 +57,6 @@ public class NTGAgentFailover implements NTGAgentProcess {
 			}
 		};
 		return main.process(stack, ctx);
-
 	}
 
 	@Override

@@ -40,7 +40,7 @@
 		init-method="init">
 		<property name="worker" value="3" />
 	</bean>
-	<bean id="aiThriftClientProvider" class="bma.siteone.netty.thrift.client.AIThriftClientProviderNetty">
+	<bean id="aiThriftClientProvider" class="bma.siteone.netty.thrift.client.AIThriftClientFactoryNetty">
 		<property name="bootstrap" ref="nettyClientBootstrap" />
 		<property name="traceBufferSize" value="0" />
 	</bean>
@@ -84,6 +84,7 @@
 	</bean>
 	
 	<!-- RuntimeRemote -->
+	<!-- 
 	<bean id="runtimeRemote" class="bma.siteone.netty.thrift.remote.impl.RuntimeRemoteImpl" 
 			init-method="start" destroy-method="close">
 		<property name="thriftClientProvider" ref="aiThriftClientProvider"/>
@@ -91,11 +92,16 @@
 		<property name="initCheckList">
 			<list>
 				<value>172.19.16.195:9191</value>
-				<!--								
+							
 				<value>172.19.16.195:9192</value>
-				 -->
 			</list>
 		</property>
+	</bean>
+	 -->
+	<bean id="runtimeRemote" class="bma.siteone.netty.thrift.remote.impl.RuntimeRemoteSimple">
+		<property name="maxFails" value="1"/>
+		<property name="failTime" value="10000"/>
+		<property name="timeout" value="10000"/>
 	</bean>
 	
 	<!-- GateAgent -->	
