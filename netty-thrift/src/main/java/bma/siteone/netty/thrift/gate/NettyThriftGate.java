@@ -1,40 +1,34 @@
 package bma.siteone.netty.thrift.gate;
 
-import java.util.concurrent.Executor;
-
 import org.jboss.netty.buffer.ChannelBuffer;
-import org.jboss.netty.channel.Channel;
 import org.jboss.netty.channel.ChannelHandlerContext;
 import org.jboss.netty.channel.ChannelPipeline;
 import org.jboss.netty.channel.ExceptionEvent;
-import org.jboss.netty.handler.codec.oneone.OneToOneDecoder;
+import org.jboss.netty.channel.MessageEvent;
+import org.jboss.netty.channel.SimpleChannelUpstreamHandler;
 
+import bma.common.langutil.ai.stack.AIStack;
+import bma.common.langutil.ai.stack.AIStackAbstract;
 import bma.common.langutil.core.ExceptionUtil;
 import bma.common.langutil.core.SizeUtil;
 import bma.common.langutil.core.SizeUtil.Unit;
 import bma.common.netty.NettyServer;
+import bma.common.netty.NettyUtil;
 import bma.common.netty.handler.ChannelHandlerExceptionClose;
 import bma.siteone.netty.thrift.core.NCHFramed;
-import bma.siteone.netty.thrift.core.TNettyServerFramedTransport;
+import bma.siteone.netty.thrift.gate.impl.SimpleMessageContext;
+import bma.siteone.netty.thrift.remote.RemoteBreakException;
 
 public class NettyThriftGate extends NettyServer {
 
 	final org.slf4j.Logger log = org.slf4j.LoggerFactory
 			.getLogger(NettyThriftGate.class);
 
-	protected Executor executor;
 	protected int maxLength;
+	private NTGDispatcher dispatcher;
 
 	public NettyThriftGate() {
 		super();
-	}
-
-	public Executor getExecutor() {
-		return executor;
-	}
-
-	public void setExecutor(Executor executor) {
-		this.executor = executor;
 	}
 
 	public int getMaxLength() {
@@ -53,24 +47,19 @@ public class NettyThriftGate extends NettyServer {
 		}
 	}
 
+	public NTGDispatcher getDispatcher() {
+		return dispatcher;
+	}
+
+	public void setDispatcher(NTGDispatcher dispatcher) {
+		this.dispatcher = dispatcher;
+	}
+
 	@Override
 	protected void beforeBuildPipeline(ChannelPipeline pipeline) {
 		super.beforeBuildPipeline(pipeline);
 		pipeline.addLast("framed", new NCHFramed(maxLength));
-		pipeline.addLast("transport", new OneToOneDecoder() {
-			@Override
-			protected Object decode(ChannelHandlerContext ctx, Channel channel,
-					Object msg) throws Exception {
-				if (msg instanceof ChannelBuffer) {
-					ChannelBuffer cb = (ChannelBuffer) msg;
-					TNettyServerFramedTransport t = new TNettyServerFramedTransport(
-							ctx.getChannel(), cb, maxLength);
-					return t;
-				}
-				return msg;
-			}
-		});
-		// pipeline.addLast("request", new NCHThriftRequest(processor));
+		pipeline.addLast("gate", new GATE());
 		pipeline.addLast("error", new ChannelHandlerExceptionClose() {
 			@Override
 			protected void logException(ChannelHandlerContext ctx,
@@ -83,5 +72,69 @@ public class NettyThriftGate extends NettyServer {
 				}
 			}
 		});
+	}
+
+	private class GATE extends SimpleChannelUpstreamHandler {
+
+		@Override
+		public void messageReceived(ChannelHandlerContext ctx, MessageEvent e)
+				throws Exception {
+			Object v = e.getMessage();
+			if (v instanceof ChannelBuffer) {
+				ChannelBuffer buf = (ChannelBuffer) v;
+				final SimpleMessageContext mctx = new SimpleMessageContext();
+				mctx.setMessage(buf);
+				mctx.setNettyChannel(e.getChannel());
+				AIStackAbstract<NTGAgent> stack = new AIStackAbstract<NTGAgent>() {
+
+					@Override
+					public boolean success(NTGAgent result) {
+						if (result != null) {
+							try {
+								return result.process(mctx);
+							} catch (Exception err) {
+								if (log.isDebugEnabled()) {
+									log.debug("process ["
+											+ mctx.getNettyChannel()
+													.getRemoteAddress()
+											+ "] fails", err);
+								}
+								GateUtil.responseError(mctx, err);
+								NettyUtil.closeOnFlush(mctx.getNettyChannel());
+								return true;
+							}
+						}
+						if (log.isDebugEnabled()) {
+							log.debug("dispatch ["
+									+ mctx.getNettyChannel().getRemoteAddress()
+									+ "] null");
+						}
+						GateUtil.responseError(mctx, new RemoteBreakException(
+								"dispatch fail"));
+						return true;
+					}
+
+					@Override
+					public AIStack<?> getParent() {
+						return null;
+					}
+
+					@Override
+					public boolean failure(Throwable t) {
+						if (log.isWarnEnabled()) {
+							log.warn("dispatch ["
+									+ mctx.getNettyChannel().getRemoteAddress()
+									+ "] fail", t);
+						}
+						GateUtil.responseError(mctx, t);
+						NettyUtil.closeOnFlush(mctx.getNettyChannel());
+						return true;
+					}
+				};
+				dispatcher.dispatch(stack, mctx);
+				return;
+			}
+			super.messageReceived(ctx, e);
+		}
 	}
 }

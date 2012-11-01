@@ -5,29 +5,22 @@
 	http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-3.0.xsd">
 	
 	<import resource="netty-thrift-global.xml"/>
-
-	<!-- ThriftServiceNode -->
-	<bean id="serviceHello" class="bma.common.thrift.sample.HelloImpl">
-		<property name="executor" ref="aiExecutor"/>
+	
+    <!-- ThriftServiceNode -->
+	<bean id="service" class="bma.siteone.netty.thrift.remote.impl.RemoteInfoService4ThriftAI" />
+	<bean id="atpService" class="bma.siteone.netty.thrift.remote.thrift.TAIRemoteInfoService.Processor">		
+		<constructor-arg ref="service" />
 	</bean>
-	<bean id="atpHello" class="bma.common.thrift.sample.Hello4AI.Processor">		
-		<constructor-arg ref="serviceHello" />
-	</bean>
-	<bean id="tbeanHello" class="bma.common.thrift.servicehub.ThriftServiceBean">
-		<property name="module" value="hello"/>
-		<property name="processor" ref="atpHello"/>
-	</bean>	
+	
 	<bean id="thriftServiceNode" class="bma.common.thrift.servicehub.ThriftServiceNode">
-		<property name="name" value="nodeName"/>
 		<property name="type" value="socket"/>
-		<property name="accessHost" value="172.19.16.78"/>
-		<property name="port" value="9093" />				
+		<property name="port" value="9091" />				
 		<property name="frameSize" value="10m"/>
-		<property name="defaultModule" value="hello"/>
-		<property name="services">
-			<list>
-				<ref bean="tbeanHello"/>				
-			</list>
+		<property name="defaultModule" value="remoteInfo"/>
+		<property name="serviceMap">
+			<map>
+				<entry key="remoteInfo" value-ref="atpService" />				
+			</map>
 		</property>
 	</bean>
 
@@ -37,7 +30,7 @@
 	<bean id="booter" class="bma.common.langutil.spring.SimpleServerBooter">
         <property name="mainList">
         	<list>
-        		<ref bean="thriftServiceServer"/>   
+        		<ref bean="thriftServiceServer"/>        		
         	</list>
         </property>
     </bean>	  

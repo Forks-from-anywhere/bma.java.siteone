@@ -1,0 +1,192 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:util="http://www.springframework.org/schema/util"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+	http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-3.0.xsd">
+
+	<!-- main thread -->
+	<bean id="mainThread" class="bma.common.langutil.ai.common.AIExecutorMain" />
+	<!-- sync thread pool -->
+	<bean id="syncExecutor" class="bma.common.langutil.ai.common.AIExecutorJava">
+		<property name="executor">
+			<bean
+				class="org.springframework.scheduling.concurrent.ThreadPoolExecutorFactoryBean">
+				<property name="threadNamePrefix" value="threadPool-" />
+				<property name="corePoolSize" value="5" />
+				<property name="maxPoolSize" value="100" />
+				<property name="keepAliveSeconds" value="60" />
+			</bean>
+		</property>
+	</bean>
+	<!-- ai thread -->
+	<bean id="aiExecutor" class="bma.common.langutil.ai.common.AIExecutorJava">
+		<property name="executor">
+			<bean
+				class="org.springframework.scheduling.concurrent.ThreadPoolExecutorFactoryBean">
+				<property name="threadNamePrefix" value="aithread-" />
+				<property name="corePoolSize" value="1" />
+				<property name="maxPoolSize" value="1" />
+			</bean>
+		</property>
+	</bean>
+	<!-- timer -->
+	<bean id="aitimer" class="bma.common.langutil.concurrent.TimerManager" 
+		init-method="startManager" destroy-method="stopManager">
+		<property name="executor" ref="syncExecutor"/>
+	</bean>
+
+	<!-- netty client support -->
+	<bean id="nettyClientBootstrap" class="bma.common.netty.client.NettyClientBootstrap"
+		init-method="init">
+		<property name="worker" value="3" />
+	</bean>
+	<bean id="aiThriftClientProvider" class="bma.siteone.netty.thrift.client.AIThriftClientFactoryNetty">
+		<property name="bootstrap" ref="nettyClientBootstrap" />
+		<property name="traceBufferSize" value="0" />
+	</bean>
+
+	<!-- ip limit -->
+	<bean id="secureFilter" class="bma.siteone.netty.thrift.common.ThriftIpLimit"
+		init-method="init">
+		<property name="whiteAddress">
+			<value></value>
+		</property>
+	</bean>
+	
+	<!-- NettyPool -->
+	<bean id="nettyPool" class="bma.common.netty.pool.NettyChannelPool" destroy-method="close">
+		<property name="maxActive" value="10"/>
+		<property name="idleMaxTime" value="300000"/>
+		<property name="timer" ref="aitimer"/>
+		<property name="factory">
+			<bean class="bma.common.netty.pool.SimpleNettyChannelPoolFactory">
+				<property name="bootstrap" ref="nettyClientBootstrap"/>				
+			</bean>
+		</property>
+	</bean>
+	
+	<!-- runtime config -->
+	<bean id="runtimeConfig" class="bma.common.langutil.runtime.RuntimeConfig"
+		init-method="init" destroy-method="close">
+		<!--
+		<property name="checkTime" value="5s"/>
+		 -->
+		<property name="executor">
+			<bean class="bma.common.langutil.concurrent.ScheduledExecutorTM">
+				<constructor-arg><ref bean="aitimer"/></constructor-arg>
+			</bean>
+		</property>
+		<property name="files">
+			<list>
+				<value>D:\workroom\java\wsgit\siteone-parent\netty-thrift\src\test\java\bma\siteone\netty\thrift\gate_config.properties</value>
+			</list>
+		</property>
+	</bean>
+	
+	<!-- RuntimeRemote -->
+	<!-- 
+	<bean id="runtimeRemote" class="bma.siteone.netty.thrift.remote.impl.RuntimeRemoteImpl" 
+			init-method="start" destroy-method="close">
+		<property name="thriftClientProvider" ref="aiThriftClientProvider"/>
+		<property name="maxIdleTime" value="10000"/>
+		<property name="initCheckList">
+			<list>
+				<value>172.19.16.195:9191</value>
+							
+				<value>172.19.16.195:9192</value>
+			</list>
+		</property>
+	</bean>
+	 -->
+	<bean id="runtimeRemote" class="bma.siteone.netty.thrift.remote.impl.RuntimeRemoteSimple">
+		<property name="maxFails" value="1"/>
+		<property name="failTime" value="10000"/>
+		<property name="timeout" value="10000"/>
+	</bean>
+	
+	<!-- GateAgent -->	
+	<bean id="failoverFac1" class="bma.siteone.netty.thrift.gate.impl.NTGAgentFactoryCore">
+		<property name="pool" ref="nettyPool"/>		
+		<property name="runtimeRemote" ref="runtimeRemote"/>
+		<property name="timeout" value="2000"/>
+		<property name="mainInfoGroup">
+			<bean class="bma.siteone.netty.thrift.gate.impl.ProxyInfoGroup">
+				<property name="infoList">
+					<list>
+						<bean class="bma.siteone.netty.thrift.gate.impl.ProxyInfo">
+							<!--
+							<property name="hostString" value="localhost:1234"/>
+							-->
+							<property name="hostString" value="172.19.16.195:9191"/>							 
+						</bean>
+						<bean class="bma.siteone.netty.thrift.gate.impl.ProxyInfo">
+							<property name="hostString" value="172.19.16.195:9192"/>
+						</bean>
+					</list>
+				</property>
+			</bean>
+		</property>
+		<!--
+		<property name="hostString" value="172.19.16.195:9191"/>
+		 -->
+		<property name="failoverHostString" value="172.19.16.195:9192"/>
+	</bean>
+	<bean id="failoverFac2" class="bma.siteone.netty.thrift.gate.impl.NTGAgentFactoryCore">
+		<property name="pool" ref="nettyPool"/>
+		<property name="urlString" value="http://localhost:8080/common.test/thrift/thrift_service.php"/>
+		<!--
+		<property name="failoverUrlString" value="http://localhost:8080/common.test/thrift/thrift_service.php"/>
+		 -->
+	</bean>
+	<bean id="gateDispatcher" class="bma.siteone.netty.thrift.gate.impl.NTGDispatcherCore">
+		<property name="pool" ref="nettyPool" />
+		<property name="serviceHost">
+			<map>
+				<entry key="cloud" value="172.19.16.195:9193"/>
+			</map>
+		</property>		
+		<property name="agentFactoryMap">
+			<map>
+				<entry key="admin" value-ref="failoverFac1"/>
+				<entry key="hello" value-ref="failoverFac2"/>
+			</map>
+		</property>
+	</bean>
+	<bean id="gateConfig" class="bma.siteone.netty.thrift.gate.impl.NTGDispatcherCore4RuntimeConfig"
+		init-method="init">
+		<property name="runtimeConfig" ref="runtimeConfig"/>
+		<property name="pool" ref="nettyPool" />
+		<property name="runtimeRemote" ref="runtimeRemote"/>
+		<property name="timeout" value="30000"/>
+	</bean>
+	
+	<bean id="tester" class="bma.siteone.netty.thrift.gate.impl.NTGDispatcherSimple">
+		<!-- 
+		<property name="agentFactory" ref="abc"/>
+		 -->
+	</bean>
+
+	<bean id="thriftGateServer" class="bma.siteone.netty.thrift.gate.NettyThriftGate"
+		destroy-method="close">
+		<property name="name" value="thriftGate" />
+		<property name="port" value="9080"/>
+		<property name="worker" value="5" />
+		<property name="traceBufferSize" value="256" />
+		<property name="Pipelines">
+			<list>
+				<ref bean="secureFilter" />
+			</list>
+		</property>		
+		<property name="frameSize" value="10m"/>		
+		<property name="dispatcher" ref="gateConfig" />
+	</bean>	
+	
+	<bean id="booter" class="bma.common.langutil.spring.SimpleServerBooter">
+        <property name="mainList">
+        	<list>        		
+        		<ref bean="thriftGateServer"/>   
+        	</list>
+        </property>
+    </bean>	  
+
+</beans>
