@@ -64,7 +64,7 @@ public class TNettyHttpWriteOnlyTransport extends TTransport {
 				host.append(":");
 				host.append(url.getPort());
 			}
-			request.setHeader(HttpHeaders.Names.HOST, url.getHost());
+			request.setHeader(HttpHeaders.Names.HOST, host.toString());
 			request.setHeader("Connection", "Keep-Alive");
 			request.setHeader("Content-Type", "application/x-thrift");
 			request.setHeader("Accept", "application/x-thrift");

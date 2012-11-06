@@ -135,7 +135,7 @@ public class ProxyObjectHttp extends ProxyObjectBase {
 	@Override
 	protected void writeMessage(Channel ch, ChannelBuffer data)
 			throws Exception {
-		// copyfrom TNettyClientHttpTransport
+		// copyfrom TNettyHttpWriteOnlyTransport
 		HttpRequest request;
 		request = new DefaultHttpRequest(HttpVersion.HTTP_1_1, HttpMethod.POST,
 				url.toURI().getRawPath());
