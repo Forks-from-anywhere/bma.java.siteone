@@ -30,7 +30,19 @@
 				<bean class="bma.siteone.filestore.service.FileStoreConfig">
 					<property name="appId" value="live.user_temp"/>
 					<property name="rootFile" value="d:/duowan/temp/filestore/user_temp"/>					
-				</bean>					
+				</bean>
+				<bean class="bma.siteone.filestore.service.FileStoreConfig">
+					<property name="appId" value="live.channel_pic"/>
+					<property name="rootFile" value="d:/duowan/temp/filestore/channel_pic"/>					
+				</bean>
+				<bean class="bma.siteone.filestore.service.FileStoreConfig">
+					<property name="appId" value="live.public"/>
+					<property name="rootFile" value="d:/duowan/temp/filestore/public"/>					
+				</bean>	
+				<bean class="bma.siteone.filestore.service.FileStoreConfig">
+					<property name="appId" value="live.organization"/>
+					<property name="rootFile" value="d:/duowan/temp/filestore/organization"/>					
+				</bean>						
 			</list>
 		</property>
 	</bean>
@@ -39,7 +51,7 @@
 	<!-- 具有IP限制功能的服务端口 -->
     <bean id="secureFilter" class="bma.common.thrift.SecureTServerTransportAcceptFilter">
         <property name="whiteAddress">
-	        <value>172.19.16.199</value>
+	        <value></value>
 		</property>
     </bean>
 	<bean id="serverTrans" class="org.apache.thrift.transport.TNonblockingServerSocket">

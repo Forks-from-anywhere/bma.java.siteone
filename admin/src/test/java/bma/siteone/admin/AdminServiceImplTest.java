@@ -281,6 +281,9 @@ public class AdminServiceImplTest {
 		List<String> roles = new ArrayList<String>();
 		roles.add("admin");
 		roles.add("editor");
+		roles.add("operator");
+		roles.add("paycommission1");
+		roles.add("paycommission2");
 		for(String role : roles){
 			AdminRole adminRole = new AdminRole();
 			adminRole.setAppName("duowan_admin");
@@ -343,6 +346,8 @@ public class AdminServiceImplTest {
 		ops.add("deleteChannel");
 		ops.add("editChannel");
 		ops.add("createChannel");
+		ops.add("authChannel");
+		ops.add("recommendChannel");
 		
 		ops.add("listParam");
 		ops.add("createParam");
@@ -350,6 +355,30 @@ public class AdminServiceImplTest {
 		ops.add("deleteParam");
 		
 		ops.add("propStats");
+		ops.add("slideshow");
+		
+		ops.add("livedata");
+		
+		ops.add("profilesign");
+		
+		ops.add("updateContract");
+		
+		ops.add("appserver");
+		
+		ops.add("activityPreview");
+		ops.add("livenews");
+		ops.add("filepublic");
+		ops.add("organization");
+		
+		ops.add("cloud.query");
+		ops.add("cloud.call");
+		ops.add("cloud.op");
+		
+		ops.add("pop");
+		ops.add("popAdmin");
+		
+		ops.add("commissionReq");
+		ops.add("commissionPay");
 		
 		for(String op : ops){
 			AdminOp adminOp = new AdminOp();
@@ -370,6 +399,7 @@ public class AdminServiceImplTest {
 		ops_admin.add("resetPassword");
 		ops_admin.add("editUser");
 		ops_admin.add("authUser");
+		
 //		ops_admin.add("listGroup");
 //		ops_admin.add("editGroup");
 //		ops_admin.add("deleteGroup");
@@ -413,6 +443,8 @@ public class AdminServiceImplTest {
 		ops_admin.add("deleteChannel");
 		ops_admin.add("editChannel");
 		ops_admin.add("createChannel");
+		ops_admin.add("authChannel");
+		ops_admin.add("recommendChannel");
 		
 		ops_admin.add("listParam");
 		ops_admin.add("createParam");
@@ -420,6 +452,27 @@ public class AdminServiceImplTest {
 		ops_admin.add("deleteParam");
 		
 		ops_admin.add("propStats");
+		ops_admin.add("slideshow");
+		
+		ops_admin.add("livedata");
+		
+		ops_admin.add("profilesign");
+		
+		ops_admin.add("updateContract");
+		
+		ops_admin.add("appserver");
+		
+		ops_admin.add("activityPreview");
+		ops_admin.add("livenews");
+		ops_admin.add("filepublic");
+		ops_admin.add("organization");
+		
+		ops_admin.add("cloud.query");
+		ops_admin.add("cloud.call");
+		ops_admin.add("cloud.op");
+		
+		ops_admin.add("pop");
+		ops_admin.add("popAdmin");
 		
 		for(String op : ops_admin){
 			RoleOp roleOp = new RoleOp();
@@ -454,6 +507,21 @@ public class AdminServiceImplTest {
 		ops_editor.add("editChannel");
 		ops_editor.add("createChannel");
 		
+		ops_editor.add("slideshow");
+		
+		ops_editor.add("livedata");
+		
+		ops_editor.add("profilesign");
+		
+		ops_editor.add("appserver");
+		
+		ops_editor.add("activityPreview");
+		ops_editor.add("livenews");
+		ops_editor.add("filepublic");
+		ops_editor.add("organization");
+		
+		ops_editor.add("pop");
+		
 		for(String op : ops_editor){
 			RoleOp roleOp = new RoleOp();
 			roleOp.setRoleName("editor");
@@ -461,6 +529,76 @@ public class AdminServiceImplTest {
 			roleOps.add(roleOp);
 		}
 		
+		
+		List<String> ops_operator = new ArrayList<String>();
+		ops_operator.add("changePassword");
+		
+		ops_operator.add("listProfile");
+		ops_operator.add("createProfile");
+		ops_operator.add("deleteProfile");
+		ops_operator.add("refreshProfile");
+		ops_operator.add("refreshActCount");
+		ops_operator.add("showProfile");
+		
+		ops_operator.add("editProfile");
+		ops_operator.add("deleteIdcard");
+		ops_operator.add("deleteAvatar");
+		ops_operator.add("sync");
+		
+		ops_operator.add("listGame");
+		ops_operator.add("deleteGame");
+		ops_operator.add("editGame");
+		ops_operator.add("createGame");
+		
+		ops_operator.add("listChannel");
+		ops_operator.add("deleteChannel");
+		ops_operator.add("editChannel");
+		ops_operator.add("createChannel");
+		ops_operator.add("recommendChannel");
+		
+		ops_operator.add("propStats");
+		ops_operator.add("slideshow");
+		
+		ops_operator.add("livedata");
+		
+		ops_operator.add("profilesign");
+		
+		ops_operator.add("appserver");
+		
+		ops_operator.add("activityPreview");
+		ops_operator.add("livenews");
+		ops_operator.add("filepublic");
+		ops_operator.add("organization");
+		
+		ops_operator.add("pop");
+		
+		for(String op : ops_operator){
+			RoleOp roleOp = new RoleOp();
+			roleOp.setRoleName("operator");
+			roleOp.setOpName(op);
+			roleOps.add(roleOp);
+		}
+		
+		
+		List<String> ops_paycommission1 = new ArrayList<String>();
+		ops_paycommission1.add("commissionReq");
+		
+		for(String op : ops_paycommission1){
+			RoleOp roleOp = new RoleOp();
+			roleOp.setRoleName("paycommission1");
+			roleOp.setOpName(op);
+			roleOps.add(roleOp);
+		}
+		
+		List<String> ops_paycommission2 = new ArrayList<String>();
+		ops_paycommission2.add("commissionPay");
+		
+		for(String op : ops_paycommission2){
+			RoleOp roleOp = new RoleOp();
+			roleOp.setRoleName("paycommission2");
+			roleOp.setOpName(op);
+			roleOps.add(roleOp);
+		}
 		
 		sync.setRoleOps(roleOps);
 		
