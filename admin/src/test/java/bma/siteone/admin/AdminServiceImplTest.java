@@ -51,7 +51,7 @@ public class AdminServiceImplTest {
 			context.close();
 	}
 	
-	@Test
+	//@Test
 	public void testCreateUser() throws Exception {
 		AdminService s = context.getBean("service", AdminService.class);
 		
@@ -64,7 +64,7 @@ public class AdminServiceImplTest {
 		assertTrue(s.createUser(userForm));
 	}
 	
-	@Test
+	//@Test
 	public void testDeleteUser() throws Exception {
 		AdminService s = context.getBean("service", AdminService.class);
 		
@@ -72,7 +72,7 @@ public class AdminServiceImplTest {
 		assertTrue(s.deleteUser(userName));
 	}
 	
-	@Test
+	//@Test
 	public void testChangePassword() throws Exception {
 		AdminService s = context.getBean("service", AdminService.class);
 		
@@ -88,7 +88,7 @@ public class AdminServiceImplTest {
 	}
 	
 	
-	@Test
+	//@Test
 	public void testResetPassword() throws Exception {
 		AdminService s = context.getBean("service", AdminService.class);
 		
@@ -98,7 +98,7 @@ public class AdminServiceImplTest {
 		assertTrue(s.resetPassword(userName,newPassword));
 	}
 	
-	@Test
+	//@Test
 	public void testCheckUserPassword() throws Exception {
 		AdminService s = context.getBean("service", AdminService.class);
 		
@@ -112,7 +112,7 @@ public class AdminServiceImplTest {
 		assertTrue(s.checkUserPassword(userName,password));
 	}
 	
-	@Test
+	//@Test
 	public void testCreateApp() throws Exception {
 		AdminService s = context.getBean("service", AdminService.class);
 		
@@ -125,7 +125,7 @@ public class AdminServiceImplTest {
 	}
 	
 	
-	@Test
+	//@Test
 	public void testDeleteApp() throws Exception {
 		AdminService s = context.getBean("service", AdminService.class);
 		
@@ -134,7 +134,7 @@ public class AdminServiceImplTest {
 		assertTrue(s.deleteApp(appName));
 	}
 	
-	@Test
+	//@Test
 	public void testCreateRole() throws Exception {
 		AdminService s = context.getBean("service", AdminService.class);
 		
@@ -146,7 +146,7 @@ public class AdminServiceImplTest {
 		assertTrue(s.createRole(adminRole));
 	}
 	
-	@Test
+	//@Test
 	public void testAddUserAuth() throws Exception {
 		AdminService s = context.getBean("service", AdminService.class);
 		
@@ -157,7 +157,7 @@ public class AdminServiceImplTest {
 		assertTrue(s.addUserAuth(userName,appName,roleName));
 	}
 	
-	@Test
+	//@Test
 	public void testDeleteUserAuth() throws Exception {
 		AdminService s = context.getBean("service", AdminService.class);
 		
@@ -168,7 +168,7 @@ public class AdminServiceImplTest {
 		assertTrue(s.deleteUserAuth(userName,appName,roleName));
 	}
 	
-	@Test
+	//@Test
 	public void testQueryRoles() throws Exception {
 		AdminService s = context.getBean("service", AdminService.class);
 		
@@ -179,7 +179,7 @@ public class AdminServiceImplTest {
 		
 	}
 
-	@Test
+	//@Test
 	public void testCreateOp() throws Exception {
 		AdminService s = context.getBean("service", AdminService.class);
 		
@@ -191,7 +191,7 @@ public class AdminServiceImplTest {
 		assertTrue(s.createOp(adminOp));
 	}
 	
-	@Test
+	//@Test
 	public void testCreateRoleOp() throws Exception {
 		AdminService s = context.getBean("service", AdminService.class);
 		
@@ -203,7 +203,7 @@ public class AdminServiceImplTest {
 	}
 	
 	
-	@Test
+	//@Test
 	public void testQueryRoleOps() throws Exception {
 		AdminService s = context.getBean("service", AdminService.class);
 		
@@ -215,7 +215,7 @@ public class AdminServiceImplTest {
 	}
 
 	
-	@Test
+	//@Test
 	public void testCheckUserAuth() throws Exception {
 		AdminService s = context.getBean("service", AdminService.class);
 		
@@ -227,7 +227,7 @@ public class AdminServiceImplTest {
 //		assertFalse(s.checkUserAuth(userName,appName,opName));
 	}
 	
-	@Test
+	//@Test
 	public void testAddOpLog() throws Exception {
 		AdminService s = context.getBean("service", AdminService.class);
 		
@@ -243,7 +243,7 @@ public class AdminServiceImplTest {
 //		assertFalse(s.checkUserAuth(userName,appName,opName));
 	}
 	
-	@Test
+	//@Test
 	public void testQueryOpLogs() throws Exception {
 		AdminService s = context.getBean("service", AdminService.class);
 		
@@ -325,6 +325,7 @@ public class AdminServiceImplTest {
 //		ops.add("editAd");
 		
 		ops.add("listProfile");
+		ops.add("videoAuth");
 		ops.add("createProfile");
 		ops.add("deleteProfile");
 		ops.add("refreshProfile");
@@ -379,6 +380,8 @@ public class AdminServiceImplTest {
 		
 		ops.add("commissionReq");
 		ops.add("commissionPay");
+		ops.add("packageList");
+		ops.add("help");
 		
 		for(String op : ops){
 			AdminOp adminOp = new AdminOp();
@@ -399,6 +402,8 @@ public class AdminServiceImplTest {
 		ops_admin.add("resetPassword");
 		ops_admin.add("editUser");
 		ops_admin.add("authUser");
+		ops_admin.add("packageList");
+		ops_admin.add("help");
 		
 //		ops_admin.add("listGroup");
 //		ops_admin.add("editGroup");
@@ -421,6 +426,7 @@ public class AdminServiceImplTest {
 //		ops_admin.add("editAd");
 		
 		ops_admin.add("listProfile");
+		ops_admin.add("videoAuth");
 		ops_admin.add("createProfile");
 		ops_admin.add("deleteProfile");
 		ops_admin.add("refreshProfile");
@@ -486,11 +492,13 @@ public class AdminServiceImplTest {
 		ops_editor.add("changePassword");
 		
 		ops_editor.add("listProfile");
+		ops_editor.add("videoAuth");
 		ops_editor.add("createProfile");
 		ops_editor.add("deleteProfile");
 		ops_editor.add("refreshProfile");
 		ops_editor.add("refreshActCount");
 		ops_editor.add("showProfile");
+		ops_editor.add("packageList");
 		
 		ops_editor.add("editProfile");
 		ops_editor.add("deleteIdcard");
@@ -517,6 +525,7 @@ public class AdminServiceImplTest {
 		
 		ops_editor.add("activityPreview");
 		ops_editor.add("livenews");
+		ops_editor.add("help");
 		ops_editor.add("filepublic");
 		ops_editor.add("organization");
 		
@@ -534,6 +543,7 @@ public class AdminServiceImplTest {
 		ops_operator.add("changePassword");
 		
 		ops_operator.add("listProfile");
+		ops_operator.add("videoAuth");
 		ops_operator.add("createProfile");
 		ops_operator.add("deleteProfile");
 		ops_operator.add("refreshProfile");
@@ -567,6 +577,7 @@ public class AdminServiceImplTest {
 		
 		ops_operator.add("activityPreview");
 		ops_operator.add("livenews");
+		ops_operator.add("help");
 		ops_operator.add("filepublic");
 		ops_operator.add("organization");
 		
@@ -629,7 +640,7 @@ public class AdminServiceImplTest {
 	}
 
 /*	
-	@Test
+	//@Test
 	public void testQueryAppUsers() throws Exception {
 		AdminService s = context.getBean("service", AdminService.class);
 		
@@ -639,7 +650,7 @@ public class AdminServiceImplTest {
 	}
 */
 	
-	@Test
+	//@Test
 	public void testQueryAppRoles() throws Exception {
 		AdminService s = context.getBean("service", AdminService.class);
 		
@@ -648,7 +659,7 @@ public class AdminServiceImplTest {
 		System.out.println(rolesList);
 	}
 	
-	@Test
+	//@Test
 	public void testCheckUserExist() throws Exception {
 		AdminService s = context.getBean("service", AdminService.class);
 		
@@ -660,7 +671,7 @@ public class AdminServiceImplTest {
 	}
 
 /*
-	@Test
+	//@Test
 	public void testQueryAllUsers() throws Exception {
 		AdminService s = context.getBean("service", AdminService.class);
 		
@@ -669,7 +680,7 @@ public class AdminServiceImplTest {
 	}
 */
 	
-	@Test
+	//@Test
 	public void testQueryAllUser() throws Exception {
 		AdminService s = context.getBean("service", AdminService.class);
 		
