@@ -30,7 +30,6 @@ import bma.common.netty.handler.ChannelHandlerShowConnect;
 import bma.common.thrift.ThriftClientConfig;
 import bma.common.thrift.ai.AIThriftClient;
 import bma.common.thrift.ai.AIThriftClientFactory;
-import bma.siteone.netty.thrift.core.NCHFramed;
 
 public class AIThriftClientFactoryNetty implements AIThriftClientFactory {
 
@@ -100,8 +99,6 @@ public class AIThriftClientFactoryNetty implements AIThriftClientFactory {
 					pipeline.addLast("showConnect",
 							new ChannelHandlerShowConnect(log, LEVEL.DEBUG));
 				}
-				pipeline.addLast("frame",
-						new NCHFramed(cfg.getFrameMaxLength()));
 				NettyClient.addPlaceholder(pipeline);
 				if (traceBufferSize > 0) {
 					pipeline.addLast("downlog", new ChannelHandlerLog(log,

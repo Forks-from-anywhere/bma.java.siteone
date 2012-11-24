@@ -19,6 +19,14 @@ public class AIThriftClientNetty implements AIThriftClient {
 		this.invoker = invoker;
 	}
 
+	public NettyClient getClient() {
+		return client;
+	}
+
+	public AIThriftInvoker getInvoker() {
+		return invoker;
+	}
+
 	@Override
 	public void close() {
 		client.close();

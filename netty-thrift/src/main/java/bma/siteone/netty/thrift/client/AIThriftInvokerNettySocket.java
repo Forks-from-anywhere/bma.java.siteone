@@ -13,6 +13,7 @@ import bma.common.netty.client.NettyClient;
 import bma.common.thrift.ThriftClientConfig;
 import bma.common.thrift.ai.AIThriftInvoker;
 import bma.common.thrift.ai.TAIBaseServiceClient;
+import bma.siteone.netty.thrift.core.NCHFramed;
 import bma.siteone.netty.thrift.core.TNettyChannelBufferTransport;
 import bma.siteone.netty.thrift.core.TNettyFramedWriteOnlyTransport;
 
@@ -46,6 +47,16 @@ public class AIThriftInvokerNettySocket implements AIThriftInvoker,
 			final TBase result, final String name, final TBase avgs)
 			throws TException {
 		client.send(new CommonNettyClientSender<TYPE>(stack) {
+
+			@Override
+			public void bindNettyClient(NettyClient client, boolean bind) {
+				if (bind) {
+					client.addHandler("frame",
+							new NCHFramed(config.getFrameMaxLength()));
+				} else {
+					client.removeHandler("frame");
+				}
+			}
 
 			@Override
 			public boolean messageReceived(final NettyClient client,
