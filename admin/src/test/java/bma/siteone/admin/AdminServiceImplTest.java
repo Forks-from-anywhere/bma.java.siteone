@@ -381,6 +381,7 @@ public class AdminServiceImplTest {
 		ops.add("commissionReq");
 		ops.add("commissionPay");
 		ops.add("packageList");
+		ops.add("packageCreate");
 		ops.add("help");
 		
 		for(String op : ops){
@@ -403,6 +404,7 @@ public class AdminServiceImplTest {
 		ops_admin.add("editUser");
 		ops_admin.add("authUser");
 		ops_admin.add("packageList");
+		ops.add("packageCreate");
 		ops_admin.add("help");
 		
 //		ops_admin.add("listGroup");
@@ -493,12 +495,13 @@ public class AdminServiceImplTest {
 		
 		ops_editor.add("listProfile");
 		ops_editor.add("videoAuth");
-		ops_editor.add("createProfile");
+//		ops_editor.add("createProfile");
 		ops_editor.add("deleteProfile");
 		ops_editor.add("refreshProfile");
 		ops_editor.add("refreshActCount");
 		ops_editor.add("showProfile");
 		ops_editor.add("packageList");
+		ops_editor.add("packageCreate");
 		
 		ops_editor.add("editProfile");
 		ops_editor.add("deleteIdcard");
@@ -544,7 +547,7 @@ public class AdminServiceImplTest {
 		
 		ops_operator.add("listProfile");
 		ops_operator.add("videoAuth");
-		ops_operator.add("createProfile");
+//		ops_operator.add("createProfile");
 		ops_operator.add("deleteProfile");
 		ops_operator.add("refreshProfile");
 		ops_operator.add("refreshActCount");
