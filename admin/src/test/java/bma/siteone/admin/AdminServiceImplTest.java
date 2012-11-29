@@ -404,7 +404,7 @@ public class AdminServiceImplTest {
 		ops_admin.add("editUser");
 		ops_admin.add("authUser");
 		ops_admin.add("packageList");
-		ops.add("packageCreate");
+		ops_admin.add("packageCreate");
 		ops_admin.add("help");
 		
 //		ops_admin.add("listGroup");
