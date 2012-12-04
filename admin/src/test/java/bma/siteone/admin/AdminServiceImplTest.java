@@ -384,6 +384,8 @@ public class AdminServiceImplTest {
 		ops.add("packageCreate");
 		ops.add("help");
 		
+		ops.add("notice");
+		
 		for(String op : ops){
 			AdminOp adminOp = new AdminOp();
 			adminOp.setAppName("duowan_admin");
@@ -482,6 +484,8 @@ public class AdminServiceImplTest {
 		ops_admin.add("pop");
 		ops_admin.add("popAdmin");
 		
+		ops_admin.add("notice");
+		
 		for(String op : ops_admin){
 			RoleOp roleOp = new RoleOp();
 			roleOp.setRoleName("admin");
@@ -534,6 +538,8 @@ public class AdminServiceImplTest {
 		
 		ops_editor.add("pop");
 		
+		ops_editor.add("notice");
+		
 		for(String op : ops_editor){
 			RoleOp roleOp = new RoleOp();
 			roleOp.setRoleName("editor");
@@ -585,6 +591,8 @@ public class AdminServiceImplTest {
 		ops_operator.add("organization");
 		
 		ops_operator.add("pop");
+		
+		ops_operator.add("notice");
 		
 		for(String op : ops_operator){
 			RoleOp roleOp = new RoleOp();
