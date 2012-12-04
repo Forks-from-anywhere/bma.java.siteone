@@ -59,13 +59,6 @@
 		</property>
 	</bean>
 	
-	<bean id="realNameServiceThrift" class="bma.siteone.message.service.RealNameServiceThrift">
-		<property name="verifyUrl" value="${realName.app.verifyUrl}"></property>
-		<property name="privatePath" value="${realName.app.privatePath}"></property>
-		<property name="privatePass" value="${realName.app.privatePass}"></property>
-		<property name="appid" value="${realName.app.appid}"></property>
-	</bean>
-	
 	<bean id="serverTrans" class="org.apache.thrift.transport.TNonblockingServerSocket">
 		<constructor-arg value="${thrift.serverTrans.port}" />
 	</bean>
@@ -76,9 +69,6 @@
 	<bean id="processor" class="bma.siteone.message.thrift.TMessageService.Processor">
 		<constructor-arg ref="handler" />
 	</bean>	
-	<bean id="realNameProcessor" class="bma.siteone.message.thrift.TRealnameService.Processor">
-		<constructor-arg ref="realNameServiceThrift" />
-	</bean>
 	
 	<bean id="server" class="bma.common.thrift.ThriftServer.HsHaServer"
 		destroy-method="close">
@@ -89,7 +79,6 @@
 				<property name="processors">
 					<map>
 						<entry key="message" value-ref="processor" />
-						<entry key="realName" value-ref="realNameProcessor" />
 					</map>
 				</property>
 			</bean>
