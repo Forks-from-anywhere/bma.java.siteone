@@ -303,11 +303,9 @@ public class AdminServiceImplTest {
 		ops.add("resetPassword");
 		ops.add("editUser");
 		ops.add("authUser");
-		
-//		ops.add("listGroup");
-//		ops.add("editGroup");
-//		ops.add("deleteGroup");
-//		ops.add("createGroup");
+
+		ops.add("group");
+		ops.add("scroll");
 //		ops.add("listProvider");
 //		ops.add("deleteProvider");
 //		ops.add("editProvider");
@@ -325,6 +323,7 @@ public class AdminServiceImplTest {
 //		ops.add("editAd");
 		
 		ops.add("listProfile");
+		ops.add("videoAuth");
 		ops.add("createProfile");
 		ops.add("deleteProfile");
 		ops.add("refreshProfile");
@@ -379,6 +378,9 @@ public class AdminServiceImplTest {
 		
 		ops.add("commissionReq");
 		ops.add("commissionPay");
+		ops.add("packageList");
+		ops.add("packageCreate");
+		ops.add("help");
 		
 		for(String op : ops){
 			AdminOp adminOp = new AdminOp();
@@ -399,11 +401,12 @@ public class AdminServiceImplTest {
 		ops_admin.add("resetPassword");
 		ops_admin.add("editUser");
 		ops_admin.add("authUser");
+		ops_admin.add("packageList");
+		ops_admin.add("packageCreate");
+		ops_admin.add("help");
 		
-//		ops_admin.add("listGroup");
-//		ops_admin.add("editGroup");
-//		ops_admin.add("deleteGroup");
-//		ops_admin.add("createGroup");
+		ops_admin.add("group");
+		ops_admin.add("scroll");
 //		ops_admin.add("listProvider");
 //		ops_admin.add("deleteProvider");
 //		ops_admin.add("editProvider");
@@ -421,6 +424,7 @@ public class AdminServiceImplTest {
 //		ops_admin.add("editAd");
 		
 		ops_admin.add("listProfile");
+		ops_admin.add("videoAuth");
 		ops_admin.add("createProfile");
 		ops_admin.add("deleteProfile");
 		ops_admin.add("refreshProfile");
@@ -486,11 +490,16 @@ public class AdminServiceImplTest {
 		ops_editor.add("changePassword");
 		
 		ops_editor.add("listProfile");
-		ops_editor.add("createProfile");
+		ops_editor.add("group");
+		ops_editor.add("scroll");
+		ops_editor.add("videoAuth");
+//		ops_editor.add("createProfile");
 		ops_editor.add("deleteProfile");
 		ops_editor.add("refreshProfile");
 		ops_editor.add("refreshActCount");
 		ops_editor.add("showProfile");
+		ops_editor.add("packageList");
+		ops_editor.add("packageCreate");
 		
 		ops_editor.add("editProfile");
 		ops_editor.add("deleteIdcard");
@@ -517,6 +526,7 @@ public class AdminServiceImplTest {
 		
 		ops_editor.add("activityPreview");
 		ops_editor.add("livenews");
+		ops_editor.add("help");
 		ops_editor.add("filepublic");
 		ops_editor.add("organization");
 		
@@ -534,7 +544,8 @@ public class AdminServiceImplTest {
 		ops_operator.add("changePassword");
 		
 		ops_operator.add("listProfile");
-		ops_operator.add("createProfile");
+		ops_operator.add("videoAuth");
+//		ops_operator.add("createProfile");
 		ops_operator.add("deleteProfile");
 		ops_operator.add("refreshProfile");
 		ops_operator.add("refreshActCount");
@@ -567,6 +578,7 @@ public class AdminServiceImplTest {
 		
 		ops_operator.add("activityPreview");
 		ops_operator.add("livenews");
+		ops_operator.add("help");
 		ops_operator.add("filepublic");
 		ops_operator.add("organization");
 		
