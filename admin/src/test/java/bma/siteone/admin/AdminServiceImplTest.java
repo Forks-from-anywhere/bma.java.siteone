@@ -303,7 +303,6 @@ public class AdminServiceImplTest {
 		ops.add("resetPassword");
 		ops.add("editUser");
 		ops.add("authUser");
-
 		ops.add("channelGroup");
 		ops.add("scroll");
 //		ops.add("listProvider");
@@ -315,13 +314,11 @@ public class AdminServiceImplTest {
 //		ops.add("createProgram");
 //		ops.add("editProgram");
 //		ops.add("authProgram");
-		
 //		ops.add("listAd");
 //		ops.add("listAdBefore");
 //		ops.add("deleteAd");
 //		ops.add("createAd");
 //		ops.add("editAd");
-		
 		ops.add("listProfile");
 		ops.add("videoAuth");
 		ops.add("createProfile");
@@ -335,52 +332,42 @@ public class AdminServiceImplTest {
 		ops.add("sync");
 		ops.add("authProfile");
 		ops.add("recommendProfile");
-		
 		ops.add("listGame");
 		ops.add("deleteGame");
 		ops.add("editGame");
 		ops.add("createGame");
-		
 		ops.add("listChannel");
 		ops.add("deleteChannel");
 		ops.add("editChannel");
 		ops.add("createChannel");
 		ops.add("authChannel");
 		ops.add("recommendChannel");
-		
 		ops.add("listParam");
 		ops.add("createParam");
 		ops.add("editParam");
 		ops.add("deleteParam");
-		
 		ops.add("propStats");
 		ops.add("slideshow");
-		
 		ops.add("livedata");
-		
 		ops.add("profilesign");
-		
 		ops.add("updateContract");
-		
 		ops.add("appserver");
-		
 		ops.add("activityPreview");
 		ops.add("livenews");
 		ops.add("filepublic");
 		ops.add("organization");
-		
 		ops.add("cloud.query");
 		ops.add("cloud.call");
 		ops.add("cloud.op");
-		
 		ops.add("pop");
 		ops.add("popAdmin");
-		
 		ops.add("commissionReq");
 		ops.add("commissionPay");
 		ops.add("packageList");
 		ops.add("packageCreate");
 		ops.add("help");
+		ops.add("guessAuth");
+		ops.add("guessAuthEdit");
 		
 		for(String op : ops){
 			AdminOp adminOp = new AdminOp();
@@ -394,89 +381,29 @@ public class AdminServiceImplTest {
 		//绑定角色的操作
 		List<RoleOp> roleOps = new ArrayList<AdminSync.RoleOp>();
 		List<String> ops_admin = new ArrayList<String>();
-		ops_admin.add("changePassword");
+		//只有admin才有的操作
 		ops_admin.add("listUser");
 		ops_admin.add("createUser");
 		ops_admin.add("deleteUser");
 		ops_admin.add("resetPassword");
 		ops_admin.add("editUser");
 		ops_admin.add("authUser");
-		ops_admin.add("packageList");
-		ops_admin.add("packageCreate");
-		ops_admin.add("help");
-
-		ops_admin.add("channelGroup");
-		ops_admin.add("scroll");
-//		ops_admin.add("listProvider");
-//		ops_admin.add("deleteProvider");
-//		ops_admin.add("editProvider");
-//		ops_admin.add("createProvider");
-//		ops_admin.add("listProgram");
-//		ops_admin.add("deleteProgram");
-//		ops_admin.add("createProgram");
-//		ops_admin.add("editProgram");
-//		ops_admin.add("authProgram");
-		
-//		ops_admin.add("listAd");
-//		ops_admin.add("listAdBefore");
-//		ops_admin.add("deleteAd");
-//		ops_admin.add("createAd");
-//		ops_admin.add("editAd");
-		
-		ops_admin.add("listProfile");
-		ops_admin.add("videoAuth");
 		ops_admin.add("createProfile");
-		ops_admin.add("deleteProfile");
-		ops_admin.add("refreshProfile");
-		ops_admin.add("refreshActCount");
-		ops_admin.add("showProfile");
-		
-		ops_admin.add("editProfile");
-		ops_admin.add("deleteIdcard");
-		ops_admin.add("deleteAvatar");
-		ops_admin.add("sync");
 		ops_admin.add("authProfile");
 		ops_admin.add("recommendProfile");
-		
-		ops_admin.add("listGame");
-		ops_admin.add("deleteGame");
-		ops_admin.add("editGame");
-		ops_admin.add("createGame");
-		
-		ops_admin.add("listChannel");
-		ops_admin.add("deleteChannel");
-		ops_admin.add("editChannel");
-		ops_admin.add("createChannel");
 		ops_admin.add("authChannel");
 		ops_admin.add("recommendChannel");
-		
 		ops_admin.add("listParam");
 		ops_admin.add("createParam");
 		ops_admin.add("editParam");
 		ops_admin.add("deleteParam");
-		
 		ops_admin.add("propStats");
-		ops_admin.add("slideshow");
-		
-		ops_admin.add("livedata");
-		
-		ops_admin.add("profilesign");
-		
 		ops_admin.add("updateContract");
-		
-		ops_admin.add("appserver");
-		
-		ops_admin.add("activityPreview");
-		ops_admin.add("livenews");
-		ops_admin.add("filepublic");
-		ops_admin.add("organization");
-		
 		ops_admin.add("cloud.query");
 		ops_admin.add("cloud.call");
 		ops_admin.add("cloud.op");
-		
-		ops_admin.add("pop");
 		ops_admin.add("popAdmin");
+		ops_admin.add("guessAuthEdit");
 		
 		for(String op : ops_admin){
 			RoleOp roleOp = new RoleOp();
@@ -484,53 +411,43 @@ public class AdminServiceImplTest {
 			roleOp.setOpName(op);
 			roleOps.add(roleOp);
 		}
-		
 
 		List<String> ops_editor = new ArrayList<String>();
+		//所有人都有的操作，最基础的
 		ops_editor.add("changePassword");
-		
 		ops_editor.add("listProfile");
 		ops_editor.add("channelGroup");
 		ops_editor.add("scroll");
 		ops_editor.add("videoAuth");
-//		ops_editor.add("createProfile");
 		ops_editor.add("deleteProfile");
 		ops_editor.add("refreshProfile");
 		ops_editor.add("refreshActCount");
 		ops_editor.add("showProfile");
-		ops_editor.add("packageList");
-		ops_editor.add("packageCreate");
-		
 		ops_editor.add("editProfile");
 		ops_editor.add("deleteIdcard");
 		ops_editor.add("deleteAvatar");
 		ops_editor.add("sync");
-		
+		ops_editor.add("packageList");
+		ops_editor.add("packageCreate");
 		ops_editor.add("listGame");
 		ops_editor.add("deleteGame");
 		ops_editor.add("editGame");
 		ops_editor.add("createGame");
-		
 		ops_editor.add("listChannel");
 		ops_editor.add("deleteChannel");
 		ops_editor.add("editChannel");
 		ops_editor.add("createChannel");
-		
 		ops_editor.add("slideshow");
-		
 		ops_editor.add("livedata");
-		
 		ops_editor.add("profilesign");
-		
 		ops_editor.add("appserver");
-		
 		ops_editor.add("activityPreview");
 		ops_editor.add("livenews");
 		ops_editor.add("help");
 		ops_editor.add("filepublic");
 		ops_editor.add("organization");
-		
 		ops_editor.add("pop");
+		ops_editor.add("guessAuth");
 		
 		for(String op : ops_editor){
 			RoleOp roleOp = new RoleOp();
@@ -539,50 +456,10 @@ public class AdminServiceImplTest {
 			roleOps.add(roleOp);
 		}
 		
-		
 		List<String> ops_operator = new ArrayList<String>();
-		ops_operator.add("changePassword");
-		
-		ops_operator.add("listProfile");
-		ops_operator.add("videoAuth");
-//		ops_operator.add("createProfile");
-		ops_operator.add("deleteProfile");
-		ops_operator.add("refreshProfile");
-		ops_operator.add("refreshActCount");
-		ops_operator.add("showProfile");
-		
-		ops_operator.add("editProfile");
-		ops_operator.add("deleteIdcard");
-		ops_operator.add("deleteAvatar");
-		ops_operator.add("sync");
-		
-		ops_operator.add("listGame");
-		ops_operator.add("deleteGame");
-		ops_operator.add("editGame");
-		ops_operator.add("createGame");
-		
-		ops_operator.add("listChannel");
-		ops_operator.add("deleteChannel");
-		ops_operator.add("editChannel");
-		ops_operator.add("createChannel");
+		//运营人员的操作
 		ops_operator.add("recommendChannel");
-		
 		ops_operator.add("propStats");
-		ops_operator.add("slideshow");
-		
-		ops_operator.add("livedata");
-		
-		ops_operator.add("profilesign");
-		
-		ops_operator.add("appserver");
-		
-		ops_operator.add("activityPreview");
-		ops_operator.add("livenews");
-		ops_operator.add("help");
-		ops_operator.add("filepublic");
-		ops_operator.add("organization");
-		
-		ops_operator.add("pop");
 		
 		for(String op : ops_operator){
 			RoleOp roleOp = new RoleOp();
@@ -593,6 +470,7 @@ public class AdminServiceImplTest {
 		
 		
 		List<String> ops_paycommission1 = new ArrayList<String>();
+		//佣金分成操作
 		ops_paycommission1.add("commissionReq");
 		
 		for(String op : ops_paycommission1){
@@ -603,6 +481,7 @@ public class AdminServiceImplTest {
 		}
 		
 		List<String> ops_paycommission2 = new ArrayList<String>();
+		//佣金分成操作
 		ops_paycommission2.add("commissionPay");
 		
 		for(String op : ops_paycommission2){
