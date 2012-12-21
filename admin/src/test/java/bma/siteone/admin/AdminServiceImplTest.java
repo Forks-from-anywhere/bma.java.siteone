@@ -304,7 +304,7 @@ public class AdminServiceImplTest {
 		ops.add("editUser");
 		ops.add("authUser");
 
-		ops.add("group");
+		ops.add("channelGroup");
 		ops.add("scroll");
 //		ops.add("listProvider");
 //		ops.add("deleteProvider");
@@ -404,8 +404,8 @@ public class AdminServiceImplTest {
 		ops_admin.add("packageList");
 		ops_admin.add("packageCreate");
 		ops_admin.add("help");
-		
-		ops_admin.add("group");
+
+		ops_admin.add("channelGroup");
 		ops_admin.add("scroll");
 //		ops_admin.add("listProvider");
 //		ops_admin.add("deleteProvider");
@@ -490,7 +490,7 @@ public class AdminServiceImplTest {
 		ops_editor.add("changePassword");
 		
 		ops_editor.add("listProfile");
-		ops_editor.add("group");
+		ops_editor.add("channelGroup");
 		ops_editor.add("scroll");
 		ops_editor.add("videoAuth");
 //		ops_editor.add("createProfile");
