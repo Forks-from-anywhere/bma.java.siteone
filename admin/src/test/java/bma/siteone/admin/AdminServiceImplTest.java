@@ -404,6 +404,7 @@ public class AdminServiceImplTest {
 		ops_admin.add("cloud.op");
 		ops_admin.add("popAdmin");
 		ops_admin.add("guessAuthEdit");
+		ops_admin.add("scroll");
 		
 		for(String op : ops_admin){
 			RoleOp roleOp = new RoleOp();
@@ -417,7 +418,6 @@ public class AdminServiceImplTest {
 		ops_editor.add("changePassword");
 		ops_editor.add("listProfile");
 		ops_editor.add("channelGroup");
-		ops_editor.add("scroll");
 		ops_editor.add("videoAuth");
 		ops_editor.add("deleteProfile");
 		ops_editor.add("refreshProfile");
