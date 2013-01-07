@@ -305,6 +305,7 @@ public class AdminServiceImplTest {
 		ops.add("authUser");
 		ops.add("channelGroup");
 		ops.add("scroll");
+		ops.add("notice");
 //		ops.add("listProvider");
 //		ops.add("deleteProvider");
 //		ops.add("editProvider");
@@ -405,6 +406,7 @@ public class AdminServiceImplTest {
 		ops_admin.add("popAdmin");
 		ops_admin.add("guessAuthEdit");
 		ops_admin.add("scroll");
+		ops_admin.add("notice");
 		
 		for(String op : ops_admin){
 			RoleOp roleOp = new RoleOp();
@@ -430,6 +432,7 @@ public class AdminServiceImplTest {
 		ops_editor.add("packageList");
 		ops_editor.add("packageCreate");
 		ops_editor.add("listGame");
+		ops_editor.add("notice");
 		ops_editor.add("deleteGame");
 		ops_editor.add("editGame");
 		ops_editor.add("createGame");
