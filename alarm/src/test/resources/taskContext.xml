@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="
+          http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+          http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-2.5.xsd
+          http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.5.xsd">
+
+	<!-- 使用quartz来处理异步数据 -->
+	<!-- 启动调度 -->
+	<bean id="schedulerFactory"
+		class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
+		<property name="triggers">
+			<list>
+				<ref bean="selfAlarmTrigger" /> 
+				<ref bean="cleanAlarmHistoryTrigger" /> 
+			</list>
+		</property>
+	</bean>
+
+	<bean id="selfAlarmTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
+		<property name="jobDetail">
+			<bean
+				class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+				<property name="targetObject" ref="alarmSelfMonitor" />
+				<property name="targetMethod" value="doTask" />
+				<property name="concurrent" value="false" />
+			</bean>
+		</property>
+		<property name="cronExpression" value="0 */1 * * * ?" />
+	</bean>
+	
+	<bean id="alarmSelfMonitor" class="bma.siteone.alarm.task.AlarmSelfMonitor" >
+		<property name="service" ref="service" />
+	</bean>
+
+	<bean id="cleanAlarmHistoryTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
+		<property name="jobDetail">
+			<bean
+				class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+				<property name="targetObject" ref="alarmSelfMonitor" />
+				<property name="targetMethod" value="doTask" />
+				<property name="concurrent" value="false" />
+			</bean>
+		</property>
+		<property name="cronExpression" value="0 0 4 * * ?" />
+	</bean>
+	
+	<bean id="cleanAlarmHistoryMonitor" class="bma.siteone.alarm.task.CleanAlarmHistoryMonitor" >
+		<property name="service" ref="service" />
+		<property name="days" value="${alarm.clean.history}" />
+	</bean>
+
+</beans>

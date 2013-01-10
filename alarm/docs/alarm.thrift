@@ -44,7 +44,7 @@ struct TAlarmQueryResult {
 
 service TAlarmService extends alarmclient.TAlarmClient {
 
-	TAlarmQueryResult queryAlarm(1:TAlarmQueryForm alarmQueryForm, 2:i32 page, 3:i32 pageSize, 4:string orderBy, 5:string order),	//查询报警历史
+	TAlarmQueryResult queryAlarm(1:TAlarmQueryForm alarmQueryForm, 2:i32 page, 3:i32 pageSize, 4:map< string, string > orders),	//查询报警历史
 	TAlarmQueryResult queryAlarmByIds(1:list<i32> ids);	//查询报警历史
 	
 	bool clearAlarm(1:TAlarmQueryForm alarmQueryForm),	//清除报警历史
