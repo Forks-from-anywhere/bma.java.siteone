@@ -296,19 +296,21 @@ public class AlarmServiceImpl implements AlarmService {
 			} else {
 				// 如果是int则使用等于
 				//如果是`starttime`或`endtime`则放入表中
-				if(!between.equals("")){
-					between += " AND " ;
-				}
-				if(key.equals("starttime")){
-					between += "  starttime >= " + queryMap.get(key);
-				}
-				if(key.equals("endtime")){
-					between += "  endtime <= " + queryMap.get(key);
-				}
-				if (opt.equals("")) {
-					opt += key + "='" + queryMap.get(key) + "'";
-				} else {
-					opt = " AND " + key + "'=" + queryMap.get(key) + "'";
+				if(key.equals("starttime") || key.equals("endtime")){
+					if(!between.equals("")){
+						between += " AND " ;
+					}
+					if(key.equals("starttime")){
+						between += "  starttime >= " + queryMap.get(key);
+					}else if(key.equals("endtime")){
+						between += "  endtime <= " + queryMap.get(key);
+					}
+				}else{
+					if(opt.equals("")) {
+						opt += key + "='" + queryMap.get(key) + "'";
+					} else {
+						opt = " AND " + key + "'=" + queryMap.get(key) + "'";
+					}
 				}
 			}
 		}

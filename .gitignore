@@ -6,3 +6,5 @@
 target
 /*/gen-java
 /*/gen-php
+/alarm/test-output/*
+*/.hg/*

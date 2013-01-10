@@ -28,7 +28,7 @@
 				<property name="concurrent" value="false" />
 			</bean>
 		</property>
-		<property name="cronExpression" value="0 */1 * * * ?" />
+		<property name="cronExpression" value="0 */30 * * * ?" />
 	</bean>
 	
 	<bean id="alarmSelfMonitor" class="bma.siteone.alarm.task.AlarmSelfMonitor" >
