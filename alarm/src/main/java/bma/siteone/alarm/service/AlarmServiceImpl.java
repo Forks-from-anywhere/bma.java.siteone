@@ -301,9 +301,9 @@ public class AlarmServiceImpl implements AlarmService {
 						between += " AND " ;
 					}
 					if(key.equals("starttime")){
-						between += "  op_time >= " + queryMap.get(key);
+						between += "  starttime >= " + queryMap.get(key);
 					}else if(key.equals("endtime")){
-						between += "  op_time <= " + queryMap.get(key);
+						between += "  starttime <= " + queryMap.get(key);
 					}
 				}else{
 					if(opt.equals("")) {
