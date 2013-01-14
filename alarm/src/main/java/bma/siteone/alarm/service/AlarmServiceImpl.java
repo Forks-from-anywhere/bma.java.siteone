@@ -309,7 +309,7 @@ public class AlarmServiceImpl implements AlarmService {
 					if(opt.equals("")) {
 						opt += key + "='" + queryMap.get(key) + "'";
 					} else {
-						opt += " AND " + key + "'=" + queryMap.get(key) + "'";
+						opt += " AND " + key + "='" + queryMap.get(key) + "'";
 					}
 				}
 			}
