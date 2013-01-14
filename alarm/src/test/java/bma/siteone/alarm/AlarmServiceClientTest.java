@@ -1,6 +1,7 @@
 package bma.siteone.alarm;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import org.apache.thrift.protocol.TBinaryProtocol;
@@ -26,8 +27,8 @@ public class AlarmServiceClientTest {
 	
 	@Before
 	public void setUp() throws Exception {
-		transport = new TSocket("127.0.0.1", 9099);
-//		transport = new TSocket("183.61.6.61", 9092);
+//		transport = new TSocket("127.0.0.1", 9099);
+		transport = new TSocket("183.61.6.61", 9195);
 //		transport = new TSocket("183.61.6.60", 9092);
 		transport.open();
 		transport = new TFramedTransport(transport,100*1024*1024);
@@ -48,6 +49,7 @@ public class AlarmServiceClientTest {
 		alarmCommitForm.setStype1("index");
 		alarmCommitForm.setStype2("profile");
 		alarmCommitForm.setType(2);
+		alarmCommitForm.setLevel(1);
 		client.commitAlarm(alarmCommitForm);
 	}
 	
@@ -59,6 +61,7 @@ public class AlarmServiceClientTest {
 		alarmCommitForm.setStype1("index");
 		alarmCommitForm.setStype2("main");
 		alarmCommitForm.setType(2);
+		alarmCommitForm.setLevel(3);
 		client.commitAlarm(alarmCommitForm);
 	}
 

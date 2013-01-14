@@ -291,7 +291,7 @@ public class AlarmServiceImpl implements AlarmService {
 				if (lk.equals("")) {
 					lk += key + " LIKE '%" + queryMap.get(key) + "%'";
 				} else {
-					lk = " AND " + key + " LIKE " + queryMap.get(key);
+					lk += " AND " + key + " LIKE '%" + queryMap.get(key)+ "%'";
 				}
 			} else {
 				// 如果是int则使用等于
@@ -309,7 +309,7 @@ public class AlarmServiceImpl implements AlarmService {
 					if(opt.equals("")) {
 						opt += key + "='" + queryMap.get(key) + "'";
 					} else {
-						opt = " AND " + key + "'=" + queryMap.get(key) + "'";
+						opt += " AND " + key + "'=" + queryMap.get(key) + "'";
 					}
 				}
 			}
