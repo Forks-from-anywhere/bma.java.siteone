@@ -1,35 +1,35 @@
 package bma.siteone.admin.service;
 
-import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.thrift.TException;
-import org.codehaus.jackson.JsonParseException;
-import org.codehaus.jackson.map.JsonMappingException;
 
 import bma.common.langutil.bean.copy.BeanCopyTool;
 import bma.common.langutil.convert.common.DateFormatConverter;
+import bma.common.langutil.core.DateTimeUtil;
 import bma.common.langutil.core.Function;
 import bma.common.langutil.core.ListUtil;
 import bma.common.langutil.core.PagerResult;
+import bma.siteone.admin.po.AdminOp;
 import bma.siteone.admin.po.AdminOpLog;
 import bma.siteone.admin.po.AdminRole;
 import bma.siteone.admin.po.AdminUser;
 import bma.siteone.admin.thrift.*;
+import bma.siteone.admin.service.BaseServiceImpl;
 
-public class AdminServiceThrift implements TAdminService.Iface{
+public class AdminManagerThrift implements TAdminManagerService.Iface{
 	
 	final org.slf4j.Logger log = org.slf4j.LoggerFactory
-			.getLogger(AdminServiceThrift.class);
+			.getLogger(AdminManagerThrift.class);
 
-	private AdminService service;
-	
 	private transient BeanCopyTool source;
 	private transient BeanCopyTool target;
 	
-	public AdminServiceThrift() {
+	public AdminManagerThrift() {
 		super();
 		source = new BeanCopyTool();
 		initBeanCopy(source);
@@ -42,11 +42,13 @@ public class AdminServiceThrift implements TAdminService.Iface{
 		tool.field("createTime").converter(DateFormatConverter.DATE_TIME);
 	}
 
-	public AdminService getService() {
+	private BaseServiceImpl service;
+	
+	public BaseServiceImpl getService() {
 		return service;
 	}
 
-	public void setService(AdminService service) {
+	public void setService(BaseServiceImpl service) {
 		this.service = service;
 	}
 	
@@ -122,30 +124,7 @@ public class AdminServiceThrift implements TAdminService.Iface{
     	
     }
 
-    public boolean syncApp(String syncContent) throws TException{
-    	
-    	if (log.isDebugEnabled()) {
-			log.debug("syncApp({})",syncContent);
-		}
-    	try {
-			return service.syncApp(syncContent);
-		} catch (JsonParseException e) {
-			if (log.isWarnEnabled()) {
-				log.warn("syncApp({}), exception=>({})",syncContent,e.getMessage());
-			}
-			return false;
-		} catch (JsonMappingException e) {
-			if (log.isWarnEnabled()) {
-				log.warn("syncApp({}), exception=>({})",syncContent,e.getMessage());
-			}
-			return false;
-		} catch (IOException e) {
-			if (log.isWarnEnabled()) {
-				log.warn("syncApp({}), exception=>({})",syncContent,e.getMessage());
-			}
-			return false;
-		}
-    }
+
 
     public List<TRole> queryRoles(String userName) throws TException{
     	if (log.isDebugEnabled()) {
@@ -175,27 +154,6 @@ public class AdminServiceThrift implements TAdminService.Iface{
     	return service.deleteUserAuth(userName, appName, roleName);
     }
 
-    public boolean checkUserAuth(String userName, String appName, String opName) throws TException{
-    	if (log.isDebugEnabled()) {
-			log.debug("checkUserAuth({},{},{})",new Object[]{userName,appName,opName});
-		}
-    	return service.checkUserAuth(userName, appName, opName);
-    }
-
-    public boolean addOpLog(TOpLogForm opLogForm) throws TException{
-    	if (log.isDebugEnabled()) {
-			log.debug("addOpLog({})",opLogForm);
-		}
-//    	OpLogForm _opLogForm = target.newInstance(null, opLogForm, OpLogForm.class);
-    	OpLogForm _opLogForm = new OpLogForm();
-    	_opLogForm.setUserName(opLogForm.getUserName());
-    	_opLogForm.setAppName(opLogForm.getAppName());
-    	_opLogForm.setRoleName(opLogForm.getRoleName());
-    	_opLogForm.setOpName(opLogForm.getOpName());
-    	_opLogForm.setDescription(opLogForm.getDescription());
-    	
-    	return service.addOpLog(_opLogForm);
-    }
 
     public TOpLogRessult queryOpLogs(TOpLogQueryForm opLogQueryForm) throws TException{
     	if (log.isDebugEnabled()) {
@@ -265,22 +223,6 @@ public class AdminServiceThrift implements TAdminService.Iface{
     	return user;
 	}
 
-/*
-	@Override
-	public TAllUsersResult queryAllUsers(int page, int pageSize) throws TException {
-    	if (log.isDebugEnabled()) {
-			log.debug("queryAllUsers({},{},{})", new Object[]{page ,pageSize});
-		}
-    	
-    	PagerResult<String> pr = service.queryAllUsers(page,pageSize);
-    	
-    	TAllUsersResult result = new TAllUsersResult();
-    	
-    	result.setTotal(pr.getPager().getTotal());
-    	result.setResult(pr.getResult());
-    	return result;
-	}
-*/
 	
 	@Override
 	public List<TUser> queryAllUser() throws TException {
@@ -296,5 +238,117 @@ public class AdminServiceThrift implements TAdminService.Iface{
 			tusersList.add(tuser);
 		}
 		return tusersList;
+	}
+
+	@Override
+	public List<TOp> queryAppOps(String appName) throws TException {
+		if (log.isDebugEnabled()) {
+			log.debug("queryAppOps({})",appName);
+		}
+		
+		List<AdminOp> opsList = service.queryAppOps(appName);
+		List<TOp> tOpsList = new ArrayList<TOp>();
+		if(opsList.size() !=0 ){
+			for (AdminOp op : opsList) {
+				TOp t = new TOp();
+				t.setAppName(op.getAppName());
+				t.setOpName(op.getOpName());
+				t.setOpDescription(op.getOpDescription());
+				t.setCreateTime(DateTimeUtil.formatDateTime(op.getCreateTime()));
+				t.setStatus(op.getStatus());
+				tOpsList.add(t);
+			}
+		}
+		
+		return tOpsList;
+	}
+
+	@Override
+	public Map<String, List<String>> queryAppRolesByOps(String appName,
+			List<String> opNames) throws TException {
+		if (log.isDebugEnabled()) {
+			log.debug("queryAppRolesByOps()");
+		}
+		
+		Map<String, List<String>> result = new HashMap<String, List<String>>();
+		
+		if(opNames.size() != 0){
+			result = service.queryAppRolesByOps(appName, opNames);
+		}
+		
+		return result;
+	}
+
+	@Override
+	public List<String> queryAppOpsByRole(String appName, String roleName)
+			throws TException {
+		if (log.isDebugEnabled()) {
+			log.debug("queryAppOpsByRole({},{})",appName,roleName);
+		}
+		
+		List<String> opsList = service.queryAppOpsByRole(appName, roleName);
+		
+		return opsList;
+	}
+
+	@Override
+	public boolean createRole(TRole role) throws TException {
+		if (log.isDebugEnabled()) {
+			log.debug("createRole({},{})",role.getAppName(),role.getRoleName());
+		}
+		
+		AdminRole adminRole = new AdminRole();
+		adminRole.setAppName(role.getAppName());
+		adminRole.setRoleName(role.getRoleName());
+		adminRole.setRoleDescription((role.getRoleDescription() == null ? "":role.getRoleDescription()));
+		try{
+			return service.createRole(adminRole);
+		}catch (Exception e) {
+			if (log.isWarnEnabled()) {
+				log.warn("createRole({}), exception=>({})",role.getAppName()+","+role.getRoleName(),e.getMessage());
+			}
+			return false;
+		}
+	}
+
+	@Override
+	public boolean deleteRole(String appName, String roleName)
+			throws TException {
+		if (log.isDebugEnabled()) {
+			log.debug("deleteRole({},{})",appName,roleName);
+		}
+		
+		try{
+			return service.deleteRole(appName,roleName);
+		}catch (Exception e) {
+			if (log.isWarnEnabled()) {
+				log.warn("deleteRole({}), exception=>({})",appName+","+roleName,e.getMessage());
+			}
+			return false;
+		}
+		
+	}
+
+	@Override
+	public boolean resetRoleOps(String appName, TSetRoleOpsForm roleOpsForm)
+			throws TException {
+		if (log.isDebugEnabled()) {
+			log.debug("resetRoleOps({},{})",appName,roleOpsForm.getRoleName());
+		}
+		
+		try{
+			List<String> roles = service.queryAppRoles(appName);
+			if(!roles.contains(roleOpsForm.getRoleName())){
+				return false;
+			}
+			
+			return service.resetRoleOps(appName,roleOpsForm.getRoleName(),roleOpsForm.getOpNameList());
+		}catch (Exception e) {
+			if (log.isWarnEnabled()) {
+				log.warn("resetRoleOps({}), exception=>({})",appName+","+roleOpsForm.getRoleName(),e.getMessage());
+			}
+			return false;
+		}
+		
 	}
 }

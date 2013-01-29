@@ -14,6 +14,10 @@ import org.springframework.context.support.FileSystemXmlApplicationContext;
 import bma.common.jdbctemplate.JdbcTemplateUtil;
 import bma.common.langutil.core.PagerResult;
 import bma.common.langutil.testcase.SpringTestcaseUtil;
+import bma.siteone.admin.service.OpLogForm;
+import bma.siteone.admin.service.AdminManagerThrift;
+import bma.siteone.admin.service.OpLogQueryForm;
+import bma.siteone.admin.service.UserForm;
 import bma.siteone.admin.po.AdminApp;
 import bma.siteone.admin.po.AdminAuth;
 import bma.siteone.admin.po.AdminOp;
@@ -21,19 +25,16 @@ import bma.siteone.admin.po.AdminOpLog;
 import bma.siteone.admin.po.AdminRole;
 import bma.siteone.admin.po.AdminRoleOp;
 import bma.siteone.admin.po.AdminSync;
-import bma.siteone.admin.po.AdminUser;
 import bma.siteone.admin.po.AdminSync.RoleOp;
-import bma.siteone.admin.service.AdminService;
-import bma.siteone.admin.service.OpLogForm;
-import bma.siteone.admin.service.OpLogQueryForm;
-import bma.siteone.admin.service.UserForm;
+import bma.siteone.admin.po.AdminUser;
+import bma.siteone.admin.service.BaseServiceImpl;
 
 /**
  * 管理后台服务service层AdminServiceImpl测试用例
  * @author liaozhuojie
  *
  */
-public class AdminServiceImplTest {
+public class BaseServiceImplTest {
 
 	FileSystemXmlApplicationContext context;
 	
@@ -53,7 +54,7 @@ public class AdminServiceImplTest {
 	
 	@Test
 	public void testCreateUser() throws Exception {
-		AdminService s = context.getBean("service", AdminService.class);
+		BaseServiceImpl s = context.getBean("service", BaseServiceImpl.class);
 		
 		UserForm userForm = new UserForm();
 		userForm.setUserName("liaozj3");
@@ -66,15 +67,15 @@ public class AdminServiceImplTest {
 	
 	@Test
 	public void testDeleteUser() throws Exception {
-		AdminService s = context.getBean("service", AdminService.class);
+		BaseServiceImpl s = context.getBean("service", BaseServiceImpl.class);
 		
-		String userName = "liaozj1";
+		String userName = "liaozj3";
 		assertTrue(s.deleteUser(userName));
 	}
 	
 	@Test
 	public void testChangePassword() throws Exception {
-		AdminService s = context.getBean("service", AdminService.class);
+		BaseServiceImpl s = context.getBean("service", BaseServiceImpl.class);
 		
 		//1.密码正确
 		String userName = "liaozj3";
@@ -90,7 +91,7 @@ public class AdminServiceImplTest {
 	
 	@Test
 	public void testResetPassword() throws Exception {
-		AdminService s = context.getBean("service", AdminService.class);
+		BaseServiceImpl s = context.getBean("service", BaseServiceImpl.class);
 		
 		String userName = "liaozj3";
 		String newPassword = "222222";
@@ -100,7 +101,7 @@ public class AdminServiceImplTest {
 	
 	@Test
 	public void testCheckUserPassword() throws Exception {
-		AdminService s = context.getBean("service", AdminService.class);
+		BaseServiceImpl s = context.getBean("service", BaseServiceImpl.class);
 		
 		//1.密码正确
 //		String userName = "liaozj3";
@@ -114,7 +115,7 @@ public class AdminServiceImplTest {
 	
 	@Test
 	public void testCreateApp() throws Exception {
-		AdminService s = context.getBean("service", AdminService.class);
+		BaseServiceImpl s = context.getBean("service", BaseServiceImpl.class);
 		
 		AdminApp adminApp = new AdminApp();
 		adminApp.setAppName("app3");
@@ -127,7 +128,7 @@ public class AdminServiceImplTest {
 	
 	@Test
 	public void testDeleteApp() throws Exception {
-		AdminService s = context.getBean("service", AdminService.class);
+		BaseServiceImpl s = context.getBean("service", BaseServiceImpl.class);
 		
 		String appName = "mms_admin";
 //		System.out.println(s.createUser(userForm));
@@ -136,7 +137,7 @@ public class AdminServiceImplTest {
 	
 	@Test
 	public void testCreateRole() throws Exception {
-		AdminService s = context.getBean("service", AdminService.class);
+		BaseServiceImpl s = context.getBean("service", BaseServiceImpl.class);
 		
 		AdminRole adminRole = new AdminRole();
 		adminRole.setAppName("app3");
@@ -148,7 +149,7 @@ public class AdminServiceImplTest {
 	
 	@Test
 	public void testAddUserAuth() throws Exception {
-		AdminService s = context.getBean("service", AdminService.class);
+		BaseServiceImpl s = context.getBean("service", BaseServiceImpl.class);
 		
 		String userName = "liaozj3";
 		String appName = "app3";
@@ -159,7 +160,7 @@ public class AdminServiceImplTest {
 	
 	@Test
 	public void testDeleteUserAuth() throws Exception {
-		AdminService s = context.getBean("service", AdminService.class);
+		BaseServiceImpl s = context.getBean("service", BaseServiceImpl.class);
 		
 		String userName = "liaozj3";
 		String appName = "app3";
@@ -170,7 +171,7 @@ public class AdminServiceImplTest {
 	
 	@Test
 	public void testQueryRoles() throws Exception {
-		AdminService s = context.getBean("service", AdminService.class);
+		BaseServiceImpl s = context.getBean("service", BaseServiceImpl.class);
 		
 		String userName = "liaozj3";
 		
@@ -181,7 +182,7 @@ public class AdminServiceImplTest {
 
 	@Test
 	public void testCreateOp() throws Exception {
-		AdminService s = context.getBean("service", AdminService.class);
+		BaseServiceImpl s = context.getBean("service", BaseServiceImpl.class);
 		
 		AdminOp adminOp = new AdminOp();
 		adminOp.setAppName("app3");
@@ -193,7 +194,7 @@ public class AdminServiceImplTest {
 	
 	@Test
 	public void testCreateRoleOp() throws Exception {
-		AdminService s = context.getBean("service", AdminService.class);
+		BaseServiceImpl s = context.getBean("service", BaseServiceImpl.class);
 		
 		String appName = "app3";
 		String roleName = "role4";
@@ -205,7 +206,7 @@ public class AdminServiceImplTest {
 	
 	@Test
 	public void testQueryRoleOps() throws Exception {
-		AdminService s = context.getBean("service", AdminService.class);
+		BaseServiceImpl s = context.getBean("service", BaseServiceImpl.class);
 		
 		String appName = "app3";
 		String roleName = "role3";
@@ -217,7 +218,7 @@ public class AdminServiceImplTest {
 	
 	@Test
 	public void testCheckUserAuth() throws Exception {
-		AdminService s = context.getBean("service", AdminService.class);
+		BaseServiceImpl s = context.getBean("service", BaseServiceImpl.class);
 		
 		String userName = "liaozj3";
 		String appName = "app3";
@@ -229,7 +230,7 @@ public class AdminServiceImplTest {
 	
 	@Test
 	public void testAddOpLog() throws Exception {
-		AdminService s = context.getBean("service", AdminService.class);
+		BaseServiceImpl s = context.getBean("service", BaseServiceImpl.class);
 		
 
 		OpLogForm opLogForm = new OpLogForm();
@@ -245,7 +246,7 @@ public class AdminServiceImplTest {
 	
 	@Test
 	public void testQueryOpLogs() throws Exception {
-		AdminService s = context.getBean("service", AdminService.class);
+		BaseServiceImpl s = context.getBean("service", BaseServiceImpl.class);
 		
 		OpLogQueryForm opLogQueryForm = new OpLogQueryForm();
 //		opLogQueryForm.setAppName("test11");
@@ -266,7 +267,7 @@ public class AdminServiceImplTest {
 	
 	@Test
 	public void testSyncApp() throws Exception {
-		AdminService s = context.getBean("service", AdminService.class);
+		BaseServiceImpl s = context.getBean("service", BaseServiceImpl.class);
 
 		AdminSync sync = new AdminSync();
 		
@@ -538,7 +539,7 @@ public class AdminServiceImplTest {
 /*	
 	@Test
 	public void testQueryAppUsers() throws Exception {
-		AdminService s = context.getBean("service", AdminService.class);
+		BaseServiceImpl s = context.getBean("service", BaseServiceImpl.class);
 		
 		String appName = "mms_admin";
 		PagerResult<String> authsList = s.queryAppUsers(appName,3,2);
@@ -548,7 +549,7 @@ public class AdminServiceImplTest {
 	
 	@Test
 	public void testQueryAppRoles() throws Exception {
-		AdminService s = context.getBean("service", AdminService.class);
+		BaseServiceImpl s = context.getBean("service", BaseServiceImpl.class);
 		
 		String appName = "mms_admin";
 		List<String> rolesList = s.queryAppRoles(appName);
@@ -557,7 +558,7 @@ public class AdminServiceImplTest {
 	
 	@Test
 	public void testCheckUserExist() throws Exception {
-		AdminService s = context.getBean("service", AdminService.class);
+		BaseServiceImpl s = context.getBean("service", BaseServiceImpl.class);
 		
 //		String userName = "admin";
 //		assertTrue(s.checkUserExist(userName));
@@ -569,7 +570,7 @@ public class AdminServiceImplTest {
 /*
 	@Test
 	public void testQueryAllUsers() throws Exception {
-		AdminService s = context.getBean("service", AdminService.class);
+		BaseServiceImpl s = context.getBean("service", BaseServiceImpl.class);
 		
 		PagerResult<String> authsList = s.queryAllUsers(2,2);
 		System.out.println(authsList);
@@ -578,7 +579,7 @@ public class AdminServiceImplTest {
 	
 	@Test
 	public void testQueryAllUser() throws Exception {
-		AdminService s = context.getBean("service", AdminService.class);
+		BaseServiceImpl s = context.getBean("service", BaseServiceImpl.class);
 		
 		List<AdminUser> usersList = s.queryAllUser();
 		System.out.println(usersList);

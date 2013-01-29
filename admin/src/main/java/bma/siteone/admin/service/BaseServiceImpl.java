@@ -6,7 +6,9 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.thrift.TException;
 import org.codehaus.jackson.JsonParseException;
@@ -34,6 +36,9 @@ import bma.siteone.admin.po.AdminRoleOp;
 import bma.siteone.admin.po.AdminSync;
 import bma.siteone.admin.po.AdminSync.RoleOp;
 import bma.siteone.admin.po.AdminUser;
+import bma.siteone.admin.service.OpLogForm;
+import bma.siteone.admin.service.OpLogQueryForm;
+import bma.siteone.admin.service.UserForm;
 
 /**
  * 管理后台服务层
@@ -42,14 +47,10 @@ import bma.siteone.admin.po.AdminUser;
  */
 
 @Transactional
-public class AdminServiceImpl implements AdminService{
+public class BaseServiceImpl{
 
 	final org.slf4j.Logger log = org.slf4j.LoggerFactory
-			.getLogger(AdminServiceImpl.class);
-	
-	private AdminServiceImpl() {
-		super();
-	}
+			.getLogger(BaseServiceImpl.class);
 	
 	private String adminUserTableName = "admin_user";
 	private String adminAppTableName = "admin_app";
@@ -131,7 +132,6 @@ public class AdminServiceImpl implements AdminService{
 	}
 
 	@Transactional(propagation = Propagation.REQUIRED)
-	@Override
 	public boolean createUser(UserForm userForm) throws UnsupportedEncodingException{
 		
 		CommonFieldValues fvs = new CommonFieldValues();
@@ -147,7 +147,6 @@ public class AdminServiceImpl implements AdminService{
 	}
 	
 	@Transactional(propagation = Propagation.REQUIRED)
-	@Override
 	public boolean deleteUser(String userName){
 		AdminUser user = getUser(userName);
 		if(user == null){
@@ -192,7 +191,6 @@ public class AdminServiceImpl implements AdminService{
 	}
 	
 	@Transactional(propagation = Propagation.REQUIRED)
-	@Override
 	public boolean changePassword(String userName, String oldPassword, String newPassword) throws UnsupportedEncodingException{
 		
 		//校验旧密码
@@ -223,7 +221,6 @@ public class AdminServiceImpl implements AdminService{
 	}
 	
 	@Transactional(propagation = Propagation.REQUIRED)
-	@Override
 	public boolean resetPassword(String userName, String newPassword) throws UnsupportedEncodingException{
 		
 		AdminUser user = getUser(userName);
@@ -244,7 +241,6 @@ public class AdminServiceImpl implements AdminService{
 	}
 	
 	@Transactional(propagation = Propagation.NOT_SUPPORTED, readOnly = true)
-	@Override
 	public boolean checkUserPassword(String userName, String password) throws UnsupportedEncodingException{
 		
 		AdminUser user = getUser(userName);
@@ -263,7 +259,6 @@ public class AdminServiceImpl implements AdminService{
 	}
 	
 	@Transactional(propagation = Propagation.REQUIRED)
-	@Override
 	public boolean syncApp(String syncContent) throws JsonParseException, JsonMappingException, IOException{
 		
 		ObjectMapper mapper = new ObjectMapper();
@@ -434,7 +429,6 @@ public class AdminServiceImpl implements AdminService{
 	}
 	
 	@Transactional(propagation = Propagation.REQUIRED)
-	@Override
 	public boolean addUserAuth(String userName, String appName, String roleName){
 		
 		AdminUser user = getUser(userName);
@@ -471,7 +465,6 @@ public class AdminServiceImpl implements AdminService{
 	}
 	
 	@Transactional(propagation = Propagation.REQUIRED)
-	@Override
 	public boolean deleteUserAuth(String userName, String appName, String roleName){
 		
 		AdminUser user = getUser(userName);
@@ -509,7 +502,6 @@ public class AdminServiceImpl implements AdminService{
 	}
 	
 	@Transactional(propagation = Propagation.NOT_SUPPORTED, readOnly = true)
-	@Override
 	public boolean checkUserAuth(String userName, String appName, String opName){
 		
 		AdminUser user = getUser(userName);
@@ -553,7 +545,6 @@ public class AdminServiceImpl implements AdminService{
 	}
 	
 	@Transactional(propagation = Propagation.NOT_SUPPORTED, readOnly = true)
-	@Override
 	public List<AdminRole> queryRoles(String userName){
 		
 		String sql = "SELECT * FROM "+adminAuthUserRoleTableName+" WHERE user_name=?";
@@ -704,8 +695,17 @@ public class AdminServiceImpl implements AdminService{
 		}
 	}
 	
+	@Transactional(propagation = Propagation.NOT_SUPPORTED, readOnly = true)
+	public List<AdminOp> queryAppOps(String appName){
+		
+		String sql = "SELECT * FROM "+adminAppOpTableName+" WHERE app_name='"+appName+"'";
+		
+		List<AdminOp> opsList = jdbcTemplate.query(sql, new AdminOpRowMapper());
+
+		return opsList;
+	}
+	
 	@Transactional(propagation = Propagation.REQUIRED)
-	@Override
 	public boolean addOpLog(OpLogForm opLogForm){
 		
 		CommonFieldValues fvs = new CommonFieldValues();
@@ -722,7 +722,6 @@ public class AdminServiceImpl implements AdminService{
 	}
 	
 	@Transactional(propagation = Propagation.NOT_SUPPORTED, readOnly = true)
-	@Override
 	public PagerResult<AdminOpLog> queryOpLogs(OpLogQueryForm opLogQueryForm){
 		
 		CommonFieldValues tj = new CommonFieldValues();
@@ -824,7 +823,6 @@ public class AdminServiceImpl implements AdminService{
 */
 
 	@Transactional(propagation = Propagation.NOT_SUPPORTED, readOnly = true)
-	@Override
 	public List<String> queryAppRoles(String appName) throws TException {
 		
 		String sql = "SELECT role_name FROM "+adminAppRoleTableName+" WHERE app_name=?";
@@ -835,7 +833,6 @@ public class AdminServiceImpl implements AdminService{
 	}
 	
 	@Transactional(propagation = Propagation.NOT_SUPPORTED, readOnly = true)
-	@Override
 	public boolean checkUserExist(String userName) throws TException {
 		AdminUser user = getUser(userName);
 		if(user == null){
@@ -849,7 +846,6 @@ public class AdminServiceImpl implements AdminService{
 	 */
 /*	
 	@Transactional(propagation = Propagation.NOT_SUPPORTED, readOnly = true)
-	@Override
 	public PagerResult<String> queryAllUsers(int page, int pageSize){
 		
 		String sql = "SELECT COUNT(1) FROM "+adminUserTableName;
@@ -869,13 +865,93 @@ public class AdminServiceImpl implements AdminService{
 	}
 */
 	
-	@Override
 	public List<AdminUser> queryAllUser() throws TException {
 		
 		String sql = "SELECT * FROM "+adminUserTableName;
 		List<AdminUser> usersList = jdbcTemplate.query(sql, new AdminUserRowMapper());
 
 		return usersList;
+	}
+	
+	public Map<String, List<String>> queryAppRolesByOps(String appName, List<String> opNames){
+		
+		List<String> opNamesIns = new ArrayList<String>(); 
+		for (String op : opNames) {
+			opNamesIns.add("'"+op+"'");
+		}
+		
+		String sql = "SELECT * FROM "+adminAppRoleOpTableName+" WHERE app_name='"+appName+"' and op_name in ("+(StringUtil.join(opNamesIns, ","))+")";
+		
+		List<AdminRoleOp> roleOpsList = jdbcTemplate.query(sql, new AdminRoleOpRowMapper());
+		
+		Map<String, List<String>> opRolesMap = new HashMap<String, List<String>>();
+		
+		if(roleOpsList.size() != 0){
+			for (AdminRoleOp adminRoleOp : roleOpsList) {
+				if(!opRolesMap.containsKey(adminRoleOp.getOpName())){
+					List<String> opRolesList = new ArrayList<String>();
+					opRolesList.add(adminRoleOp.getRoleName());
+					
+					opRolesMap.put(adminRoleOp.getOpName(), opRolesList);
+				}else{
+					opRolesMap.get(adminRoleOp.getOpName()).add(adminRoleOp.getRoleName());
+				}
+			}
+		}
+		
+		return opRolesMap;
+	}
+	
+	public List<String> queryAppOpsByRole(String appName, String roleName){
+	
+		String sql = "SELECT op_name FROM "+adminAppRoleOpTableName+" WHERE app_name='"+appName+"' and role_name='"+roleName+"'";
+		
+		List<String> opList = jdbcTemplate.queryForList(sql, String.class);
+		
+		return opList;
+	}
+	
+	public boolean deleteRole(String appName, String roleName){
+		
+		CommonFieldValues tj = new CommonFieldValues();
+		tj.addString("app_name", appName);
+		tj.addString("role_name", roleName);
+		//删除角色
+		int cDeleteRole = helper.executeDelete(adminAppRoleTableName, tj);
+		if(cDeleteRole == 1){
+			//删除角色与操作的关联
+			helper.executeDelete(adminAppRoleOpTableName, tj);
+			//删除角色与用户的关联
+			helper.executeDelete(adminAuthUserRoleTableName, tj);
+			
+			return true;
+		}else{
+			return false;
+		}
+		
+	}
+	
+	public boolean resetRoleOps(String appName,String roleName,List<String> opNameList){
+		
+		//先删除角色对应的所有操作
+		CommonFieldValues tj = new CommonFieldValues();
+		tj.addString("app_name", appName);
+		tj.addString("role_name", roleName);
+		
+		helper.executeDelete(adminAppRoleOpTableName, tj);
+		
+		//重新设置
+		for (String opName : opNameList) {
+			CommonFieldValues fvs = new CommonFieldValues();
+			fvs.addString("app_name", appName);
+			fvs.addString("role_name", roleName);
+			fvs.addString("op_name", opName);
+			
+			helper.executeInsert(adminAppRoleOpTableName, fvs, null);
+		}
+		
+		return true;
+		
 	}
 	
 }

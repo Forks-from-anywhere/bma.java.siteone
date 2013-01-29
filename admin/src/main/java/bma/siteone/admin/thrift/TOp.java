@@ -44,9 +44,9 @@ public class TOp implements org.apache.thrift.TBase<TOp, TOp._Fields>, java.io.S
 
   public String appName; // required
   public String opName; // required
-  public String opDescription; // required
-  public String createTime; // required
-  public int status; // required
+  public String opDescription; // optional
+  public String createTime; // optional
+  public int status; // optional
 
   /** The set of fields this struct contains, along with convenience methods for finding and manipulating them. */
   public enum _Fields implements org.apache.thrift.TFieldIdEnum {
@@ -121,6 +121,7 @@ public class TOp implements org.apache.thrift.TBase<TOp, TOp._Fields>, java.io.S
   // isset id assignments
   private static final int __STATUS_ISSET_ID = 0;
   private BitSet __isset_bit_vector = new BitSet(1);
+  private _Fields optionals[] = {_Fields.OP_DESCRIPTION,_Fields.CREATE_TIME,_Fields.STATUS};
   public static final Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
   static {
     Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
@@ -128,11 +129,11 @@ public class TOp implements org.apache.thrift.TBase<TOp, TOp._Fields>, java.io.S
         new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.STRING)));
     tmpMap.put(_Fields.OP_NAME, new org.apache.thrift.meta_data.FieldMetaData("opName", org.apache.thrift.TFieldRequirementType.DEFAULT, 
         new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.STRING)));
-    tmpMap.put(_Fields.OP_DESCRIPTION, new org.apache.thrift.meta_data.FieldMetaData("opDescription", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+    tmpMap.put(_Fields.OP_DESCRIPTION, new org.apache.thrift.meta_data.FieldMetaData("opDescription", org.apache.thrift.TFieldRequirementType.OPTIONAL, 
         new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.STRING)));
-    tmpMap.put(_Fields.CREATE_TIME, new org.apache.thrift.meta_data.FieldMetaData("createTime", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+    tmpMap.put(_Fields.CREATE_TIME, new org.apache.thrift.meta_data.FieldMetaData("createTime", org.apache.thrift.TFieldRequirementType.OPTIONAL, 
         new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.STRING)));
-    tmpMap.put(_Fields.STATUS, new org.apache.thrift.meta_data.FieldMetaData("status", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+    tmpMap.put(_Fields.STATUS, new org.apache.thrift.meta_data.FieldMetaData("status", org.apache.thrift.TFieldRequirementType.OPTIONAL, 
         new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
     metaDataMap = Collections.unmodifiableMap(tmpMap);
     org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(TOp.class, metaDataMap);
@@ -143,18 +144,11 @@ public class TOp implements org.apache.thrift.TBase<TOp, TOp._Fields>, java.io.S
 
   public TOp(
     String appName,
-    String opName,
-    String opDescription,
-    String createTime,
-    int status)
+    String opName)
   {
     this();
     this.appName = appName;
     this.opName = opName;
-    this.opDescription = opDescription;
-    this.createTime = createTime;
-    this.status = status;
-    setStatusIsSet(true);
   }
 
   /**
@@ -447,8 +441,8 @@ public class TOp implements org.apache.thrift.TBase<TOp, TOp._Fields>, java.io.S
         return false;
     }
 
-    boolean this_present_status = true;
-    boolean that_present_status = true;
+    boolean this_present_status = true && this.isSetStatus();
+    boolean that_present_status = true && that.isSetStatus();
     if (this_present_status || that_present_status) {
       if (!(this_present_status && that_present_status))
         return false;
@@ -557,26 +551,32 @@ public class TOp implements org.apache.thrift.TBase<TOp, TOp._Fields>, java.io.S
       sb.append(this.opName);
     }
     first = false;
-    if (!first) sb.append(", ");
-    sb.append("opDescription:");
-    if (this.opDescription == null) {
-      sb.append("null");
-    } else {
-      sb.append(this.opDescription);
+    if (isSetOpDescription()) {
+      if (!first) sb.append(", ");
+      sb.append("opDescription:");
+      if (this.opDescription == null) {
+        sb.append("null");
+      } else {
+        sb.append(this.opDescription);
+      }
+      first = false;
     }
-    first = false;
-    if (!first) sb.append(", ");
-    sb.append("createTime:");
-    if (this.createTime == null) {
-      sb.append("null");
-    } else {
-      sb.append(this.createTime);
+    if (isSetCreateTime()) {
+      if (!first) sb.append(", ");
+      sb.append("createTime:");
+      if (this.createTime == null) {
+        sb.append("null");
+      } else {
+        sb.append(this.createTime);
+      }
+      first = false;
     }
-    first = false;
-    if (!first) sb.append(", ");
-    sb.append("status:");
-    sb.append(this.status);
-    first = false;
+    if (isSetStatus()) {
+      if (!first) sb.append(", ");
+      sb.append("status:");
+      sb.append(this.status);
+      first = false;
+    }
     sb.append(")");
     return sb.toString();
   }
@@ -687,18 +687,24 @@ public class TOp implements org.apache.thrift.TBase<TOp, TOp._Fields>, java.io.S
         oprot.writeFieldEnd();
       }
       if (struct.opDescription != null) {
-        oprot.writeFieldBegin(OP_DESCRIPTION_FIELD_DESC);
-        oprot.writeString(struct.opDescription);
-        oprot.writeFieldEnd();
+        if (struct.isSetOpDescription()) {
+          oprot.writeFieldBegin(OP_DESCRIPTION_FIELD_DESC);
+          oprot.writeString(struct.opDescription);
+          oprot.writeFieldEnd();
+        }
       }
       if (struct.createTime != null) {
-        oprot.writeFieldBegin(CREATE_TIME_FIELD_DESC);
-        oprot.writeString(struct.createTime);
+        if (struct.isSetCreateTime()) {
+          oprot.writeFieldBegin(CREATE_TIME_FIELD_DESC);
+          oprot.writeString(struct.createTime);
+          oprot.writeFieldEnd();
+        }
+      }
+      if (struct.isSetStatus()) {
+        oprot.writeFieldBegin(STATUS_FIELD_DESC);
+        oprot.writeI32(struct.status);
         oprot.writeFieldEnd();
       }
-      oprot.writeFieldBegin(STATUS_FIELD_DESC);
-      oprot.writeI32(struct.status);
-      oprot.writeFieldEnd();
       oprot.writeFieldStop();
       oprot.writeStructEnd();
     }

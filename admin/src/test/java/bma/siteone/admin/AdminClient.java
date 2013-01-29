@@ -6,6 +6,7 @@ import java.util.List;
 import org.apache.thrift.TException;
 import org.apache.thrift.protocol.TBinaryProtocol;
 import org.apache.thrift.protocol.TProtocol;
+import org.apache.thrift.transport.TFramedTransport;
 import org.apache.thrift.transport.TSocket;
 import org.apache.thrift.transport.TTransport;
 import org.codehaus.jackson.map.ObjectMapper;
@@ -16,7 +17,8 @@ import bma.siteone.admin.po.AdminRole;
 import bma.siteone.admin.po.AdminSync;
 import bma.siteone.admin.po.AdminUser;
 import bma.siteone.admin.po.AdminSync.RoleOp;
-import bma.siteone.admin.thrift.TAdminService;
+import bma.siteone.admin.thrift.TAdminAppService;
+import bma.siteone.admin.thrift.TAdminManagerService;
 import bma.siteone.admin.thrift.TOpLogForm;
 import bma.siteone.admin.thrift.TOpLogQueryForm;
 import bma.siteone.admin.thrift.TOpLogRessult;
@@ -37,9 +39,11 @@ public class AdminClient {
 	      TTransport transport;
           transport = new TSocket("127.0.0.1", 9091);
           transport.open();
-
+          transport = new TFramedTransport(transport,50*1024*1024);
 	      TProtocol protocol = new  TBinaryProtocol(transport);
-	      TAdminService.Client client = new TAdminService.Client(protocol);
+	      
+	      TAdminManagerService.Client client = new TAdminManagerService.Client(protocol);
+	      TAdminAppService.Client appClient = new TAdminAppService.Client(protocol);
 
 	      AdminClient adminClient = new AdminClient();
 	      try {
@@ -49,10 +53,10 @@ public class AdminClient {
 //	    	  adminClient.changePassword(client);
 //	          adminClient.resetPassword(client);
 //	    	  adminClient.checkUserPassword(client);
-	    	  adminClient.queryRoles(client);
+//	    	  adminClient.queryRoles(client);
 //	    	  adminClient.addUserAuth(client);
 //	    	  adminClient.deleteUserAuth(client);
-//	    	  adminClient.checkUserAuth(client);
+	    	  adminClient.checkUserAuth(appClient);
 //	    	  adminClient.addOpLog(client);
 //	    	  adminClient.queryOpLogs(client);
 //	    	  adminClient.syncApp(client);
@@ -69,7 +73,7 @@ public class AdminClient {
 	  }
 	  
 	  
-		public void createUser(TAdminService.Client client) throws Exception {
+		public void createUser(TAdminManagerService.Client client) throws Exception {
 			
 			TUserForm userForm = new TUserForm();
 			userForm.setUserName("liaozj4");
@@ -85,7 +89,7 @@ public class AdminClient {
 			
 		}
 		
-		public void deleteUser(TAdminService.Client client) throws Exception {
+		public void deleteUser(TAdminManagerService.Client client) throws Exception {
 			
 			String userName = "liaozj4";
 			boolean r = client.deleteUser(userName);
@@ -96,7 +100,7 @@ public class AdminClient {
 			}
 		}
 		
-		public void changePassword(TAdminService.Client client) throws Exception {
+		public void changePassword(TAdminManagerService.Client client) throws Exception {
 			
 			//1.密码正确
 //			String userName = "liaozj2";
@@ -114,7 +118,7 @@ public class AdminClient {
 			}
 		}
 
-		public void resetPassword(TAdminService.Client client) throws Exception {
+		public void resetPassword(TAdminManagerService.Client client) throws Exception {
 			
 			String userName = "liaozj2";
 			String newPassword = "111111";
@@ -127,7 +131,7 @@ public class AdminClient {
 			}
 		}
 		
-		public void checkUserPassword(TAdminService.Client client) throws Exception {
+		public void checkUserPassword(TAdminManagerService.Client client) throws Exception {
 			
 			//1.密码正确
 			String userName = "liaozj2";
@@ -144,7 +148,7 @@ public class AdminClient {
 		}
 		
 		
-		public void queryRoles(TAdminService.Client client) throws Exception {
+		public void queryRoles(TAdminManagerService.Client client) throws Exception {
 			
 			String userName = "liaozj3";
 			
@@ -154,7 +158,7 @@ public class AdminClient {
 			
 		}
 		
-		public void addUserAuth(TAdminService.Client client) throws Exception {
+		public void addUserAuth(TAdminManagerService.Client client) throws Exception {
 			
 			String userName = "liaozj1";
 			String appName = "app3";
@@ -168,7 +172,7 @@ public class AdminClient {
 			}
 		}
 		
-		public void deleteUserAuth(TAdminService.Client client) throws Exception {
+		public void deleteUserAuth(TAdminManagerService.Client client) throws Exception {
 			
 			String userName = "liaozj1";
 			String appName = "app3";
@@ -182,8 +186,9 @@ public class AdminClient {
 			}
 		}
 		
-		public void checkUserAuth(TAdminService.Client client) throws Exception {
-			
+		
+		public void checkUserAuth(TAdminAppService.Client client) throws Exception {
+			System.out.println("xxxxxxxxxxxxxxx");
 			String userName = "liaozj3";
 			String appName = "app1";
 			String opName = "op1";
@@ -197,7 +202,7 @@ public class AdminClient {
 		}
 		
 		
-		public void addOpLog(TAdminService.Client client) throws Exception {
+		public void addOpLog(TAdminAppService.Client client) throws Exception {
 			
 			TOpLogForm opLogForm = new TOpLogForm();
 			opLogForm.setAppName("test11");
@@ -215,7 +220,7 @@ public class AdminClient {
 		}
 		
 		
-		public void queryOpLogs(TAdminService.Client client) throws Exception {
+		public void queryOpLogs(TAdminManagerService.Client client) throws Exception {
 			
 			TOpLogQueryForm opLogQueryForm = new TOpLogQueryForm();
 //			opLogQueryForm.setAppName("app1");
@@ -234,8 +239,8 @@ public class AdminClient {
 			System.out.println(r.getResult());
 		}
 		
-		
-		public void syncApp(TAdminService.Client client) throws Exception {
+		/*
+		public void syncApp(TAdminManagerService.Client client) throws Exception {
 			
 			AdminSync sync = new AdminSync();
 			
@@ -331,5 +336,6 @@ public class AdminClient {
 				System.out.println("syncApp [fail]");
 			}
 		}
+		*/
 		
 }
