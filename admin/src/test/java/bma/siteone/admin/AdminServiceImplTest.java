@@ -284,6 +284,7 @@ public class AdminServiceImplTest {
 		roles.add("operator");
 		roles.add("paycommission1");
 		roles.add("paycommission2");
+		roles.add("scroll");
 		for(String role : roles){
 			AdminRole adminRole = new AdminRole();
 			adminRole.setAppName("duowan_admin");
@@ -406,7 +407,6 @@ public class AdminServiceImplTest {
 		ops_admin.add("cloud.op");
 		ops_admin.add("popAdmin");
 		ops_admin.add("guessAuthEdit");
-		ops_admin.add("scroll");
 		ops_admin.add("notice");
 		ops_admin.add("alarm");
 		
@@ -492,6 +492,17 @@ public class AdminServiceImplTest {
 		for(String op : ops_paycommission2){
 			RoleOp roleOp = new RoleOp();
 			roleOp.setRoleName("paycommission2");
+			roleOp.setOpName(op);
+			roleOps.add(roleOp);
+		}
+		
+		List<String> ops_scroll = new ArrayList<String>();
+		//佣金分成操作
+		ops_scroll.add("scroll");
+		
+		for(String op : ops_scroll){
+			RoleOp roleOp = new RoleOp();
+			roleOp.setRoleName("scroll");
 			roleOp.setOpName(op);
 			roleOps.add(roleOp);
 		}
