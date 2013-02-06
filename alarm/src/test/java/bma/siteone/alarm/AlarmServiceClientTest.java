@@ -28,8 +28,8 @@ public class AlarmServiceClientTest {
 	@Before
 	public void setUp() throws Exception {
 //		transport = new TSocket("127.0.0.1", 9099);
-		transport = new TSocket("183.61.6.61", 9195);
-//		transport = new TSocket("183.61.6.60", 9092);
+//		transport = new TSocket("183.61.6.61", 9195);//测试
+		transport = new TSocket("183.61.6.60", 9095);//生产
 		transport.open();
 		transport = new TFramedTransport(transport,100*1024*1024);
 		TProtocol protocol = new TBinaryProtocol(transport);
@@ -68,8 +68,8 @@ public class AlarmServiceClientTest {
 	@Test
 	public void testQueryAlarmByIds() throws Exception {
 		List<Integer> ids = new ArrayList<Integer>();
-		ids.add(3);
-		ids.add(4);		
+		ids.add(1);
+		ids.add(2);		
 		TAlarmQueryResult res = client.queryAlarmByIds(ids);
 		for (TAlarm alarm : res.getAlarms()) {
 			System.out.println(alarm);
