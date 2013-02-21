@@ -308,6 +308,7 @@ public class AdminServiceImplTest {
 		ops.add("scroll");
 		ops.add("notice");
 		ops.add("alarm");
+		ops.add("medal");
 //		ops.add("listProvider");
 //		ops.add("deleteProvider");
 //		ops.add("editProvider");
@@ -409,6 +410,7 @@ public class AdminServiceImplTest {
 		ops_admin.add("guessAuthEdit");
 		ops_admin.add("notice");
 		ops_admin.add("alarm");
+		ops_admin.add("medal");
 		
 		for(String op : ops_admin){
 			RoleOp roleOp = new RoleOp();
