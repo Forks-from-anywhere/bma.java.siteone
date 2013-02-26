@@ -372,6 +372,7 @@ public class AdminServiceImplTest {
 		ops.add("help");
 		ops.add("guessAuth");
 		ops.add("guessAuthEdit");
+		ops.add("mini");
 		
 		for(String op : ops){
 			AdminOp adminOp = new AdminOp();
@@ -455,6 +456,7 @@ public class AdminServiceImplTest {
 		ops_editor.add("organization");
 		ops_editor.add("pop");
 		ops_editor.add("guessAuth");
+		ops_editor.add("mini");
 		
 		for(String op : ops_editor){
 			RoleOp roleOp = new RoleOp();
