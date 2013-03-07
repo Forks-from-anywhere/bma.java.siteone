@@ -309,6 +309,7 @@ public class BaseServiceImplTest {
 		ops.add("scroll");
 		ops.add("notice");
 		ops.add("alarm");
+		ops.add("medal");
 //		ops.add("listProvider");
 //		ops.add("deleteProvider");
 //		ops.add("editProvider");
@@ -372,6 +373,7 @@ public class BaseServiceImplTest {
 		ops.add("help");
 		ops.add("guessAuth");
 		ops.add("guessAuthEdit");
+		ops.add("mini");
 		
 		for(String op : ops){
 			AdminOp adminOp = new AdminOp();
@@ -410,6 +412,7 @@ public class BaseServiceImplTest {
 		ops_admin.add("guessAuthEdit");
 		ops_admin.add("notice");
 		ops_admin.add("alarm");
+		ops_admin.add("medal");
 		
 		for(String op : ops_admin){
 			RoleOp roleOp = new RoleOp();
@@ -454,6 +457,7 @@ public class BaseServiceImplTest {
 		ops_editor.add("organization");
 		ops_editor.add("pop");
 		ops_editor.add("guessAuth");
+		ops_editor.add("mini");
 		
 		for(String op : ops_editor){
 			RoleOp roleOp = new RoleOp();

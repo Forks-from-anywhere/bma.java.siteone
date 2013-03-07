@@ -328,31 +328,31 @@ public class AlarmServiceImpl implements AlarmService {
 
 	public static Map<String,Object> queryForm2Map(TAlarmQueryForm alarmQueryForm) {
 		Map<String,Object> queryMap = new HashMap<String,Object>();
-		if(alarmQueryForm.getContent() != null && !alarmQueryForm.getContent().equals("")){
+		if(alarmQueryForm.isSetContent()){
 			queryMap.put("content", alarmQueryForm.getContent());
 		}
-		if(alarmQueryForm.getEndtime() != 0){
+		if(alarmQueryForm.isSetEndtime()){
 			queryMap.put("endtime", alarmQueryForm.getEndtime());
 		}
-		if(alarmQueryForm.getLevel() != 0 ){
+		if(alarmQueryForm.isSetLevel() ){
 			queryMap.put("level", alarmQueryForm.getLevel());
 		}
-		if(alarmQueryForm.getStarttime() != 0 ){
+		if(alarmQueryForm.isSetStarttime() ){
 			queryMap.put("starttime", alarmQueryForm.getStarttime());
 		}
-		if(alarmQueryForm.getStatus() != 0 ){
+		if(alarmQueryForm.isSetStatus() ){
 			queryMap.put("status", alarmQueryForm.getStatus());
 		}
-		if(alarmQueryForm.getStype1() != null && !alarmQueryForm.getStype1().equals("")){
+		if(alarmQueryForm.isSetStype1()){
 			queryMap.put("stype1", alarmQueryForm.getStype1());
 		}
-		if(alarmQueryForm.getStype2() != null && !alarmQueryForm.getStype2().equals("")){
+		if(alarmQueryForm.isSetStype2()){
 			queryMap.put("stype2", alarmQueryForm.getStype2());
 		}
-		if(alarmQueryForm.getSystem() != null && !alarmQueryForm.getSystem().equals("")){
+		if(alarmQueryForm.isSetSystem()){
 			queryMap.put("system", alarmQueryForm.getSystem());
 		}
-		if(alarmQueryForm.getType() != 0 ){
+		if(alarmQueryForm.isSetType()){
 			queryMap.put("type", alarmQueryForm.getType());
 		}
 		return queryMap;
