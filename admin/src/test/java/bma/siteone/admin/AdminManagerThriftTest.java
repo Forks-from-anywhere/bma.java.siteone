@@ -114,7 +114,7 @@ public class AdminManagerThriftTest {
 		
 		String userName = "admin";
 		
-		List<TRole> roleslist = s.queryRoles(userName);
+		List<TRole> roleslist = s.queryAppRoles(userName);
 		System.out.println(roleslist);
 		
 	}
@@ -167,8 +167,8 @@ public class AdminManagerThriftTest {
 	public void testQueryAppRoles() throws Exception {
 		TAdminManagerService.Iface s = context.getBean("mng_handler", TAdminManagerService.Iface.class);
 		
-		String appName = "mms_admin";
-		List<String> rolesList = s.queryAppRoles(appName);
+		String appName = "duowan_admin";
+		List<TRole> rolesList = s.queryAppRoles(appName);
 		System.out.println(rolesList);
 	}
 	

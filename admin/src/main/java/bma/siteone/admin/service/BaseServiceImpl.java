@@ -21,6 +21,7 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import bma.common.jdbctemplate.JdbcTemplateHelper;
+import bma.common.jdbctemplate.SQLFilter;
 import bma.common.langutil.core.DateTimeUtil;
 import bma.common.langutil.core.Pager;
 import bma.common.langutil.core.PagerResult;
@@ -39,6 +40,7 @@ import bma.siteone.admin.po.AdminUser;
 import bma.siteone.admin.service.OpLogForm;
 import bma.siteone.admin.service.OpLogQueryForm;
 import bma.siteone.admin.service.UserForm;
+import bma.siteone.admin.thrift.TSync;
 
 /**
  * 管理后台服务层
@@ -141,7 +143,32 @@ public class BaseServiceImpl{
 		fvs.addSysdate("create_time");
 		fvs.addInt("status",1);
 		
-		helper.executeInsert(adminUserTableName, fvs, null);
+		helper.executeInsert(adminUserTableName, fvs, null,new SQLFilter() {
+			@Override
+			public String filter(String sql) {
+				return sql.replaceAll("^INSERT INTO", "REPLACE INTO");
+			}
+		});
+		return true;
+		
+	}
+	
+	@Transactional(propagation = Propagation.REQUIRED)
+	public boolean createUserWithEncodePass(UserForm userForm) throws UnsupportedEncodingException{
+		
+		CommonFieldValues fvs = new CommonFieldValues();
+		fvs.addString("user_name", userForm.getUserName());
+		fvs.addString("password", userForm.getPassword());
+		fvs.addString("user_description", userForm.getUserDescription());
+		fvs.addSysdate("create_time");
+		fvs.addInt("status",1);
+		
+		helper.executeInsert(adminUserTableName, fvs, null,new SQLFilter() {
+			@Override
+			public String filter(String sql) {
+				return sql.replaceAll("^INSERT INTO", "REPLACE INTO");
+			}
+		});
 		return true;
 		
 	}
@@ -321,7 +348,12 @@ public class BaseServiceImpl{
 		fvs.addSysdate("create_time");
 		fvs.addInt("status",1);
 		
-		helper.executeInsert(adminAppTableName, fvs, null);
+		helper.executeInsert(adminAppTableName, fvs, null,new SQLFilter() {
+			@Override
+			public String filter(String sql) {
+				return sql.replaceAll("^INSERT INTO", "REPLACE INTO");
+			}
+		});
 		return true;
 		
 	}
@@ -385,7 +417,12 @@ public class BaseServiceImpl{
 		fvs.addSysdate("create_time");
 		fvs.addInt("status",1);
 		
-		helper.executeInsert(adminAppRoleTableName, fvs, null);
+		helper.executeInsert(adminAppRoleTableName, fvs, null,new SQLFilter() {
+			@Override
+			public String filter(String sql) {
+				return sql.replaceAll("^INSERT INTO", "REPLACE INTO");
+			}
+		});
 		return true;
 		
 	}
@@ -460,7 +497,12 @@ public class BaseServiceImpl{
 		fvs.addString("app_name", appName);
 		fvs.addString("role_name", roleName);
 		
-		helper.executeInsert(adminAuthUserRoleTableName, fvs, userName);
+		helper.executeInsert(adminAuthUserRoleTableName, fvs, userName,new SQLFilter() {
+			@Override
+			public String filter(String sql) {
+				return sql.replaceAll("^INSERT INTO", "REPLACE INTO");
+			}
+		});
 		return true;
 	}
 	
@@ -529,7 +571,7 @@ public class BaseServiceImpl{
 		}
 		
 		//查询用户的角色
-		List<AdminRole> rolesList = queryRoles(userName);
+		List<AdminRole> rolesList = queryUserRoles(userName);
 		for(AdminRole _role : rolesList){
 			String _roleName = _role.getRoleName();
 			//查询角色对应的操作
@@ -545,7 +587,7 @@ public class BaseServiceImpl{
 	}
 	
 	@Transactional(propagation = Propagation.NOT_SUPPORTED, readOnly = true)
-	public List<AdminRole> queryRoles(String userName){
+	public List<AdminRole> queryUserRoles(String userName){
 		
 		String sql = "SELECT * FROM "+adminAuthUserRoleTableName+" WHERE user_name=?";
 		
@@ -584,8 +626,30 @@ public class BaseServiceImpl{
 		fvs.addSysdate("create_time");
 		fvs.addInt("status",1);
 		
-		helper.executeInsert(adminAppOpTableName, fvs, null);
+		helper.executeInsert(adminAppOpTableName, fvs, null,new SQLFilter() {
+			@Override
+			public String filter(String sql) {
+				return sql.replaceAll("^INSERT INTO", "REPLACE INTO");
+			}
+		});
 		return true;
+		
+	}
+	
+	public boolean deleteOp(String appName, String opName){
+		
+		CommonFieldValues tj = new CommonFieldValues();
+		tj.addString("app_name", appName);
+		tj.addString("op_name", opName);
+		//删除操作
+		int cDeleteOp = helper.executeDelete(adminAppOpTableName, tj);
+		if(cDeleteOp == 1){
+			//删除角色与操作的关联
+			helper.executeDelete(adminAppRoleOpTableName, tj);
+			return true;
+		}else{
+			return false;
+		}
 		
 	}
 	
@@ -621,9 +685,28 @@ public class BaseServiceImpl{
 		fvs.addString("role_name", roleName);
 		fvs.addString("op_name", opName);		
 		
-		helper.executeInsert(adminAppRoleOpTableName, fvs, null);
+		helper.executeInsert(adminAppRoleOpTableName, fvs, null,new SQLFilter() {
+			@Override
+			public String filter(String sql) {
+				return sql.replaceAll("^INSERT INTO", "REPLACE INTO");
+			}
+		});
 		return true;
 		
+	}
+	
+	@Transactional(propagation = Propagation.REQUIRED)
+	public boolean deleteRoleOp(String appName, String roleName, String opName){
+		
+		CommonFieldValues tj = new CommonFieldValues();
+		tj.addString("app_name", appName);
+		tj.addString("role_name", roleName);
+		tj.addString("op_name", opName);		
+		
+		//删除角色与操作的关联
+		helper.executeDelete(adminAppRoleOpTableName, tj);
+		
+		return true;
 	}
 	
 	@Transactional(propagation = Propagation.NOT_SUPPORTED, readOnly = true)
@@ -823,7 +906,7 @@ public class BaseServiceImpl{
 */
 
 	@Transactional(propagation = Propagation.NOT_SUPPORTED, readOnly = true)
-	public List<String> queryAppRoles(String appName) throws TException {
+	public List<String> queryAppRoleNames(String appName) throws TException {
 		
 		String sql = "SELECT role_name FROM "+adminAppRoleTableName+" WHERE app_name=?";
 		
@@ -831,6 +914,19 @@ public class BaseServiceImpl{
 		
 		return rolesList;
 	}
+	
+	
+	@Transactional(propagation = Propagation.NOT_SUPPORTED, readOnly = true)
+	public List<AdminRole> queryAppRoles(String appName) throws TException {
+		
+		String sql = "SELECT * FROM "+adminAppRoleTableName+" WHERE app_name='"+appName+"'";
+		
+		List<AdminRole> rolesList = jdbcTemplate.query(sql, new AdminRoleRowMapper());
+
+		return rolesList;
+		
+	}
+	
 	
 	@Transactional(propagation = Propagation.NOT_SUPPORTED, readOnly = true)
 	public boolean checkUserExist(String userName) throws TException {
@@ -947,10 +1043,469 @@ public class BaseServiceImpl{
 			fvs.addString("role_name", roleName);
 			fvs.addString("op_name", opName);
 			
-			helper.executeInsert(adminAppRoleOpTableName, fvs, null);
+			helper.executeInsert(adminAppRoleOpTableName, fvs, null,new SQLFilter() {
+				@Override
+				public String filter(String sql) {
+					return sql.replaceAll("^INSERT INTO", "REPLACE INTO");
+				}
+			});
 		}
 		
 		return true;
+		
+	}
+	
+	/**
+	 * 初始化应用权限
+	 * @param syncInitList
+	 * @return
+	 * @throws UnsupportedEncodingException 
+	 */
+	public boolean initAppAuth(List<SyncContent> syncInitList) throws UnsupportedEncodingException{
+		/*
+		权限初始化数据格式：
+		     0`应用`描述
+		     1`操作1`描述
+		     1`操作2`描述
+		     1`操作3`描述
+		     2`角色1`描述
+		     2`角色2`描述
+		     2`角色3`描述
+		     3`用户1`原始密码`加密密码`描述
+		     3`用户2`原始密码`加密密码`描述
+		     4`角色1`操作1,操作2,操作3,操作4
+		     4`角色2`操作5,操作6,操作7,操作8
+		     4`角色3`操作9,操作10
+		     5`用户1`角色1,角色2
+		     5`用户2`角色3
+		 */
+		
+		//按照code分组
+		Map<Integer, List<String>> initMap = prepareSyncContent(syncInitList);
+		
+		if(initMap.get(0) == null || initMap.get(0).isEmpty()){
+			//没有传递app
+			log.warn("[initAppAuth] no app");
+			return false;
+		}
+		if(initMap.get(0).size() >1){
+			//app大于一个
+			log.warn("[initAppAuth] app more than 1");
+			return false;
+		}
+		
+		//0`应用`描述
+		List<String> appStrings = StringUtil.strSplit(initMap.get(0).get(0), "`");
+		String appName = appStrings.get(0);
+		String appDesc = appStrings.get(1);
+		AdminApp app = getApp(appName);
+		if(app != null){
+			//删除应用
+			if(!deleteApp(appName)){
+				return false;
+			}
+		}
+
+		//创建应用
+		AdminApp initApp = new AdminApp();
+		initApp.setAppName(appName);
+		initApp.setAppDescription(appDesc);
+		createApp(initApp);
+		
+		//创建应用的操作
+	    //1`操作1`描述
+	    //1`操作2`描述
+	    //1`操作3`描述
+		if(initMap.get(1) != null){
+			for (String opAndDesc : initMap.get(1)) {
+				List<String> opStrings = StringUtil.strSplit(opAndDesc, "`");
+				String opName = opStrings.get(0);
+				String opDesc = opStrings.get(1);
+				
+				AdminOp op = new AdminOp();
+				op.setAppName(appName);
+				op.setOpName(opName);
+				op.setOpDescription(opDesc);
+				
+				createOp(op);
+			}
+		}
+		
+	
+		//创建应用的角色
+	    //2`角色1`描述
+	    //2`角色2`描述
+	    //2`角色3`描述
+		if(initMap.get(2) != null){
+			for (String roleAndDesc : initMap.get(2)) {
+				List<String> roleStrings = StringUtil.strSplit(roleAndDesc, "`");
+				String roleName = roleStrings.get(0);
+				String roleDesc = roleStrings.get(1);
+				
+				AdminRole role = new AdminRole();
+				role.setAppName(appName);
+				role.setRoleName(roleName);
+				role.setRoleDescription(roleDesc);
+				
+				createRole(role);
+			}
+		}
+		
+		//创建应用中的角色与操作的关联
+	    //4`角色1`操作1,操作2,操作3,操作4
+	    //4`角色2`操作5,操作6,操作7,操作8
+	    //4`角色3`操作9,操作10
+		if(initMap.get(4) != null){
+			for (String roleAndOp : initMap.get(4)) {
+				List<String> roleOpStrings = StringUtil.strSplit(roleAndOp, "`");
+				String roleName = roleOpStrings.get(0);
+				List<String> opNames = StringUtil.strSplit(roleOpStrings.get(1), ",");
+				
+				if(opNames.size() !=0){
+					for (String opName : opNames) {
+						createRoleOp(appName,roleName,opName);
+					}
+				}
+			}
+		}
+		
+		//创建用户
+	    //3`用户1`原始密码`加密密码`描述
+	    //3`用户2`原始密码`加密密码`描述
+		if(initMap.get(3) != null){
+			for (String userData : initMap.get(3)) {
+				List<String> userStrings = StringUtil.strSplit(userData, "`");
+				String userName = userStrings.get(0);
+				String rawPass = userStrings.get(1);
+				String encodePass = userStrings.get(2);
+				String userDesc = userStrings.get(3);
+				
+				AdminUser user = getUser(userName);
+				if(user == null){
+					if(!rawPass.isEmpty()){
+						UserForm userForm = new UserForm();
+						userForm.setUserName(userName);
+						userForm.setPassword(rawPass);
+						userForm.setUserDescription(userDesc);
+						createUser(userForm);
+					}else if(!encodePass.isEmpty()){
+						UserForm userForm = new UserForm();
+						userForm.setUserName(userName);
+						userForm.setPassword(encodePass);
+						userForm.setUserDescription(userDesc);
+						createUserWithEncodePass(userForm);
+					}
+				}
+			}
+		}
+
+		//创建用户的授权
+	    //5`用户1`角色1,角色2
+	    //5`用户2`角色3
+		if(initMap.get(5) != null){
+			for (String userAndRole : initMap.get(5)) {
+				List<String> userRoleStrings = StringUtil.strSplit(userAndRole, "`");
+				String userName = userRoleStrings.get(0);
+				List<String> roleNames = StringUtil.strSplit(userRoleStrings.get(1), ",");
+				
+				if(roleNames.size() !=0){
+					for (String roleName : roleNames) {
+						addUserAuth(userName, appName, roleName);
+					}
+				}
+			}
+		}
+		
+		return true;
+		
+	}
+	
+	/**
+	 * 升级应用权限
+	 * @param syncInitList
+	 * @return
+	 * @throws UnsupportedEncodingException 
+	 */
+	public boolean upgradeAppAuth(List<SyncContent> syncUpgradeList) throws UnsupportedEncodingException{
+		/*
+		权限初始化数据格式：
+		     0`应用
+		     1`操作1`描述          （设置操作1）
+		    -1`操作2               （删除操作2）
+		     2`角色1`描述          （设置角色1）
+		    -2`角色2               （删除角色1）
+		     4`角色1`操作1,操作2   （角色1增加操作1，操作2）
+		    -4`角色2`操作3,操作4    (角色2取消操作3，操作4)
+		     6`操作1`角色1,角色2   （操作1增加角色1，角色2）
+		    -6`操作1`角色3,角色4   （操作1取消角色3，角色4）
+		 */
+		
+		//按照code分组
+		Map<Integer, List<String>> upgradeMap = prepareSyncContent(syncUpgradeList);
+		
+		if(upgradeMap.get(0) == null || upgradeMap.get(0).isEmpty()){
+			//没有传递app
+			log.warn("[upgradeAppAuth] no app");
+			return false;
+		}
+		if(upgradeMap.get(0).size() >1){
+			//app大于一个
+			log.warn("[upgradeAppAuth] app more than 1");
+			return false;
+		}
+		
+		//0`应用
+		String appName = upgradeMap.get(0).get(0);
+		AdminApp app = getApp(appName);
+		if(app == null){
+			//没有该app
+			log.warn("[upgradeAppAuth] app not found");
+			return false;
+		}
+		
+		//创建应用的操作
+	    //1`操作1`描述          （设置操作1）
+		if(upgradeMap.get(1) != null){
+			for (String opAndDesc : upgradeMap.get(1)) {
+				List<String> opStrings = StringUtil.strSplit(opAndDesc, "`");
+				String opName = opStrings.get(0);
+				String opDesc = opStrings.get(1);
+				
+				AdminOp op = new AdminOp();
+				op.setAppName(appName);
+				op.setOpName(opName);
+				op.setOpDescription(opDesc);
+				
+				createOp(op);
+			}
+		}
+		
+		//删除应用的操作
+		//-1`操作2               （删除操作2）
+		if(upgradeMap.get(-1) != null){
+			for (String delOpName : upgradeMap.get(-1)) {
+				//查询操作是否存在，不存在则跳过
+				AdminOp op = getOp(delOpName, appName);
+				if(op == null){
+					log.warn("[upgradeAppAuth] delete op => op not exist : {},{})",delOpName,appName);
+				}
+				//删除操作
+				//删除角色-操作关系
+				deleteOp(appName,delOpName);
+			}
+		}
+		
+		
+		//创建应用的角色
+	    //2`角色1`描述          （设置角色1）
+		if(upgradeMap.get(2) != null){
+			for (String roleAndDesc : upgradeMap.get(2)) {
+				List<String> roleStrings = StringUtil.strSplit(roleAndDesc, "`");
+				String roleName = roleStrings.get(0);
+				String roleDesc = roleStrings.get(1);
+				
+				AdminRole role = new AdminRole();
+				role.setAppName(appName);
+				role.setRoleName(roleName);
+				role.setRoleDescription(roleDesc);
+				
+				createRole(role);
+			}
+		}
+		
+		//删除应用的角色
+		//-2`角色2               （删除角色1）
+		if(upgradeMap.get(-2) != null){
+			for (String delRoleName : upgradeMap.get(-2)) {
+				//查询角色是否存在，不存在则跳过
+				AdminRole role = getRole(delRoleName, appName);
+				if(role == null){
+					log.warn("[upgradeAppAuth] delete role => role not exist : {},{})",delRoleName,appName);
+					System.out.println("delete role => role not exist");
+				}
+				//删除角色
+				deleteRole(appName,delRoleName);
+			}
+		}
+		
+		//创建应用中的角色与操作的关联
+	    //4`角色1`操作1,操作2   （角色1增加操作1，操作2）
+		if(upgradeMap.get(4) != null){
+			for (String roleAndOp : upgradeMap.get(4)) {
+				List<String> roleOpStrings = StringUtil.strSplit(roleAndOp, "`");
+				String roleName = roleOpStrings.get(0);
+				List<String> opNames = StringUtil.strSplit(roleOpStrings.get(1), ",");
+				
+				if(opNames.size() !=0){
+					for (String opName : opNames) {
+						createRoleOp(appName,roleName,opName);
+					}
+				}
+			}
+		}
+		
+		//删除应用中的角色与操作的关联
+	    //-4`角色2`操作3,操作4    (角色2取消操作3，操作4)
+		if(upgradeMap.get(-4) != null){
+			for (String delRoleOps : upgradeMap.get(-4)) {
+				List<String> delRoleOpsStrings = StringUtil.strSplit(delRoleOps, "`");
+				String roleName = delRoleOpsStrings.get(0);
+				List<String> deleteOpNames = StringUtil.strSplit(delRoleOpsStrings.get(1), ",");
+				
+				if(deleteOpNames.size() !=0){
+					for (String opName : deleteOpNames) {
+						deleteRoleOp(appName,roleName,opName);
+					}
+				}
+			}
+		}
+		
+		//添加应用中的操作与角色的关联
+	    //6`操作1`角色1,角色2   （操作1增加角色1，角色2）
+		if(upgradeMap.get(6) != null){
+			for (String opAndRoles : upgradeMap.get(6)) {
+				List<String> opRolesStrings = StringUtil.strSplit(opAndRoles, "`");
+				String opName = opRolesStrings.get(0);
+				List<String> roleNames = StringUtil.strSplit(opRolesStrings.get(1), ",");
+				
+				if(roleNames.size() !=0){
+					for (String roleName : roleNames) {
+						createRoleOp(appName,roleName,opName);
+					}
+				}
+			}
+		}
+		
+		//删除应用中的角色与操作的关联
+	    //-6`操作1`角色3,角色4   （操作1取消角色3，角色4）
+		if(upgradeMap.get(-6) != null){
+			for (String delOpRoles : upgradeMap.get(-6)) {
+				List<String> delOpRolesStrings = StringUtil.strSplit(delOpRoles, "`");
+				String opName = delOpRolesStrings.get(0);
+				List<String> deleteRoleNames = StringUtil.strSplit(delOpRolesStrings.get(1), ",");
+				
+				if(deleteRoleNames.size() !=0){
+					for (String roleName : deleteRoleNames) {
+						deleteRoleOp(appName,roleName,opName);
+					}
+				}
+			}
+		}
+		
+		return true;
+		
+	}
+	
+	private Map<Integer, List<String>> prepareSyncContent(List<SyncContent> syncUpgradeList){
+		//按照code分组
+		Map<Integer, List<String>> syncMap = new HashMap<Integer, List<String>>();
+		for (SyncContent syncContent : syncUpgradeList) {
+			if(syncMap.get(syncContent.getOpCode()) == null){
+				syncMap.put(syncContent.getOpCode(), new ArrayList<String>());
+			}
+			
+			syncMap.get(syncContent.getOpCode()).add(syncContent.getContent());
+		}
+		
+		return syncMap;
+	}
+	
+	public List<SyncContent> exportAppAuth(String appName) throws Exception{
+		/*
+	权限导出
+	     0`应用`描述
+	     1`操作1`描述
+	     1`操作2`描述
+	     1`操作3`描述
+	     2`角色1`描述
+	     2`角色2`描述
+	     2`角色3`描述
+	     3`用户1``加密密码`描述
+	     3`用户2``加密密码`描述
+	     4`角色1`操作1,操作2,操作3,操作4
+	     4`角色2`操作5,操作6,操作7,操作8
+	     4`角色3`操作9,操作10
+	     5`用户1`角色1,角色2
+	     5`用户2`角色3
+		 */
+		
+		List<SyncContent> syncContentList = new ArrayList<SyncContent>();
+		
+		//查询app
+		AdminApp app = getApp(appName);
+		SyncContent scApp = new SyncContent();
+		scApp.setOpCode(0);
+		scApp.setContent(app.getAppName()+"`"+app.getAppDescription());
+		syncContentList.add(scApp);
+		
+		//查询所有操作
+		List<AdminOp> opList = queryAppOps(appName);
+		if(!opList.isEmpty()){
+			for (AdminOp op : opList) {
+				SyncContent scOp = new SyncContent();
+				scOp.setOpCode(1);
+				scOp.setContent(op.getOpName()+"`"+op.getOpDescription());
+				syncContentList.add(scOp);
+			}
+		}
+		
+		//查询所有角色
+		List<AdminRole> roleList = queryAppRoles(appName);
+		if(!roleList.isEmpty()){
+			for (AdminRole role : roleList) {
+				SyncContent scRole = new SyncContent();
+				scRole.setOpCode(2);
+				scRole.setContent(role.getRoleName()+"`"+role.getRoleDescription());
+				syncContentList.add(scRole);
+			}
+		}
+		
+		//查询所有用户
+		List<AdminUser> userList = queryAllUser();
+		if(!userList.isEmpty()){
+			for (AdminUser user : userList) {
+				SyncContent scUser = new SyncContent();
+				scUser.setOpCode(3);
+				scUser.setContent(user.getUserName()+"`"+"`"+user.getPassword()+"`"+user.getUserDescription());
+				syncContentList.add(scUser);
+			}
+		}
+		
+		//查询角色对应的所有操作
+		if(!roleList.isEmpty()){
+			for (AdminRole role : roleList) {
+				List<String> roleOpList = queryAppOpsByRole(appName,role.getRoleName());
+				if(!roleOpList.isEmpty()){
+					SyncContent scRoleOps = new SyncContent();
+					scRoleOps.setOpCode(4);
+					scRoleOps.setContent(role.getRoleName()+"`"+StringUtil.join(roleOpList, ","));
+					syncContentList.add(scRoleOps);
+				}
+			}
+		}
+		
+		//查询用户对应的所有角色
+		if(!userList.isEmpty()){
+			for (AdminUser user : userList) {
+				List<AdminRole> rolesList = queryUserRoles(user.getUserName());
+				if(!rolesList.isEmpty()){
+					List<String> roles = new ArrayList<String>();
+					for (AdminRole adminRole : rolesList) {
+						if(adminRole.getAppName().equals(appName)){
+							roles.add(adminRole.getRoleName());
+						}
+					}
+					if(!roles.isEmpty()){
+						SyncContent scUserRoles = new SyncContent();
+						scUserRoles.setOpCode(5);
+						scUserRoles.setContent(user.getUserName()+"`"+StringUtil.join(roles, ","));
+						syncContentList.add(scUserRoles);
+					}
+				}
+			}
+		}
+		
+		return syncContentList;
 		
 	}
 	

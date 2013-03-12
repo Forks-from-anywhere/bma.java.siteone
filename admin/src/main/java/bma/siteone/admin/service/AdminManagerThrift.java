@@ -126,11 +126,11 @@ public class AdminManagerThrift implements TAdminManagerService.Iface{
 
 
 
-    public List<TRole> queryRoles(String userName) throws TException{
+    public List<TRole> queryUserRoles(String userName) throws TException{
     	if (log.isDebugEnabled()) {
-			log.debug("queryRoles({})",userName);
+			log.debug("queryUserRoles({})",userName);
 		}
-    	List<AdminRole> rolesList = service.queryRoles(userName);
+    	List<AdminRole> rolesList = service.queryUserRoles(userName);
     	List<TRole> tRoleList = new ArrayList<TRole>();
     	for(AdminRole role : rolesList){
     		TRole _trole = source.newInstance(null, role, TRole.class);
@@ -195,11 +195,27 @@ public class AdminManagerThrift implements TAdminManagerService.Iface{
 */
 
 	@Override
-	public List<String> queryAppRoles(String appName) throws TException {
-    	if (log.isDebugEnabled()) {
-			log.debug("queryAppUsers({})",appName);
+	public List<TRole> queryAppRoles(String appName) throws TException {
+		if (log.isDebugEnabled()) {
+			log.debug("queryAppRoles({})",appName);
 		}
-    	return service.queryAppRoles(appName);
+		
+		List<AdminRole> rolesList = service.queryAppRoles(appName);
+		List<TRole> tRolesList = new ArrayList<TRole>();
+		if(rolesList.size() !=0 ){
+			for (AdminRole role : rolesList) {
+				TRole t = new TRole();
+				t.setAppName(role.getAppName());
+				t.setRoleName(role.getRoleName());
+				t.setRoleDescription(role.getRoleDescription());
+				t.setCreateTime(DateTimeUtil.formatDateTime(role.getCreateTime()));
+				t.setStatus(role.getStatus());
+				tRolesList.add(t);
+			}
+		}
+		
+		return tRolesList;
+    	
 	}
 
 	@Override
@@ -337,7 +353,7 @@ public class AdminManagerThrift implements TAdminManagerService.Iface{
 		}
 		
 		try{
-			List<String> roles = service.queryAppRoles(appName);
+			List<String> roles = service.queryAppRoleNames(appName);
 			if(!roles.contains(roleOpsForm.getRoleName())){
 				return false;
 			}

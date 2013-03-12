@@ -28,6 +28,7 @@ import bma.siteone.admin.po.AdminSync;
 import bma.siteone.admin.po.AdminSync.RoleOp;
 import bma.siteone.admin.po.AdminUser;
 import bma.siteone.admin.service.BaseServiceImpl;
+import bma.siteone.admin.thrift.TRole;
 
 /**
  * 管理后台服务service层AdminServiceImpl测试用例
@@ -175,7 +176,7 @@ public class BaseServiceImplTest {
 		
 		String userName = "liaozj3";
 		
-		List<AdminRole> roleslist = s.queryRoles(userName);
+		List<AdminRole> roleslist = s.queryAppRoles(userName);
 		System.out.println(roleslist);
 		
 	}
@@ -374,6 +375,7 @@ public class BaseServiceImplTest {
 		ops.add("guessAuth");
 		ops.add("guessAuthEdit");
 		ops.add("mini");
+		ops.add("userAdmin");
 		
 		for(String op : ops){
 			AdminOp adminOp = new AdminOp();
@@ -413,6 +415,7 @@ public class BaseServiceImplTest {
 		ops_admin.add("notice");
 		ops_admin.add("alarm");
 		ops_admin.add("medal");
+		ops_admin.add("userAdmin");
 		
 		for(String op : ops_admin){
 			RoleOp roleOp = new RoleOp();
@@ -555,8 +558,8 @@ public class BaseServiceImplTest {
 	public void testQueryAppRoles() throws Exception {
 		BaseServiceImpl s = context.getBean("service", BaseServiceImpl.class);
 		
-		String appName = "mms_admin";
-		List<String> rolesList = s.queryAppRoles(appName);
+		String appName = "duowan_admin";
+		List<AdminRole> rolesList = s.queryAppRoles(appName);
 		System.out.println(rolesList);
 	}
 	

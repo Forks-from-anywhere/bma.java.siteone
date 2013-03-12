@@ -152,7 +152,7 @@ public class AdminClient {
 			
 			String userName = "liaozj3";
 			
-			List<TRole> roleslist = client.queryRoles(userName);
+			List<TRole> roleslist = client.queryAppRoles(userName);
 			
 			System.out.println(roleslist);
 			

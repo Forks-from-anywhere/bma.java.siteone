@@ -44,7 +44,7 @@ public class TAdminManagerService {
 
     public List<TUser> queryAllUser() throws org.apache.thrift.TException;
 
-    public List<TRole> queryRoles(String userName) throws org.apache.thrift.TException;
+    public List<TRole> queryUserRoles(String userName) throws org.apache.thrift.TException;
 
     public boolean checkUserExist(String userName) throws org.apache.thrift.TException;
 
@@ -59,7 +59,7 @@ public class TAdminManagerService {
      * 
      * @param appName
      */
-    public List<String> queryAppRoles(String appName) throws org.apache.thrift.TException;
+    public List<TRole> queryAppRoles(String appName) throws org.apache.thrift.TException;
 
     public List<TOp> queryAppOps(String appName) throws org.apache.thrift.TException;
 
@@ -103,7 +103,7 @@ public class TAdminManagerService {
 
     public void queryAllUser(org.apache.thrift.async.AsyncMethodCallback<AsyncClient.queryAllUser_call> resultHandler) throws org.apache.thrift.TException;
 
-    public void queryRoles(String userName, org.apache.thrift.async.AsyncMethodCallback<AsyncClient.queryRoles_call> resultHandler) throws org.apache.thrift.TException;
+    public void queryUserRoles(String userName, org.apache.thrift.async.AsyncMethodCallback<AsyncClient.queryUserRoles_call> resultHandler) throws org.apache.thrift.TException;
 
     public void checkUserExist(String userName, org.apache.thrift.async.AsyncMethodCallback<AsyncClient.checkUserExist_call> resultHandler) throws org.apache.thrift.TException;
 
@@ -246,27 +246,27 @@ public class TAdminManagerService {
       throw new org.apache.thrift.TApplicationException(org.apache.thrift.TApplicationException.MISSING_RESULT, "queryAllUser failed: unknown result");
     }
 
-    public List<TRole> queryRoles(String userName) throws org.apache.thrift.TException
+    public List<TRole> queryUserRoles(String userName) throws org.apache.thrift.TException
     {
-      send_queryRoles(userName);
-      return recv_queryRoles();
+      send_queryUserRoles(userName);
+      return recv_queryUserRoles();
     }
 
-    public void send_queryRoles(String userName) throws org.apache.thrift.TException
+    public void send_queryUserRoles(String userName) throws org.apache.thrift.TException
     {
-      queryRoles_args args = new queryRoles_args();
+      queryUserRoles_args args = new queryUserRoles_args();
       args.setUserName(userName);
-      sendBase("queryRoles", args);
+      sendBase("queryUserRoles", args);
     }
 
-    public List<TRole> recv_queryRoles() throws org.apache.thrift.TException
+    public List<TRole> recv_queryUserRoles() throws org.apache.thrift.TException
     {
-      queryRoles_result result = new queryRoles_result();
-      receiveBase(result, "queryRoles");
+      queryUserRoles_result result = new queryUserRoles_result();
+      receiveBase(result, "queryUserRoles");
       if (result.isSetSuccess()) {
         return result.success;
       }
-      throw new org.apache.thrift.TApplicationException(org.apache.thrift.TApplicationException.MISSING_RESULT, "queryRoles failed: unknown result");
+      throw new org.apache.thrift.TApplicationException(org.apache.thrift.TApplicationException.MISSING_RESULT, "queryUserRoles failed: unknown result");
     }
 
     public boolean checkUserExist(String userName) throws org.apache.thrift.TException
@@ -365,7 +365,7 @@ public class TAdminManagerService {
       throw new org.apache.thrift.TApplicationException(org.apache.thrift.TApplicationException.MISSING_RESULT, "checkUserPassword failed: unknown result");
     }
 
-    public List<String> queryAppRoles(String appName) throws org.apache.thrift.TException
+    public List<TRole> queryAppRoles(String appName) throws org.apache.thrift.TException
     {
       send_queryAppRoles(appName);
       return recv_queryAppRoles();
@@ -378,7 +378,7 @@ public class TAdminManagerService {
       sendBase("queryAppRoles", args);
     }
 
-    public List<String> recv_queryAppRoles() throws org.apache.thrift.TException
+    public List<TRole> recv_queryAppRoles() throws org.apache.thrift.TException
     {
       queryAppRoles_result result = new queryAppRoles_result();
       receiveBase(result, "queryAppRoles");
@@ -746,23 +746,23 @@ public class TAdminManagerService {
       }
     }
 
-    public void queryRoles(String userName, org.apache.thrift.async.AsyncMethodCallback<queryRoles_call> resultHandler) throws org.apache.thrift.TException {
+    public void queryUserRoles(String userName, org.apache.thrift.async.AsyncMethodCallback<queryUserRoles_call> resultHandler) throws org.apache.thrift.TException {
       checkReady();
-      queryRoles_call method_call = new queryRoles_call(userName, resultHandler, this, ___protocolFactory, ___transport);
+      queryUserRoles_call method_call = new queryUserRoles_call(userName, resultHandler, this, ___protocolFactory, ___transport);
       this.___currentMethod = method_call;
       ___manager.call(method_call);
     }
 
-    public static class queryRoles_call extends org.apache.thrift.async.TAsyncMethodCall {
+    public static class queryUserRoles_call extends org.apache.thrift.async.TAsyncMethodCall {
       private String userName;
-      public queryRoles_call(String userName, org.apache.thrift.async.AsyncMethodCallback<queryRoles_call> resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws org.apache.thrift.TException {
+      public queryUserRoles_call(String userName, org.apache.thrift.async.AsyncMethodCallback<queryUserRoles_call> resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws org.apache.thrift.TException {
         super(client, protocolFactory, transport, resultHandler, false);
         this.userName = userName;
       }
 
       public void write_args(org.apache.thrift.protocol.TProtocol prot) throws org.apache.thrift.TException {
-        prot.writeMessageBegin(new org.apache.thrift.protocol.TMessage("queryRoles", org.apache.thrift.protocol.TMessageType.CALL, 0));
-        queryRoles_args args = new queryRoles_args();
+        prot.writeMessageBegin(new org.apache.thrift.protocol.TMessage("queryUserRoles", org.apache.thrift.protocol.TMessageType.CALL, 0));
+        queryUserRoles_args args = new queryUserRoles_args();
         args.setUserName(userName);
         args.write(prot);
         prot.writeMessageEnd();
@@ -774,7 +774,7 @@ public class TAdminManagerService {
         }
         org.apache.thrift.transport.TMemoryInputTransport memoryTransport = new org.apache.thrift.transport.TMemoryInputTransport(getFrameBuffer().array());
         org.apache.thrift.protocol.TProtocol prot = client.getProtocolFactory().getProtocol(memoryTransport);
-        return (new Client(prot)).recv_queryRoles();
+        return (new Client(prot)).recv_queryUserRoles();
       }
     }
 
@@ -940,7 +940,7 @@ public class TAdminManagerService {
         prot.writeMessageEnd();
       }
 
-      public List<String> getResult() throws org.apache.thrift.TException {
+      public List<TRole> getResult() throws org.apache.thrift.TException {
         if (getState() != org.apache.thrift.async.TAsyncMethodCall.State.RESPONSE_READ) {
           throw new IllegalStateException("Method call not finished!");
         }
@@ -1279,7 +1279,7 @@ public class TAdminManagerService {
       processMap.put("deleteUser", new deleteUser());
       processMap.put("getUser", new getUser());
       processMap.put("queryAllUser", new queryAllUser());
-      processMap.put("queryRoles", new queryRoles());
+      processMap.put("queryUserRoles", new queryUserRoles());
       processMap.put("checkUserExist", new checkUserExist());
       processMap.put("changePassword", new changePassword());
       processMap.put("resetPassword", new resetPassword());
@@ -1363,18 +1363,18 @@ public class TAdminManagerService {
       }
     }
 
-    private static class queryRoles<I extends Iface> extends org.apache.thrift.ProcessFunction<I, queryRoles_args> {
-      public queryRoles() {
-        super("queryRoles");
+    private static class queryUserRoles<I extends Iface> extends org.apache.thrift.ProcessFunction<I, queryUserRoles_args> {
+      public queryUserRoles() {
+        super("queryUserRoles");
       }
 
-      protected queryRoles_args getEmptyArgsInstance() {
-        return new queryRoles_args();
+      protected queryUserRoles_args getEmptyArgsInstance() {
+        return new queryUserRoles_args();
       }
 
-      protected queryRoles_result getResult(I iface, queryRoles_args args) throws org.apache.thrift.TException {
-        queryRoles_result result = new queryRoles_result();
-        result.success = iface.queryRoles(args.userName);
+      protected queryUserRoles_result getResult(I iface, queryUserRoles_args args) throws org.apache.thrift.TException {
+        queryUserRoles_result result = new queryUserRoles_result();
+        result.success = iface.queryUserRoles(args.userName);
         return result;
       }
     }
@@ -4382,15 +4382,15 @@ public class TAdminManagerService {
 
   }
 
-  public static class queryRoles_args implements org.apache.thrift.TBase<queryRoles_args, queryRoles_args._Fields>, java.io.Serializable, Cloneable   {
-    private static final org.apache.thrift.protocol.TStruct STRUCT_DESC = new org.apache.thrift.protocol.TStruct("queryRoles_args");
+  public static class queryUserRoles_args implements org.apache.thrift.TBase<queryUserRoles_args, queryUserRoles_args._Fields>, java.io.Serializable, Cloneable   {
+    private static final org.apache.thrift.protocol.TStruct STRUCT_DESC = new org.apache.thrift.protocol.TStruct("queryUserRoles_args");
 
     private static final org.apache.thrift.protocol.TField USER_NAME_FIELD_DESC = new org.apache.thrift.protocol.TField("userName", org.apache.thrift.protocol.TType.STRING, (short)1);
 
     private static final Map<Class<? extends IScheme>, SchemeFactory> schemes = new HashMap<Class<? extends IScheme>, SchemeFactory>();
     static {
-      schemes.put(StandardScheme.class, new queryRoles_argsStandardSchemeFactory());
-      schemes.put(TupleScheme.class, new queryRoles_argsTupleSchemeFactory());
+      schemes.put(StandardScheme.class, new queryUserRoles_argsStandardSchemeFactory());
+      schemes.put(TupleScheme.class, new queryUserRoles_argsTupleSchemeFactory());
     }
 
     public String userName; // required
@@ -4460,13 +4460,13 @@ public class TAdminManagerService {
       tmpMap.put(_Fields.USER_NAME, new org.apache.thrift.meta_data.FieldMetaData("userName", org.apache.thrift.TFieldRequirementType.DEFAULT, 
           new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.STRING)));
       metaDataMap = Collections.unmodifiableMap(tmpMap);
-      org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(queryRoles_args.class, metaDataMap);
+      org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(queryUserRoles_args.class, metaDataMap);
     }
 
-    public queryRoles_args() {
+    public queryUserRoles_args() {
     }
 
-    public queryRoles_args(
+    public queryUserRoles_args(
       String userName)
     {
       this();
@@ -4476,14 +4476,14 @@ public class TAdminManagerService {
     /**
      * Performs a deep copy on <i>other</i>.
      */
-    public queryRoles_args(queryRoles_args other) {
+    public queryUserRoles_args(queryUserRoles_args other) {
       if (other.isSetUserName()) {
         this.userName = other.userName;
       }
     }
 
-    public queryRoles_args deepCopy() {
-      return new queryRoles_args(this);
+    public queryUserRoles_args deepCopy() {
+      return new queryUserRoles_args(this);
     }
 
     @Override
@@ -4495,7 +4495,7 @@ public class TAdminManagerService {
       return this.userName;
     }
 
-    public queryRoles_args setUserName(String userName) {
+    public queryUserRoles_args setUserName(String userName) {
       this.userName = userName;
       return this;
     }
@@ -4554,12 +4554,12 @@ public class TAdminManagerService {
     public boolean equals(Object that) {
       if (that == null)
         return false;
-      if (that instanceof queryRoles_args)
-        return this.equals((queryRoles_args)that);
+      if (that instanceof queryUserRoles_args)
+        return this.equals((queryUserRoles_args)that);
       return false;
     }
 
-    public boolean equals(queryRoles_args that) {
+    public boolean equals(queryUserRoles_args that) {
       if (that == null)
         return false;
 
@@ -4580,13 +4580,13 @@ public class TAdminManagerService {
       return 0;
     }
 
-    public int compareTo(queryRoles_args other) {
+    public int compareTo(queryUserRoles_args other) {
       if (!getClass().equals(other.getClass())) {
         return getClass().getName().compareTo(other.getClass().getName());
       }
 
       int lastComparison = 0;
-      queryRoles_args typedOther = (queryRoles_args)other;
+      queryUserRoles_args typedOther = (queryUserRoles_args)other;
 
       lastComparison = Boolean.valueOf(isSetUserName()).compareTo(typedOther.isSetUserName());
       if (lastComparison != 0) {
@@ -4615,7 +4615,7 @@ public class TAdminManagerService {
 
     @Override
     public String toString() {
-      StringBuilder sb = new StringBuilder("queryRoles_args(");
+      StringBuilder sb = new StringBuilder("queryUserRoles_args(");
       boolean first = true;
 
       sb.append("userName:");
@@ -4649,15 +4649,15 @@ public class TAdminManagerService {
       }
     }
 
-    private static class queryRoles_argsStandardSchemeFactory implements SchemeFactory {
-      public queryRoles_argsStandardScheme getScheme() {
-        return new queryRoles_argsStandardScheme();
+    private static class queryUserRoles_argsStandardSchemeFactory implements SchemeFactory {
+      public queryUserRoles_argsStandardScheme getScheme() {
+        return new queryUserRoles_argsStandardScheme();
       }
     }
 
-    private static class queryRoles_argsStandardScheme extends StandardScheme<queryRoles_args> {
+    private static class queryUserRoles_argsStandardScheme extends StandardScheme<queryUserRoles_args> {
 
-      public void read(org.apache.thrift.protocol.TProtocol iprot, queryRoles_args struct) throws org.apache.thrift.TException {
+      public void read(org.apache.thrift.protocol.TProtocol iprot, queryUserRoles_args struct) throws org.apache.thrift.TException {
         org.apache.thrift.protocol.TField schemeField;
         iprot.readStructBegin();
         while (true)
@@ -4686,7 +4686,7 @@ public class TAdminManagerService {
         struct.validate();
       }
 
-      public void write(org.apache.thrift.protocol.TProtocol oprot, queryRoles_args struct) throws org.apache.thrift.TException {
+      public void write(org.apache.thrift.protocol.TProtocol oprot, queryUserRoles_args struct) throws org.apache.thrift.TException {
         struct.validate();
 
         oprot.writeStructBegin(STRUCT_DESC);
@@ -4701,16 +4701,16 @@ public class TAdminManagerService {
 
     }
 
-    private static class queryRoles_argsTupleSchemeFactory implements SchemeFactory {
-      public queryRoles_argsTupleScheme getScheme() {
-        return new queryRoles_argsTupleScheme();
+    private static class queryUserRoles_argsTupleSchemeFactory implements SchemeFactory {
+      public queryUserRoles_argsTupleScheme getScheme() {
+        return new queryUserRoles_argsTupleScheme();
       }
     }
 
-    private static class queryRoles_argsTupleScheme extends TupleScheme<queryRoles_args> {
+    private static class queryUserRoles_argsTupleScheme extends TupleScheme<queryUserRoles_args> {
 
       @Override
-      public void write(org.apache.thrift.protocol.TProtocol prot, queryRoles_args struct) throws org.apache.thrift.TException {
+      public void write(org.apache.thrift.protocol.TProtocol prot, queryUserRoles_args struct) throws org.apache.thrift.TException {
         TTupleProtocol oprot = (TTupleProtocol) prot;
         BitSet optionals = new BitSet();
         if (struct.isSetUserName()) {
@@ -4723,7 +4723,7 @@ public class TAdminManagerService {
       }
 
       @Override
-      public void read(org.apache.thrift.protocol.TProtocol prot, queryRoles_args struct) throws org.apache.thrift.TException {
+      public void read(org.apache.thrift.protocol.TProtocol prot, queryUserRoles_args struct) throws org.apache.thrift.TException {
         TTupleProtocol iprot = (TTupleProtocol) prot;
         BitSet incoming = iprot.readBitSet(1);
         if (incoming.get(0)) {
@@ -4735,15 +4735,15 @@ public class TAdminManagerService {
 
   }
 
-  public static class queryRoles_result implements org.apache.thrift.TBase<queryRoles_result, queryRoles_result._Fields>, java.io.Serializable, Cloneable   {
-    private static final org.apache.thrift.protocol.TStruct STRUCT_DESC = new org.apache.thrift.protocol.TStruct("queryRoles_result");
+  public static class queryUserRoles_result implements org.apache.thrift.TBase<queryUserRoles_result, queryUserRoles_result._Fields>, java.io.Serializable, Cloneable   {
+    private static final org.apache.thrift.protocol.TStruct STRUCT_DESC = new org.apache.thrift.protocol.TStruct("queryUserRoles_result");
 
     private static final org.apache.thrift.protocol.TField SUCCESS_FIELD_DESC = new org.apache.thrift.protocol.TField("success", org.apache.thrift.protocol.TType.LIST, (short)0);
 
     private static final Map<Class<? extends IScheme>, SchemeFactory> schemes = new HashMap<Class<? extends IScheme>, SchemeFactory>();
     static {
-      schemes.put(StandardScheme.class, new queryRoles_resultStandardSchemeFactory());
-      schemes.put(TupleScheme.class, new queryRoles_resultTupleSchemeFactory());
+      schemes.put(StandardScheme.class, new queryUserRoles_resultStandardSchemeFactory());
+      schemes.put(TupleScheme.class, new queryUserRoles_resultTupleSchemeFactory());
     }
 
     public List<TRole> success; // required
@@ -4814,13 +4814,13 @@ public class TAdminManagerService {
           new org.apache.thrift.meta_data.ListMetaData(org.apache.thrift.protocol.TType.LIST, 
               new org.apache.thrift.meta_data.StructMetaData(org.apache.thrift.protocol.TType.STRUCT, TRole.class))));
       metaDataMap = Collections.unmodifiableMap(tmpMap);
-      org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(queryRoles_result.class, metaDataMap);
+      org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(queryUserRoles_result.class, metaDataMap);
     }
 
-    public queryRoles_result() {
+    public queryUserRoles_result() {
     }
 
-    public queryRoles_result(
+    public queryUserRoles_result(
       List<TRole> success)
     {
       this();
@@ -4830,7 +4830,7 @@ public class TAdminManagerService {
     /**
      * Performs a deep copy on <i>other</i>.
      */
-    public queryRoles_result(queryRoles_result other) {
+    public queryUserRoles_result(queryUserRoles_result other) {
       if (other.isSetSuccess()) {
         List<TRole> __this__success = new ArrayList<TRole>();
         for (TRole other_element : other.success) {
@@ -4840,8 +4840,8 @@ public class TAdminManagerService {
       }
     }
 
-    public queryRoles_result deepCopy() {
-      return new queryRoles_result(this);
+    public queryUserRoles_result deepCopy() {
+      return new queryUserRoles_result(this);
     }
 
     @Override
@@ -4868,7 +4868,7 @@ public class TAdminManagerService {
       return this.success;
     }
 
-    public queryRoles_result setSuccess(List<TRole> success) {
+    public queryUserRoles_result setSuccess(List<TRole> success) {
       this.success = success;
       return this;
     }
@@ -4927,12 +4927,12 @@ public class TAdminManagerService {
     public boolean equals(Object that) {
       if (that == null)
         return false;
-      if (that instanceof queryRoles_result)
-        return this.equals((queryRoles_result)that);
+      if (that instanceof queryUserRoles_result)
+        return this.equals((queryUserRoles_result)that);
       return false;
     }
 
-    public boolean equals(queryRoles_result that) {
+    public boolean equals(queryUserRoles_result that) {
       if (that == null)
         return false;
 
@@ -4953,13 +4953,13 @@ public class TAdminManagerService {
       return 0;
     }
 
-    public int compareTo(queryRoles_result other) {
+    public int compareTo(queryUserRoles_result other) {
       if (!getClass().equals(other.getClass())) {
         return getClass().getName().compareTo(other.getClass().getName());
       }
 
       int lastComparison = 0;
-      queryRoles_result typedOther = (queryRoles_result)other;
+      queryUserRoles_result typedOther = (queryUserRoles_result)other;
 
       lastComparison = Boolean.valueOf(isSetSuccess()).compareTo(typedOther.isSetSuccess());
       if (lastComparison != 0) {
@@ -4988,7 +4988,7 @@ public class TAdminManagerService {
 
     @Override
     public String toString() {
-      StringBuilder sb = new StringBuilder("queryRoles_result(");
+      StringBuilder sb = new StringBuilder("queryUserRoles_result(");
       boolean first = true;
 
       sb.append("success:");
@@ -5022,15 +5022,15 @@ public class TAdminManagerService {
       }
     }
 
-    private static class queryRoles_resultStandardSchemeFactory implements SchemeFactory {
-      public queryRoles_resultStandardScheme getScheme() {
-        return new queryRoles_resultStandardScheme();
+    private static class queryUserRoles_resultStandardSchemeFactory implements SchemeFactory {
+      public queryUserRoles_resultStandardScheme getScheme() {
+        return new queryUserRoles_resultStandardScheme();
       }
     }
 
-    private static class queryRoles_resultStandardScheme extends StandardScheme<queryRoles_result> {
+    private static class queryUserRoles_resultStandardScheme extends StandardScheme<queryUserRoles_result> {
 
-      public void read(org.apache.thrift.protocol.TProtocol iprot, queryRoles_result struct) throws org.apache.thrift.TException {
+      public void read(org.apache.thrift.protocol.TProtocol iprot, queryUserRoles_result struct) throws org.apache.thrift.TException {
         org.apache.thrift.protocol.TField schemeField;
         iprot.readStructBegin();
         while (true)
@@ -5070,7 +5070,7 @@ public class TAdminManagerService {
         struct.validate();
       }
 
-      public void write(org.apache.thrift.protocol.TProtocol oprot, queryRoles_result struct) throws org.apache.thrift.TException {
+      public void write(org.apache.thrift.protocol.TProtocol oprot, queryUserRoles_result struct) throws org.apache.thrift.TException {
         struct.validate();
 
         oprot.writeStructBegin(STRUCT_DESC);
@@ -5092,16 +5092,16 @@ public class TAdminManagerService {
 
     }
 
-    private static class queryRoles_resultTupleSchemeFactory implements SchemeFactory {
-      public queryRoles_resultTupleScheme getScheme() {
-        return new queryRoles_resultTupleScheme();
+    private static class queryUserRoles_resultTupleSchemeFactory implements SchemeFactory {
+      public queryUserRoles_resultTupleScheme getScheme() {
+        return new queryUserRoles_resultTupleScheme();
       }
     }
 
-    private static class queryRoles_resultTupleScheme extends TupleScheme<queryRoles_result> {
+    private static class queryUserRoles_resultTupleScheme extends TupleScheme<queryUserRoles_result> {
 
       @Override
-      public void write(org.apache.thrift.protocol.TProtocol prot, queryRoles_result struct) throws org.apache.thrift.TException {
+      public void write(org.apache.thrift.protocol.TProtocol prot, queryUserRoles_result struct) throws org.apache.thrift.TException {
         TTupleProtocol oprot = (TTupleProtocol) prot;
         BitSet optionals = new BitSet();
         if (struct.isSetSuccess()) {
@@ -5120,7 +5120,7 @@ public class TAdminManagerService {
       }
 
       @Override
-      public void read(org.apache.thrift.protocol.TProtocol prot, queryRoles_result struct) throws org.apache.thrift.TException {
+      public void read(org.apache.thrift.protocol.TProtocol prot, queryUserRoles_result struct) throws org.apache.thrift.TException {
         TTupleProtocol iprot = (TTupleProtocol) prot;
         BitSet incoming = iprot.readBitSet(1);
         if (incoming.get(0)) {
@@ -8718,7 +8718,7 @@ public class TAdminManagerService {
       schemes.put(TupleScheme.class, new queryAppRoles_resultTupleSchemeFactory());
     }
 
-    public List<String> success; // required
+    public List<TRole> success; // required
 
     /** The set of fields this struct contains, along with convenience methods for finding and manipulating them. */
     public enum _Fields implements org.apache.thrift.TFieldIdEnum {
@@ -8784,7 +8784,7 @@ public class TAdminManagerService {
       Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
       tmpMap.put(_Fields.SUCCESS, new org.apache.thrift.meta_data.FieldMetaData("success", org.apache.thrift.TFieldRequirementType.DEFAULT, 
           new org.apache.thrift.meta_data.ListMetaData(org.apache.thrift.protocol.TType.LIST, 
-              new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.STRING))));
+              new org.apache.thrift.meta_data.StructMetaData(org.apache.thrift.protocol.TType.STRUCT, TRole.class))));
       metaDataMap = Collections.unmodifiableMap(tmpMap);
       org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(queryAppRoles_result.class, metaDataMap);
     }
@@ -8793,7 +8793,7 @@ public class TAdminManagerService {
     }
 
     public queryAppRoles_result(
-      List<String> success)
+      List<TRole> success)
     {
       this();
       this.success = success;
@@ -8804,9 +8804,9 @@ public class TAdminManagerService {
      */
     public queryAppRoles_result(queryAppRoles_result other) {
       if (other.isSetSuccess()) {
-        List<String> __this__success = new ArrayList<String>();
-        for (String other_element : other.success) {
-          __this__success.add(other_element);
+        List<TRole> __this__success = new ArrayList<TRole>();
+        for (TRole other_element : other.success) {
+          __this__success.add(new TRole(other_element));
         }
         this.success = __this__success;
       }
@@ -8825,22 +8825,22 @@ public class TAdminManagerService {
       return (this.success == null) ? 0 : this.success.size();
     }
 
-    public java.util.Iterator<String> getSuccessIterator() {
+    public java.util.Iterator<TRole> getSuccessIterator() {
       return (this.success == null) ? null : this.success.iterator();
     }
 
-    public void addToSuccess(String elem) {
+    public void addToSuccess(TRole elem) {
       if (this.success == null) {
-        this.success = new ArrayList<String>();
+        this.success = new ArrayList<TRole>();
       }
       this.success.add(elem);
     }
 
-    public List<String> getSuccess() {
+    public List<TRole> getSuccess() {
       return this.success;
     }
 
-    public queryAppRoles_result setSuccess(List<String> success) {
+    public queryAppRoles_result setSuccess(List<TRole> success) {
       this.success = success;
       return this;
     }
@@ -8866,7 +8866,7 @@ public class TAdminManagerService {
         if (value == null) {
           unsetSuccess();
         } else {
-          setSuccess((List<String>)value);
+          setSuccess((List<TRole>)value);
         }
         break;
 
@@ -9016,11 +9016,12 @@ public class TAdminManagerService {
               if (schemeField.type == org.apache.thrift.protocol.TType.LIST) {
                 {
                   org.apache.thrift.protocol.TList _list32 = iprot.readListBegin();
-                  struct.success = new ArrayList<String>(_list32.size);
+                  struct.success = new ArrayList<TRole>(_list32.size);
                   for (int _i33 = 0; _i33 < _list32.size; ++_i33)
                   {
-                    String _elem34; // required
-                    _elem34 = iprot.readString();
+                    TRole _elem34; // required
+                    _elem34 = new TRole();
+                    _elem34.read(iprot);
                     struct.success.add(_elem34);
                   }
                   iprot.readListEnd();
@@ -9048,10 +9049,10 @@ public class TAdminManagerService {
         if (struct.success != null) {
           oprot.writeFieldBegin(SUCCESS_FIELD_DESC);
           {
-            oprot.writeListBegin(new org.apache.thrift.protocol.TList(org.apache.thrift.protocol.TType.STRING, struct.success.size()));
-            for (String _iter35 : struct.success)
+            oprot.writeListBegin(new org.apache.thrift.protocol.TList(org.apache.thrift.protocol.TType.STRUCT, struct.success.size()));
+            for (TRole _iter35 : struct.success)
             {
-              oprot.writeString(_iter35);
+              _iter35.write(oprot);
             }
             oprot.writeListEnd();
           }
@@ -9082,9 +9083,9 @@ public class TAdminManagerService {
         if (struct.isSetSuccess()) {
           {
             oprot.writeI32(struct.success.size());
-            for (String _iter36 : struct.success)
+            for (TRole _iter36 : struct.success)
             {
-              oprot.writeString(_iter36);
+              _iter36.write(oprot);
             }
           }
         }
@@ -9096,12 +9097,13 @@ public class TAdminManagerService {
         BitSet incoming = iprot.readBitSet(1);
         if (incoming.get(0)) {
           {
-            org.apache.thrift.protocol.TList _list37 = new org.apache.thrift.protocol.TList(org.apache.thrift.protocol.TType.STRING, iprot.readI32());
-            struct.success = new ArrayList<String>(_list37.size);
+            org.apache.thrift.protocol.TList _list37 = new org.apache.thrift.protocol.TList(org.apache.thrift.protocol.TType.STRUCT, iprot.readI32());
+            struct.success = new ArrayList<TRole>(_list37.size);
             for (int _i38 = 0; _i38 < _list37.size; ++_i38)
             {
-              String _elem39; // required
-              _elem39 = iprot.readString();
+              TRole _elem39; // required
+              _elem39 = new TRole();
+              _elem39.read(iprot);
               struct.success.add(_elem39);
             }
           }

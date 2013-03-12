@@ -47,7 +47,7 @@ public class AdminAppThriftTest {
 		String appName = "app1";
 		String opName = "op1";
 		
-		assertTrue(s.checkUserAuth(userName,appName,opName));
+		System.out.println(s.checkUserAuth(userName,appName,opName));
 	}
 	
 	@Test

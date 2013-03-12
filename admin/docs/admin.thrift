@@ -122,7 +122,7 @@ service TAdminManagerService {
 
 	list<TUser> queryAllUser(),
 
-	list<TRole> queryRoles(1:string userName),
+	list<TRole> queryUserRoles(1:string userName),
 
 	bool checkUserExist(1:string userName),
 
@@ -137,7 +137,7 @@ service TAdminManagerService {
 	*********************** 应用设置 **********************
 	*/
 
-	list<string> queryAppRoles(1:string appName),
+	list<TRole> queryAppRoles(1:string appName),
 
 	list<TOp> queryAppOps(1:string appName),				//查询应用的所有操作
 
@@ -187,4 +187,6 @@ service TAdminDeployService {
 
 	list<TSync> exportAppAuth(1:string appName),				//导出应用权限
 
+	bool syncApp(1:string syncContent),					//权限同步
+    
 }
