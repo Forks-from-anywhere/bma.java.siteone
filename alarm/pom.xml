@@ -21,11 +21,23 @@
 			<groupId>bma.java.common</groupId>
 			<artifactId>thrift</artifactId>
 			<version>1.0.0-SNAPSHOT</version>
+			<exclusions>
+               <exclusion>
+                       <groupId>org.springframework</groupId>
+                       <artifactId>spring-context</artifactId>
+               </exclusion>
+            </exclusions>
 		</dependency>
 		<dependency>
 			<groupId>bma.java.common</groupId>
 			<artifactId>jdbctemplate</artifactId>
 			<version>1.0.0-SNAPSHOT</version>
+			<exclusions>
+               <exclusion>
+                       <groupId>org.springframework</groupId>
+                       <artifactId>spring-context</artifactId>
+               </exclusion>
+            </exclusions>
 		</dependency>
 		<dependency>
 	      <groupId>bma.java.siteone</groupId>
