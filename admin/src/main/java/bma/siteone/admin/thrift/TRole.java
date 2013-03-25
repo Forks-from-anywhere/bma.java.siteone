@@ -44,9 +44,9 @@ public class TRole implements org.apache.thrift.TBase<TRole, TRole._Fields>, jav
 
   public String appName; // required
   public String roleName; // required
-  public String roleDescription; // required
-  public String createTime; // required
-  public int status; // required
+  public String roleDescription; // optional
+  public String createTime; // optional
+  public int status; // optional
 
   /** The set of fields this struct contains, along with convenience methods for finding and manipulating them. */
   public enum _Fields implements org.apache.thrift.TFieldIdEnum {
@@ -121,6 +121,7 @@ public class TRole implements org.apache.thrift.TBase<TRole, TRole._Fields>, jav
   // isset id assignments
   private static final int __STATUS_ISSET_ID = 0;
   private BitSet __isset_bit_vector = new BitSet(1);
+  private _Fields optionals[] = {_Fields.ROLE_DESCRIPTION,_Fields.CREATE_TIME,_Fields.STATUS};
   public static final Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
   static {
     Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
@@ -128,11 +129,11 @@ public class TRole implements org.apache.thrift.TBase<TRole, TRole._Fields>, jav
         new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.STRING)));
     tmpMap.put(_Fields.ROLE_NAME, new org.apache.thrift.meta_data.FieldMetaData("roleName", org.apache.thrift.TFieldRequirementType.DEFAULT, 
         new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.STRING)));
-    tmpMap.put(_Fields.ROLE_DESCRIPTION, new org.apache.thrift.meta_data.FieldMetaData("roleDescription", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+    tmpMap.put(_Fields.ROLE_DESCRIPTION, new org.apache.thrift.meta_data.FieldMetaData("roleDescription", org.apache.thrift.TFieldRequirementType.OPTIONAL, 
         new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.STRING)));
-    tmpMap.put(_Fields.CREATE_TIME, new org.apache.thrift.meta_data.FieldMetaData("createTime", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+    tmpMap.put(_Fields.CREATE_TIME, new org.apache.thrift.meta_data.FieldMetaData("createTime", org.apache.thrift.TFieldRequirementType.OPTIONAL, 
         new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.STRING)));
-    tmpMap.put(_Fields.STATUS, new org.apache.thrift.meta_data.FieldMetaData("status", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+    tmpMap.put(_Fields.STATUS, new org.apache.thrift.meta_data.FieldMetaData("status", org.apache.thrift.TFieldRequirementType.OPTIONAL, 
         new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
     metaDataMap = Collections.unmodifiableMap(tmpMap);
     org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(TRole.class, metaDataMap);
@@ -143,18 +144,11 @@ public class TRole implements org.apache.thrift.TBase<TRole, TRole._Fields>, jav
 
   public TRole(
     String appName,
-    String roleName,
-    String roleDescription,
-    String createTime,
-    int status)
+    String roleName)
   {
     this();
     this.appName = appName;
     this.roleName = roleName;
-    this.roleDescription = roleDescription;
-    this.createTime = createTime;
-    this.status = status;
-    setStatusIsSet(true);
   }
 
   /**
@@ -447,8 +441,8 @@ public class TRole implements org.apache.thrift.TBase<TRole, TRole._Fields>, jav
         return false;
     }
 
-    boolean this_present_status = true;
-    boolean that_present_status = true;
+    boolean this_present_status = true && this.isSetStatus();
+    boolean that_present_status = true && that.isSetStatus();
     if (this_present_status || that_present_status) {
       if (!(this_present_status && that_present_status))
         return false;
@@ -557,26 +551,32 @@ public class TRole implements org.apache.thrift.TBase<TRole, TRole._Fields>, jav
       sb.append(this.roleName);
     }
     first = false;
-    if (!first) sb.append(", ");
-    sb.append("roleDescription:");
-    if (this.roleDescription == null) {
-      sb.append("null");
-    } else {
-      sb.append(this.roleDescription);
+    if (isSetRoleDescription()) {
+      if (!first) sb.append(", ");
+      sb.append("roleDescription:");
+      if (this.roleDescription == null) {
+        sb.append("null");
+      } else {
+        sb.append(this.roleDescription);
+      }
+      first = false;
     }
-    first = false;
-    if (!first) sb.append(", ");
-    sb.append("createTime:");
-    if (this.createTime == null) {
-      sb.append("null");
-    } else {
-      sb.append(this.createTime);
+    if (isSetCreateTime()) {
+      if (!first) sb.append(", ");
+      sb.append("createTime:");
+      if (this.createTime == null) {
+        sb.append("null");
+      } else {
+        sb.append(this.createTime);
+      }
+      first = false;
     }
-    first = false;
-    if (!first) sb.append(", ");
-    sb.append("status:");
-    sb.append(this.status);
-    first = false;
+    if (isSetStatus()) {
+      if (!first) sb.append(", ");
+      sb.append("status:");
+      sb.append(this.status);
+      first = false;
+    }
     sb.append(")");
     return sb.toString();
   }
@@ -687,18 +687,24 @@ public class TRole implements org.apache.thrift.TBase<TRole, TRole._Fields>, jav
         oprot.writeFieldEnd();
       }
       if (struct.roleDescription != null) {
-        oprot.writeFieldBegin(ROLE_DESCRIPTION_FIELD_DESC);
-        oprot.writeString(struct.roleDescription);
-        oprot.writeFieldEnd();
+        if (struct.isSetRoleDescription()) {
+          oprot.writeFieldBegin(ROLE_DESCRIPTION_FIELD_DESC);
+          oprot.writeString(struct.roleDescription);
+          oprot.writeFieldEnd();
+        }
       }
       if (struct.createTime != null) {
-        oprot.writeFieldBegin(CREATE_TIME_FIELD_DESC);
-        oprot.writeString(struct.createTime);
+        if (struct.isSetCreateTime()) {
+          oprot.writeFieldBegin(CREATE_TIME_FIELD_DESC);
+          oprot.writeString(struct.createTime);
+          oprot.writeFieldEnd();
+        }
+      }
+      if (struct.isSetStatus()) {
+        oprot.writeFieldBegin(STATUS_FIELD_DESC);
+        oprot.writeI32(struct.status);
         oprot.writeFieldEnd();
       }
-      oprot.writeFieldBegin(STATUS_FIELD_DESC);
-      oprot.writeI32(struct.status);
-      oprot.writeFieldEnd();
       oprot.writeFieldStop();
       oprot.writeStructEnd();
     }

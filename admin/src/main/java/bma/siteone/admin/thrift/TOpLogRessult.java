@@ -421,14 +421,14 @@ public class TOpLogRessult implements org.apache.thrift.TBase<TOpLogRessult, TOp
           case 2: // RESULT
             if (schemeField.type == org.apache.thrift.protocol.TType.LIST) {
               {
-                org.apache.thrift.protocol.TList _list0 = iprot.readListBegin();
-                struct.result = new ArrayList<TOpLog>(_list0.size);
-                for (int _i1 = 0; _i1 < _list0.size; ++_i1)
+                org.apache.thrift.protocol.TList _list8 = iprot.readListBegin();
+                struct.result = new ArrayList<TOpLog>(_list8.size);
+                for (int _i9 = 0; _i9 < _list8.size; ++_i9)
                 {
-                  TOpLog _elem2; // required
-                  _elem2 = new TOpLog();
-                  _elem2.read(iprot);
-                  struct.result.add(_elem2);
+                  TOpLog _elem10; // required
+                  _elem10 = new TOpLog();
+                  _elem10.read(iprot);
+                  struct.result.add(_elem10);
                 }
                 iprot.readListEnd();
               }
@@ -459,9 +459,9 @@ public class TOpLogRessult implements org.apache.thrift.TBase<TOpLogRessult, TOp
         oprot.writeFieldBegin(RESULT_FIELD_DESC);
         {
           oprot.writeListBegin(new org.apache.thrift.protocol.TList(org.apache.thrift.protocol.TType.STRUCT, struct.result.size()));
-          for (TOpLog _iter3 : struct.result)
+          for (TOpLog _iter11 : struct.result)
           {
-            _iter3.write(oprot);
+            _iter11.write(oprot);
           }
           oprot.writeListEnd();
         }
@@ -498,9 +498,9 @@ public class TOpLogRessult implements org.apache.thrift.TBase<TOpLogRessult, TOp
       if (struct.isSetResult()) {
         {
           oprot.writeI32(struct.result.size());
-          for (TOpLog _iter4 : struct.result)
+          for (TOpLog _iter12 : struct.result)
           {
-            _iter4.write(oprot);
+            _iter12.write(oprot);
           }
         }
       }
@@ -516,14 +516,14 @@ public class TOpLogRessult implements org.apache.thrift.TBase<TOpLogRessult, TOp
       }
       if (incoming.get(1)) {
         {
-          org.apache.thrift.protocol.TList _list5 = new org.apache.thrift.protocol.TList(org.apache.thrift.protocol.TType.STRUCT, iprot.readI32());
-          struct.result = new ArrayList<TOpLog>(_list5.size);
-          for (int _i6 = 0; _i6 < _list5.size; ++_i6)
+          org.apache.thrift.protocol.TList _list13 = new org.apache.thrift.protocol.TList(org.apache.thrift.protocol.TType.STRUCT, iprot.readI32());
+          struct.result = new ArrayList<TOpLog>(_list13.size);
+          for (int _i14 = 0; _i14 < _list13.size; ++_i14)
           {
-            TOpLog _elem7; // required
-            _elem7 = new TOpLog();
-            _elem7.read(iprot);
-            struct.result.add(_elem7);
+            TOpLog _elem15; // required
+            _elem15 = new TOpLog();
+            _elem15.read(iprot);
+            struct.result.add(_elem15);
           }
         }
         struct.setResultIsSet(true);

@@ -1,6 +1,6 @@
 package bma.siteone.admin.po;
 
-public class AdminUserShared {
+public class UserShared {
 	
 	private String userName;
 	

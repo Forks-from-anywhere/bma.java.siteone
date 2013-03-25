@@ -10,7 +10,7 @@ import bma.common.langutil.core.ToStringUtil;
  * @author liaozhuojie
  *
  */
-public class AdminUser extends AdminUserShared implements Serializable{
+public class AdminUser extends UserShared implements Serializable{
 
 	private static final long serialVersionUID = 1L;
 

@@ -1,6 +1,6 @@
 package bma.siteone.admin.po;
 
-public class AdminOpLogShared {
+public class OpLogShared {
 	
 	private String userName;
 	

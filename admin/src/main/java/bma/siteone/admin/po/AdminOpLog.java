@@ -10,7 +10,7 @@ import bma.common.langutil.core.ToStringUtil;
  * @author liaozhuojie
  *
  */
-public class AdminOpLog extends AdminOpLogShared implements Serializable{
+public class AdminOpLog extends OpLogShared implements Serializable{
 	
 	private static final long serialVersionUID = 1L;
 	
