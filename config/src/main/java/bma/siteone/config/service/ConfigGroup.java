@@ -17,6 +17,20 @@ public abstract class ConfigGroup {
 			return item.stringValue();
 		return def;
 	}
+	
+	public int getInt(String name) {
+		ConfigItem item = get(name);
+		if (item != null)
+			return item.intValue();
+		throw new IllegalArgumentException("config '" + name + "' not exists");
+	}
+
+	public int getInt(String name, int def) {
+		ConfigItem item = get(name);
+		if (item != null)
+			return item.intValue();
+		return def;
+	}
 
 	public long getLong(String name) {
 		ConfigItem item = get(name);
@@ -28,7 +42,7 @@ public abstract class ConfigGroup {
 	public long getLong(String name, long def) {
 		ConfigItem item = get(name);
 		if (item != null)
-			return item.intValue();
+			return item.longValue();
 		return def;
 	}
 
@@ -87,7 +101,7 @@ public abstract class ConfigGroup {
 			return item.booleanValue();
 		return def;
 	}
-
+	
 	public <TYPE> TYPE get(String name, ConfigConvert cc) {
 		if (cc == null)
 			return null;
