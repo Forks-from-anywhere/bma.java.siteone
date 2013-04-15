@@ -39,7 +39,7 @@
 		<property name="jobDetail">
 			<bean
 				class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
-				<property name="targetObject" ref="alarmSelfMonitor" />
+				<property name="targetObject" ref="cleanAlarmHistoryMonitor" />
 				<property name="targetMethod" value="doTask" />
 				<property name="concurrent" value="false" />
 			</bean>
