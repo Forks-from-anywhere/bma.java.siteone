@@ -108,7 +108,7 @@ public abstract class ConfigGroup {
 		ConfigItem item = get(name);
 		if (item == null)
 			return null;
-		return cc.convert(item);
+		return (TYPE)cc.convert(item);
 	}
 
 	public abstract ConfigItem get(String name);
