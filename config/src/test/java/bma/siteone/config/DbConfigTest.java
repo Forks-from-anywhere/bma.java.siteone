@@ -6,7 +6,9 @@ import org.junit.Test;
 import org.springframework.context.support.FileSystemXmlApplicationContext;
 
 import bma.common.jdbctemplate.JdbcTemplateUtil;
+import bma.common.langutil.core.ObjectUtil;
 import bma.common.langutil.testcase.SpringTestcaseUtil;
+import bma.common.thrift.ThriftServer;
 import bma.siteone.config.service.ConfigGroup;
 import bma.siteone.config.service.db.DbConfigService;
 
@@ -39,5 +41,15 @@ public class DbConfigTest {
 		System.out.println(cg2.getString("11"));
 		
 		System.out.println("done");
+	}
+	
+	@Test
+	public void testServer(){
+		ThriftServer s1 = context.getBean("server", ThriftServer.class);
+		System.out.println(s1.toString());
+
+		s1.start();
+
+		ObjectUtil.waitFor(this, 30 * 60 * 1000 * 100);
 	}
 }

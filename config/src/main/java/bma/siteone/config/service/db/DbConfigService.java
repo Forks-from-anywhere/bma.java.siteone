@@ -47,11 +47,18 @@ public class DbConfigService implements ConfigService {
 		this.groups = groups;
 	}
 
+	private String configTableName = "so_config";
+
+	public void setConfigTableName(String configTableName) {
+		this.configTableName = configTableName;
+	}
+
 	private void initConfigGroups() {
 		this.groups = new HashMap<String, ConfigGroup>();
+		groups.clear();
 		
 		//查询当前应用在数据库中的所有配置
-		String sql = "SELECT * FROM `so_config` WHERE app='"+ app +"'";
+		String sql = "SELECT * FROM "+configTableName+" WHERE app='"+ app +"'";
 		List<DbConfig> appConfigGroupList = jdbcTemplate.query(sql, new DbConfigRowMapper());
 		
 		if(!appConfigGroupList.isEmpty()){
@@ -75,6 +82,7 @@ public class DbConfigService implements ConfigService {
 				}
 			}
 		}
+		
 	}
 	
 	public class DbConfigRowMapper implements RowMapper<DbConfig> {
@@ -100,6 +108,47 @@ public class DbConfigService implements ConfigService {
 		
 		ConfigGroup r = groups.get(name);
 		return r == null ? EmptyConfigGroup.INSTANCE : r;
+	}
+	
+	
+	public boolean refreshConfig(String app, String group){
+		try{
+			initConfigGroups();
+			
+			return true;
+		}catch (Exception e) {
+			log.error("[refreshConfig] exception => "+e.getMessage());
+			return false;
+		}
+	}
+	
+	public boolean setConfig(String app, String group, String name, String value){
+		try{
+			String sql = "INSERT INTO "+configTableName+" VALUES('"+app+"','"+group+"','"+name+"','"+value+"') ON DUPLICATE KEY UPDATE cValue='"+value+"'";
+			
+			jdbcTemplate.update(sql);
+			
+			initConfigGroups();
+			return true;
+		}catch (Exception e) {
+			log.error("[setConfig] exception => "+e.getMessage());
+			return false;
+		}
+		
+	}
+	
+	public boolean deleteConfig(String app, String group, String name){
+		try{
+			String sql = "DELETE FROM "+configTableName+" WHERE app='"+app+"' and cGroup='"+group+"' and cName='"+name+"'";
+			
+			jdbcTemplate.update(sql);
+			
+			initConfigGroups();
+			return true;
+		}catch (Exception e) {
+			log.error("[deleteConfig] exception => "+e.getMessage());
+			return false;
+		}
 	}
 
 }

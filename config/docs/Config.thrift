@@ -20,20 +20,15 @@ namespace java bma.siteone.config.thrift
 struct TConfigInfo {
   1: string group,
   2: string name,
-  3: i32 type,
-  4: optional string stringValue,
-  5: optional i32 intValue,
-  6: optional i64 longValue,
-  7: optional double doubleValue,
-  8: optional bool boolValue,
+  3: string value,
 }
 
 service TConfigAdminService {
 
-   bool refreshConfig(1:string group),
+   bool refreshConfig(1:string app, 2:string group),
 
-   bool setConfig(1:TConfigInfo info),
+   bool setConfig(1:string app, 2:TConfigInfo info),
    
-   bool deleteConfig(1:string group, 2:string name),
+   bool deleteConfig(1:string app, 2:string group, 3:string name),
    
 }

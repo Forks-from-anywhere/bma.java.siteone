@@ -47,7 +47,34 @@
 	<bean id="configService" class="bma.siteone.config.service.db.DbConfigService">
 		<property name="jdbcTemplate" ref="jdbcTemplate" />
 		<property name="app" value="${configService.app}" />
-	</bean> 
+	</bean>
+	
+	<bean id="serverTrans" class="org.apache.thrift.transport.TNonblockingServerSocket">
+		<constructor-arg value="9098" />
+	</bean>
 
+	<bean id="config_handler" class="bma.siteone.config.service.db.DbConfigThrift">
+		<property name="dbConfigService" ref="configService"/>
+	</bean>
+	<bean id="config_processor" class="bma.siteone.config.thrift.TConfigAdminService.Processor">
+		<constructor-arg ref="config_handler" />
+	</bean>
+
+	<bean id="server" class="bma.common.thrift.ThriftServer.HsHaServer"
+		destroy-method="close">
+		<constructor-arg ref="serverTrans" />
+		<constructor-arg>
+			<bean class="bma.common.thrift.TProcessorRouter">
+				<property name="defaultModule" value="config"/>
+				<property name="processors">
+					<map>
+						<entry key="config" value-ref="config_processor" />
+					</map>
+				</property>
+			</bean>
+		</constructor-arg>
+		<constructor-arg value="1"/>
+		<constructor-arg value="1024000"/>
+	</bean>
 
 </beans>
