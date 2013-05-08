@@ -61,5 +61,12 @@ public class CrontabServiceImplTest {
 		record.setDescription("remark");
 		service.endCrontabTaskWhenFailed(record, 30);
 	}
+	
+	@Test
+	public void deleteCrontabTask() {
+		CrontabTaskInfo record = new CrontabTaskInfo();
+		record.seteName("test_e");
+		service.deleteCrontabTask(record);
+	}
 
 }

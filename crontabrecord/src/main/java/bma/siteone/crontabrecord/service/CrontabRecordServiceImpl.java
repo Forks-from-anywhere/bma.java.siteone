@@ -65,6 +65,14 @@ public class CrontabRecordServiceImpl implements CrontabRecordService {
 		record.setLastRunTime((int) (new Date().getTime() / 1000));
 		addOrUpdateRecord(record);
 	}
+	
+	public void deleteCrontabTask(CrontabTaskInfo info){
+		CrontabTaskRecord record = getRecord(info.geteName());
+		if (record == null) {
+			throw new RuntimeException("can not find record.eName=" + info.geteName());
+		}
+		deleteRecord(record);
+	}
 
 	private void addOrUpdateRecord(CrontabTaskRecord record) {
 		try {
@@ -87,6 +95,16 @@ public class CrontabRecordServiceImpl implements CrontabRecordService {
 			logger.info("record information " + ToStringUtil.toString(record));
 		} catch (Exception e) {
 			logger.error("record information error.", e);
+		}
+	}
+	
+	private void deleteRecord(CrontabTaskRecord record){
+		try{
+			String sql = "DELETE FROM crontab_run_time WHERE eName='" + record.geteName() + "'";
+			jdbcTemplate.execute(sql);
+			logger.info("deleteRecord information " + ToStringUtil.toString(record));
+		}catch(Exception e){
+			logger.error("deleteRecord error.", e);
 		}
 	}
 

@@ -26,4 +26,10 @@ public interface CrontabRecordService {
 	 *            消耗时间 (ms)
 	 */
 	public void endCrontabTaskWhenFailed(CrontabTaskInfo info, int elapsedTime);
+
+	/**
+	 * 删除定时任务
+	 * @param info
+	 */
+	public void deleteCrontabTask(CrontabTaskInfo info);
 }
