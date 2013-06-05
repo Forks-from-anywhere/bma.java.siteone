@@ -11,26 +11,26 @@ import org.slf4j.LoggerFactory;
 import com.duowan.service.webdb.impl.WebdbServiceImpl;
 import com.duowan.service.webdb.po.WebdbUserInfo;
 
-import bma.siteone.nick.dao.NickUserDAOService;
+import bma.siteone.nick.dao.NickUserSiteOneDAOService;
 import bma.siteone.nick.po.NickUser;
 
 public class NickServiceImpl implements NickService {
 	
 	private static final Logger logger = LoggerFactory.getLogger(NickServiceImpl.class);
 	
-	private NickUserDAOService nickUserDAOService;
+	private NickUserSiteOneDAOService nickUserSiteOneDAOService;
 	
 	private WebdbServiceImpl webdbService;
 
 	@Override
 	public List<NickUser> getNicks(List<Long> uids, int overdueTime) {
 		logger.info("[NickServiceImpl - getNicks start]");
-		List<NickUser> nickUsers = getNickUserDAOService().getNickUserList(uids);
-		getNickUserDAOService().updateNickUserOverdueTime(uids,overdueTime);
+		List<NickUser> nickUsers = nickUserSiteOneDAOService.getNickUserList(uids);
+		nickUserSiteOneDAOService.updateNickUserOverdueTime(uids,overdueTime);
 		List<NickUser> others =  getOthers(nickUsers, uids,overdueTime);
-		getNickUserDAOService().updateNickUserList(others);
+		nickUserSiteOneDAOService.updateNickUserList(others);
 		logger.info("[NickServiceImpl - getNicks end]");
-		return getNickUserDAOService().getNickUserList(uids);
+		return nickUserSiteOneDAOService.getNickUserList(uids);
 	}
 	
 	private Map<Long,NickUser> getNickUserMap(List<NickUser> nickUsers){
@@ -69,11 +69,11 @@ public class NickServiceImpl implements NickService {
 		return webdbService;
 	}
 
-	public void setNickUserDAOService(NickUserDAOService nickUserDAOService) {
-		this.nickUserDAOService = nickUserDAOService;
+	public void setNickUserSiteOneDAOService(NickUserSiteOneDAOService nickUserSiteOneDAOService) {
+		this.nickUserSiteOneDAOService = nickUserSiteOneDAOService;
 	}
 
-	public NickUserDAOService getNickUserDAOService() {
-		return nickUserDAOService;
+	public NickUserSiteOneDAOService getNickUserSiteOneDAOService() {
+		return nickUserSiteOneDAOService;
 	}
 }

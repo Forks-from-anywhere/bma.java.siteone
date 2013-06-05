@@ -14,9 +14,9 @@ import org.springframework.jdbc.core.RowMapper;
 import bma.common.langutil.core.ToStringUtil;
 import bma.siteone.nick.po.NickUser;
 
-public class NickUserDAOService extends BaseDAOService {
+public class NickUserSiteOneDAOService extends BaseNickDAOService {
 
-	private static final Logger logger = LoggerFactory.getLogger(NickUserDAOService.class);
+	private static final Logger logger = LoggerFactory.getLogger(NickUserSiteOneDAOService.class);
 
 	private String nickUserTable = "nick_user";
 

@@ -14,12 +14,12 @@
 	<!-- 导入外部文件 -->
 	<context:property-placeholder location="classpath:service.properties" />
 	
-	<bean id="nickService" class="bma.siteone.nick.service.NickServiceImpl">
-		<property name="nickUserDAOService" ref="nickUserDAOService"></property>
+	<bean id="nickSiteOneService" class="bma.siteone.nick.service.NickServiceImpl">
+		<property name="nickUserSiteOneDAOService" ref="nickUserSiteOneDAOService"></property>
 		<property name="webdbService" ref="webdbService"></property>
 	</bean>
 	
-	<bean id="baseDAOService" class="bma.siteone.nick.dao.BaseDAOService"
+	<bean id="baseNickDAOService" class="bma.siteone.nick.dao.BaseDAOService"
 		abstract="true">
 		<property name="jdbcTemplate" ref="jdbcTemplate"></property>
 	</bean>
@@ -29,7 +29,7 @@
 		<property name="port" value="${open_webdb_port}"></property>
 	</bean>
 	
-	<bean id="nickUserDAOService" class="bma.siteone.nick.dao.NickUserDAOService" parent="baseDAOService">
+	<bean id="nickUserSiteOneDAOService" class="bma.siteone.nick.dao.NickUserSiteOneDAOService" parent="baseNickDAOService">
 		
 	</bean>
 

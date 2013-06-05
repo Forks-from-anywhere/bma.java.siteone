@@ -2,7 +2,7 @@ package bma.siteone.nick.dao;
 
 import org.springframework.jdbc.core.JdbcTemplate;
 
-public abstract class BaseDAOService {
+public abstract class BaseNickDAOService {
 
 	protected JdbcTemplate jdbcTemplate;
 	

@@ -25,7 +25,7 @@ public class NickServiceImplTest {
 		SpringTestcaseUtil.disableDebug();
 		JdbcTemplateUtil.disableDebug(true);
 		context = new SpringTestcaseUtil.ApplicationContextBuilder().project("src/test/resources/service.xml").build();
-		service = context.getBean("nickService", NickService.class);
+		service = context.getBean("nickSiteOneService", NickService.class);
 	}
 
 	@After
