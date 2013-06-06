@@ -99,6 +99,9 @@ public class CrontabServiceThrift implements TCrontabService.Iface {
 					}
 					task.setLogId(service.getService());
 					task.begin();
+					if(serviceName.equals("push_blood_roll")){
+						service.setDummyRunning(true);
+					}
 					service.execute();
 				} finally {
 					task.addNow().addMessage("op", "callRankService.serviceName=" + serviceName);
