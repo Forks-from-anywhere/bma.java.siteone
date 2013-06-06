@@ -24,12 +24,12 @@ public class NickServiceImpl implements NickService {
 
 	@Override
 	public List<NickUser> getNicks(List<Long> uids, int overdueTime) {
+		logger.debug("[NickServiceImpl] uids=>[" + uids + " ], overdueTime = " + overdueTime);
 		logger.info("[NickServiceImpl - getNicks start]");
 		List<NickUser> nickUsers = nickUserSiteOneDAOService.getNickUserList(uids);
 		nickUserSiteOneDAOService.updateNickUserOverdueTime(uids,overdueTime);
 		List<NickUser> others =  getOthers(nickUsers, uids,overdueTime);
 		nickUserSiteOneDAOService.updateNickUserList(others);
-		logger.info("[NickServiceImpl - getNicks end]");
 		return nickUserSiteOneDAOService.getNickUserList(uids);
 	}
 	

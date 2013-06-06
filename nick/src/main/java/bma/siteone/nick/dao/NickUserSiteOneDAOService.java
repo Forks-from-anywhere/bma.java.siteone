@@ -100,7 +100,9 @@ public class NickUserSiteOneDAOService extends BaseNickDAOService {
 				return list.size();
 			}
 		};
-		String batchInsertSql = "replace into " + nickUserTable + "(uid,nick,overdue_time,modify_time) VALUES(?,?,?,?)";
+		String batchInsertSql = "insert into "
+			+ nickUserTable
+			+ "(uid,nick,overdue_time,modify_time) VALUES(?,?,?,?) ON DUPLICATE KEY UPDATE nick = VALUES(nick) , overdue_time = VALUES(overdue_time) , modify_time = VALUES(modify_time)";
 		jdbcTemplate.batchUpdate(batchInsertSql, pss);
 	}
 }
