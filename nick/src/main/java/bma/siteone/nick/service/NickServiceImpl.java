@@ -25,7 +25,6 @@ public class NickServiceImpl implements NickService {
 	@Override
 	public List<NickUser> getNicks(List<Long> uids, int overdueTime) {
 		logger.debug("[NickServiceImpl] uids=>[" + uids + " ], overdueTime = " + overdueTime);
-		logger.info("[NickServiceImpl - getNicks start]");
 		List<NickUser> nickUsers = nickUserSiteOneDAOService.getNickUserList(uids);
 		nickUserSiteOneDAOService.updateNickUserOverdueTime(uids,overdueTime);
 		List<NickUser> others =  getOthers(nickUsers, uids,overdueTime);
@@ -45,7 +44,7 @@ public class NickServiceImpl implements NickService {
 		List<Long> uidOthers = new ArrayList<Long>();
 		Map<Long,NickUser> userMap = getNickUserMap(nickUsers);
 		for(Long uid : uids){
-			if(!userMap.containsKey(uid)){
+			if(!userMap.containsKey(uid) || userMap.get(uid).getNick() == null){
 				uidOthers.add(uid);
 			}
 		}
