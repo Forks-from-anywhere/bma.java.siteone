@@ -2,7 +2,6 @@ package bma.siteone.crontabrecord.service;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -133,55 +132,6 @@ public class CrontabRecordServiceImpl implements CrontabRecordService {
 	}
 
 	private class CrontabTaskRecord extends CrontabTaskInfo {
-		/**
-		 *运行状态
-		 */
-		private CrontabRunStatus status;
-
-		/**
-		 * 开始运行时间(s的时间戳)
-		 */
-		private int startTime;
-		/**
-		 * 消耗时间（ms）
-		 */
-		private int elapsedTime;
-		/**
-		 * 运行结束时间(s的时间戳)
-		 */
-		private int lastRunTime;
-
-		public CrontabRunStatus getStatus() {
-			return status;
-		}
-
-		public void setStatus(CrontabRunStatus status) {
-			this.status = status;
-		}
-
-		public int getStartTime() {
-			return startTime;
-		}
-
-		public void setStartTime(int startTime) {
-			this.startTime = startTime;
-		}
-
-		public int getElapsedTime() {
-			return elapsedTime;
-		}
-
-		public void setElapsedTime(int elapsedTime) {
-			this.elapsedTime = elapsedTime;
-		}
-
-		public int getLastRunTime() {
-			return lastRunTime;
-		}
-
-		public void setLastRunTime(int lastRunTime) {
-			this.lastRunTime = lastRunTime;
-		}
 
 	}
 }
