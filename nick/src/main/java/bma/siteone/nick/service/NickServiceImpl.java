@@ -24,6 +24,10 @@ public class NickServiceImpl implements NickService {
 
 	@Override
 	public List<NickUser> getNicks(List<Long> uids, int overdueTime) {
+		if(uids == null || uids.isEmpty()){
+			logger.info("uids is null");
+			return null;
+		}
 		logger.debug("[NickServiceImpl] uids=>[" + uids + " ], overdueTime = " + overdueTime);
 		List<NickUser> nickUsers = nickUserSiteOneDAOService.getNickUserList(uids);
 		nickUserSiteOneDAOService.updateNickUserOverdueTime(uids,overdueTime);

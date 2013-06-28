@@ -32,6 +32,10 @@
 					<property name="rootFile" value="d:/wamp/www/temp/filestore/medal"/>					
 				</bean>	
 				<bean class="bma.siteone.filestore.service.FileStoreConfig">
+					<property name="appId" value="live.actprop"/>
+					<property name="rootFile" value="d:/wamp/www/temp/filestore/actprop"/>					
+				</bean>	
+				<bean class="bma.siteone.filestore.service.FileStoreConfig">
 					<property name="appId" value="live.user_temp"/>
 					<property name="rootFile" value="d:/wamp/www/temp/filestore/user_temp"/>					
 				</bean>
