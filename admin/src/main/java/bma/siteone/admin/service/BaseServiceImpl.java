@@ -571,7 +571,7 @@ public class BaseServiceImpl{
 		}
 		
 		//查询用户的角色
-		List<AdminRole> rolesList = queryUserRoles(userName);
+		List<AdminRole> rolesList = queryUserAppRoles(userName, appName);
 		for(AdminRole _role : rolesList){
 			String _roleName = _role.getRoleName();
 			//查询角色对应的操作
@@ -589,9 +589,27 @@ public class BaseServiceImpl{
 	@Transactional(propagation = Propagation.NOT_SUPPORTED, readOnly = true)
 	public List<AdminRole> queryUserRoles(String userName){
 		
-		String sql = "SELECT * FROM "+adminAuthUserRoleTableName+" WHERE user_name=?";
+		String sql = "SELECT * FROM "+adminAuthUserRoleTableName+" WHERE user_name='"+userName+"'";
 		
-		List<AdminAuth> authsList = jdbcTemplate.query(sql, new Object[]{userName}, new AdminAuthRowMapper());
+		List<AdminAuth> authsList = jdbcTemplate.query(sql, new AdminAuthRowMapper());
+		
+		List<AdminRole> rolesList = new ArrayList<AdminRole>();
+		for(AdminAuth auth : authsList){
+			AdminRole role = getRole(auth.getRoleName(), auth.getAppName());
+			if(role != null){
+				rolesList.add(role);
+			}
+		}
+		
+		return rolesList;
+	}
+	
+	@Transactional(propagation = Propagation.NOT_SUPPORTED, readOnly = true)
+	public List<AdminRole> queryUserAppRoles(String userName, String appName){
+		
+		String sql = "SELECT * FROM "+adminAuthUserRoleTableName+" WHERE user_name='"+userName+"' and app_name='"+appName+"'";
+		
+		List<AdminAuth> authsList = jdbcTemplate.query(sql, new AdminAuthRowMapper());
 		
 		List<AdminRole> rolesList = new ArrayList<AdminRole>();
 		for(AdminAuth auth : authsList){
@@ -1487,7 +1505,7 @@ public class BaseServiceImpl{
 		//查询用户对应的所有角色
 		if(!userList.isEmpty()){
 			for (AdminUser user : userList) {
-				List<AdminRole> rolesList = queryUserRoles(user.getUserName());
+				List<AdminRole> rolesList = queryUserAppRoles(user.getUserName(),appName);
 				if(!rolesList.isEmpty()){
 					List<String> roles = new ArrayList<String>();
 					for (AdminRole adminRole : rolesList) {
