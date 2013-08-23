@@ -9,7 +9,7 @@
 		<version>0.0.1-SNAPSHOT</version>
 	</parent>
 	<artifactId>evaluate</artifactId>
-	<version>1.0.0-SNAPSHOT</version>
+	<version>1.2.2</version>
 	<name>evaluate</name>
 	<url>http://maven.apache.org</url>
 	<properties>
@@ -18,13 +18,8 @@
 	<dependencies>
 		<dependency>
 			<groupId>bma.java.common</groupId>
-			<artifactId>thrift</artifactId>
-			<version>1.0.0-SNAPSHOT</version>
-		</dependency>
-		<dependency>
-			<groupId>bma.java.common</groupId>
 			<artifactId>jdbctemplate</artifactId>
-			<version>1.0.0-SNAPSHOT</version>
+			<version>1.1.9</version>
 		</dependency>
 	</dependencies>
 </project>
