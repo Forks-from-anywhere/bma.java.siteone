@@ -10,17 +10,18 @@ import org.springframework.context.support.FileSystemXmlApplicationContext;
 import bma.common.jdbctemplate.JdbcTemplateUtil;
 import bma.common.langutil.core.ObjectUtil;
 import bma.common.langutil.testcase.SpringTestcaseUtil;
-import bma.siteone.netty.thrift.core.NettyThriftServer;
+import bma.common.netty.thrift.core.NettyThriftServer;
 
 public class AlarmServerTest {
 
 	FileSystemXmlApplicationContext context;
-	
+
 	@Before
 	public void setUp() throws Exception {
 		SpringTestcaseUtil.disableDebug();
 		JdbcTemplateUtil.disableDebug(true);
-		context = new SpringTestcaseUtil.ApplicationContextBuilder().project("src/test/resources/spring_server.xml").build();
+		context = new SpringTestcaseUtil.ApplicationContextBuilder().project(
+				"src/test/resources/spring_server.xml").build();
 	}
 
 	@After
@@ -28,7 +29,7 @@ public class AlarmServerTest {
 		if (context != null)
 			context.close();
 	}
-	
+
 	/**
 	 * 测试服务端启动
 	 * 
@@ -36,21 +37,21 @@ public class AlarmServerTest {
 	 */
 	@Test
 	public void testServer() throws Exception {
-		NettyThriftServer s1 = context.getBean("server", NettyThriftServer.class);
+		NettyThriftServer s1 = context.getBean("server",
+				NettyThriftServer.class);
 		System.out.println(s1.toString());
 
-		s1.start();	
-		
-		while(new File("d:\\lock.txt").exists()){
+		s1.start();
+
+		while (new File("d:\\lock.txt").exists()) {
 			ObjectUtil.waitFor(this, 5000000);
-//			System.out.println("sleep 5");
+			// System.out.println("sleep 5");
 		}
-		
+
 		s1.close();
-		
+
 		System.out.println("### close ###");
-		
-		
+
 	}
 
 }
