@@ -1,0 +1,119 @@
+{
+	"struct":	{
+		"TMedal":	{
+			"members":	[{
+					"key":	1,
+					"name":	"id",
+					"type":	"i32"
+				}, {
+					"key":	2,
+					"name":	"name",
+					"type":	"string"
+				}, {
+					"key":	3,
+					"name":	"description",
+					"type":	"string"
+				}, {
+					"key":	4,
+					"name":	"activity_url",
+					"type":	"string"
+				}, {
+					"key":	5,
+					"name":	"highlight_icon",
+					"type":	"string"
+				}, {
+					"key":	6,
+					"name":	"ash_icon",
+					"type":	"string"
+				}, {
+					"key":	7,
+					"name":	"hd_icon",
+					"type":	"string"
+				}, {
+					"key":	8,
+					"name":	"icon_url",
+					"type":	"string"
+				}, {
+					"key":	9,
+					"name":	"num",
+					"type":	"i32"
+				}, {
+					"key":	10,
+					"name":	"rules",
+					"type":	"string"
+				}, {
+					"key":	11,
+					"name":	"start_time",
+					"type":	"i32"
+				}, {
+					"key":	12,
+					"name":	"end_time",
+					"type":	"i32"
+				}]
+		},
+		"TMedalLstResult":	{
+			"members":	[{
+					"key":	1,
+					"name":	"medalList",
+					"type":	{
+						"name":	"list",
+						"inner":	"TMedal"
+					}
+				}]
+		}
+	},
+	"service":	{
+		"Test":	{
+			"useMedal":	{
+				"args":	[{
+						"key":	1,
+						"name":	"medal",
+						"type":	"TMedal"
+					}],
+				"oneway":	true,
+				"return":	"void"
+			},
+			"medalNames":	{
+				"args":	[],
+				"return":	{
+					"name":	"set",
+					"inner":	"string"
+				}
+			},
+			"getMedal":	{
+				"args":	[{
+						"key":	1,
+						"name":	"ids",
+						"type":	{
+							"name":	"list",
+							"inner":	"string"
+						}
+					}],
+				"return":	{
+					"name":	"map",
+					"key":	"string",
+					"inner":	{
+						"name":	"list",
+						"inner":	"TMedal"
+					}
+				}
+			},
+			"error":	{
+				"args":	[{
+						"key":	1,
+						"name":	"msg",
+						"type":	"string"
+					}],
+				"return":	"void"
+			},
+			"sleep":	{
+				"args":	[{
+						"key":	1,
+						"name":	"time",
+						"type":	"i32"
+					}],
+				"return":	"void"
+			}
+		}
+	}
+}

@@ -87,5 +87,6 @@
     	<module>actionlock</module>
     	<module>message</module>	
     	<module>config</module>
+		<module>thrift-stub</module>
   </modules>
 </project>
