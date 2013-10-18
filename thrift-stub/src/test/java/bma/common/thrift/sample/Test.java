@@ -11,7 +11,6 @@ import org.apache.thrift.scheme.SchemeFactory;
 import org.apache.thrift.scheme.StandardScheme;
 
 import org.apache.thrift.scheme.TupleScheme;
-import org.apache.thrift.protocol.TStruct;
 import org.apache.thrift.protocol.TTupleProtocol;
 import java.util.List;
 import java.util.ArrayList;
@@ -38,7 +37,7 @@ public class Test {
 
     public Map<String,List<TMedal>> getMedal(List<String> ids) throws org.apache.thrift.TException;
 
-    public void error(String msg) throws org.apache.thrift.TException;
+    public TMedal medal(String id) throws org.apache.thrift.TException;
 
     public void sleep(int time) throws org.apache.thrift.TException;
 
@@ -52,7 +51,7 @@ public class Test {
 
     public void getMedal(List<String> ids, org.apache.thrift.async.AsyncMethodCallback<AsyncClient.getMedal_call> resultHandler) throws org.apache.thrift.TException;
 
-    public void error(String msg, org.apache.thrift.async.AsyncMethodCallback<AsyncClient.error_call> resultHandler) throws org.apache.thrift.TException;
+    public void medal(String id, org.apache.thrift.async.AsyncMethodCallback<AsyncClient.medal_call> resultHandler) throws org.apache.thrift.TException;
 
     public void sleep(int time, org.apache.thrift.async.AsyncMethodCallback<AsyncClient.sleep_call> resultHandler) throws org.apache.thrift.TException;
 
@@ -135,24 +134,27 @@ public class Test {
       throw new org.apache.thrift.TApplicationException(org.apache.thrift.TApplicationException.MISSING_RESULT, "getMedal failed: unknown result");
     }
 
-    public void error(String msg) throws org.apache.thrift.TException
+    public TMedal medal(String id) throws org.apache.thrift.TException
     {
-      send_error(msg);
-      recv_error();
+      send_medal(id);
+      return recv_medal();
     }
 
-    public void send_error(String msg) throws org.apache.thrift.TException
+    public void send_medal(String id) throws org.apache.thrift.TException
     {
-      error_args args = new error_args();
-      args.setMsg(msg);
-      sendBase("error", args);
+      medal_args args = new medal_args();
+      args.setId(id);
+      sendBase("medal", args);
     }
 
-    public void recv_error() throws org.apache.thrift.TException
+    public TMedal recv_medal() throws org.apache.thrift.TException
     {
-      error_result result = new error_result();
-      receiveBase(result, "error");
-      return;
+      medal_result result = new medal_result();
+      receiveBase(result, "medal");
+      if (result.isSetSuccess()) {
+        return result.success;
+      }
+      throw new org.apache.thrift.TApplicationException(org.apache.thrift.TApplicationException.MISSING_RESULT, "medal failed: unknown result");
     }
 
     public void sleep(int time) throws org.apache.thrift.TException
@@ -285,35 +287,35 @@ public class Test {
       }
     }
 
-    public void error(String msg, org.apache.thrift.async.AsyncMethodCallback<error_call> resultHandler) throws org.apache.thrift.TException {
+    public void medal(String id, org.apache.thrift.async.AsyncMethodCallback<medal_call> resultHandler) throws org.apache.thrift.TException {
       checkReady();
-      error_call method_call = new error_call(msg, resultHandler, this, ___protocolFactory, ___transport);
+      medal_call method_call = new medal_call(id, resultHandler, this, ___protocolFactory, ___transport);
       this.___currentMethod = method_call;
       ___manager.call(method_call);
     }
 
-    public static class error_call extends org.apache.thrift.async.TAsyncMethodCall {
-      private String msg;
-      public error_call(String msg, org.apache.thrift.async.AsyncMethodCallback<error_call> resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws org.apache.thrift.TException {
+    public static class medal_call extends org.apache.thrift.async.TAsyncMethodCall {
+      private String id;
+      public medal_call(String id, org.apache.thrift.async.AsyncMethodCallback<medal_call> resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws org.apache.thrift.TException {
         super(client, protocolFactory, transport, resultHandler, false);
-        this.msg = msg;
+        this.id = id;
       }
 
       public void write_args(org.apache.thrift.protocol.TProtocol prot) throws org.apache.thrift.TException {
-        prot.writeMessageBegin(new org.apache.thrift.protocol.TMessage("error", org.apache.thrift.protocol.TMessageType.CALL, 0));
-        error_args args = new error_args();
-        args.setMsg(msg);
+        prot.writeMessageBegin(new org.apache.thrift.protocol.TMessage("medal", org.apache.thrift.protocol.TMessageType.CALL, 0));
+        medal_args args = new medal_args();
+        args.setId(id);
         args.write(prot);
         prot.writeMessageEnd();
       }
 
-      public void getResult() throws org.apache.thrift.TException {
+      public TMedal getResult() throws org.apache.thrift.TException {
         if (getState() != org.apache.thrift.async.TAsyncMethodCall.State.RESPONSE_READ) {
           throw new IllegalStateException("Method call not finished!");
         }
         org.apache.thrift.transport.TMemoryInputTransport memoryTransport = new org.apache.thrift.transport.TMemoryInputTransport(getFrameBuffer().array());
         org.apache.thrift.protocol.TProtocol prot = client.getProtocolFactory().getProtocol(memoryTransport);
-        (new Client(prot)).recv_error();
+        return (new Client(prot)).recv_medal();
       }
     }
 
@@ -365,7 +367,7 @@ public class Test {
       processMap.put("useMedal", new useMedal());
       processMap.put("medalNames", new medalNames());
       processMap.put("getMedal", new getMedal());
-      processMap.put("error", new error());
+      processMap.put("medal", new medal());
       processMap.put("sleep", new sleep());
       return processMap;
     }
@@ -417,18 +419,18 @@ public class Test {
       }
     }
 
-    private static class error<I extends Iface> extends org.apache.thrift.ProcessFunction<I, error_args> {
-      public error() {
-        super("error");
+    private static class medal<I extends Iface> extends org.apache.thrift.ProcessFunction<I, medal_args> {
+      public medal() {
+        super("medal");
       }
 
-      protected error_args getEmptyArgsInstance() {
-        return new error_args();
+      protected medal_args getEmptyArgsInstance() {
+        return new medal_args();
       }
 
-      protected error_result getResult(I iface, error_args args) throws org.apache.thrift.TException {
-        error_result result = new error_result();
-        iface.error(args.msg);
+      protected medal_result getResult(I iface, medal_args args) throws org.apache.thrift.TException {
+        medal_result result = new medal_result();
+        result.success = iface.medal(args.id);
         return result;
       }
     }
@@ -1348,7 +1350,7 @@ public class Test {
 
       public void read(org.apache.thrift.protocol.TProtocol iprot, medalNames_result struct) throws org.apache.thrift.TException {
         org.apache.thrift.protocol.TField schemeField;
-        TStruct s = iprot.readStructBegin();
+        iprot.readStructBegin();
         while (true)
         {
           schemeField = iprot.readFieldBegin();
@@ -2315,22 +2317,22 @@ public class Test {
 
   }
 
-  public static class error_args implements org.apache.thrift.TBase<error_args, error_args._Fields>, java.io.Serializable, Cloneable   {
-    private static final org.apache.thrift.protocol.TStruct STRUCT_DESC = new org.apache.thrift.protocol.TStruct("error_args");
+  public static class medal_args implements org.apache.thrift.TBase<medal_args, medal_args._Fields>, java.io.Serializable, Cloneable   {
+    private static final org.apache.thrift.protocol.TStruct STRUCT_DESC = new org.apache.thrift.protocol.TStruct("medal_args");
 
-    private static final org.apache.thrift.protocol.TField MSG_FIELD_DESC = new org.apache.thrift.protocol.TField("msg", org.apache.thrift.protocol.TType.STRING, (short)1);
+    private static final org.apache.thrift.protocol.TField ID_FIELD_DESC = new org.apache.thrift.protocol.TField("id", org.apache.thrift.protocol.TType.STRING, (short)1);
 
     private static final Map<Class<? extends IScheme>, SchemeFactory> schemes = new HashMap<Class<? extends IScheme>, SchemeFactory>();
     static {
-      schemes.put(StandardScheme.class, new error_argsStandardSchemeFactory());
-      schemes.put(TupleScheme.class, new error_argsTupleSchemeFactory());
+      schemes.put(StandardScheme.class, new medal_argsStandardSchemeFactory());
+      schemes.put(TupleScheme.class, new medal_argsTupleSchemeFactory());
     }
 
-    public String msg; // required
+    public String id; // required
 
     /** The set of fields this struct contains, along with convenience methods for finding and manipulating them. */
     public enum _Fields implements org.apache.thrift.TFieldIdEnum {
-      MSG((short)1, "msg");
+      ID((short)1, "id");
 
       private static final Map<String, _Fields> byName = new HashMap<String, _Fields>();
 
@@ -2345,8 +2347,8 @@ public class Test {
        */
       public static _Fields findByThriftId(int fieldId) {
         switch(fieldId) {
-          case 1: // MSG
-            return MSG;
+          case 1: // ID
+            return ID;
           default:
             return null;
         }
@@ -2390,71 +2392,71 @@ public class Test {
     public static final Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
     static {
       Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
-      tmpMap.put(_Fields.MSG, new org.apache.thrift.meta_data.FieldMetaData("msg", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+      tmpMap.put(_Fields.ID, new org.apache.thrift.meta_data.FieldMetaData("id", org.apache.thrift.TFieldRequirementType.DEFAULT, 
           new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.STRING)));
       metaDataMap = Collections.unmodifiableMap(tmpMap);
-      org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(error_args.class, metaDataMap);
+      org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(medal_args.class, metaDataMap);
     }
 
-    public error_args() {
+    public medal_args() {
     }
 
-    public error_args(
-      String msg)
+    public medal_args(
+      String id)
     {
       this();
-      this.msg = msg;
+      this.id = id;
     }
 
     /**
      * Performs a deep copy on <i>other</i>.
      */
-    public error_args(error_args other) {
-      if (other.isSetMsg()) {
-        this.msg = other.msg;
+    public medal_args(medal_args other) {
+      if (other.isSetId()) {
+        this.id = other.id;
       }
     }
 
-    public error_args deepCopy() {
-      return new error_args(this);
+    public medal_args deepCopy() {
+      return new medal_args(this);
     }
 
     @Override
     public void clear() {
-      this.msg = null;
+      this.id = null;
     }
 
-    public String getMsg() {
-      return this.msg;
+    public String getId() {
+      return this.id;
     }
 
-    public error_args setMsg(String msg) {
-      this.msg = msg;
+    public medal_args setId(String id) {
+      this.id = id;
       return this;
     }
 
-    public void unsetMsg() {
-      this.msg = null;
+    public void unsetId() {
+      this.id = null;
     }
 
-    /** Returns true if field msg is set (has been assigned a value) and false otherwise */
-    public boolean isSetMsg() {
-      return this.msg != null;
+    /** Returns true if field id is set (has been assigned a value) and false otherwise */
+    public boolean isSetId() {
+      return this.id != null;
     }
 
-    public void setMsgIsSet(boolean value) {
+    public void setIdIsSet(boolean value) {
       if (!value) {
-        this.msg = null;
+        this.id = null;
       }
     }
 
     public void setFieldValue(_Fields field, Object value) {
       switch (field) {
-      case MSG:
+      case ID:
         if (value == null) {
-          unsetMsg();
+          unsetId();
         } else {
-          setMsg((String)value);
+          setId((String)value);
         }
         break;
 
@@ -2463,8 +2465,8 @@ public class Test {
 
     public Object getFieldValue(_Fields field) {
       switch (field) {
-      case MSG:
-        return getMsg();
+      case ID:
+        return getId();
 
       }
       throw new IllegalStateException();
@@ -2477,8 +2479,8 @@ public class Test {
       }
 
       switch (field) {
-      case MSG:
-        return isSetMsg();
+      case ID:
+        return isSetId();
       }
       throw new IllegalStateException();
     }
@@ -2487,21 +2489,21 @@ public class Test {
     public boolean equals(Object that) {
       if (that == null)
         return false;
-      if (that instanceof error_args)
-        return this.equals((error_args)that);
+      if (that instanceof medal_args)
+        return this.equals((medal_args)that);
       return false;
     }
 
-    public boolean equals(error_args that) {
+    public boolean equals(medal_args that) {
       if (that == null)
         return false;
 
-      boolean this_present_msg = true && this.isSetMsg();
-      boolean that_present_msg = true && that.isSetMsg();
-      if (this_present_msg || that_present_msg) {
-        if (!(this_present_msg && that_present_msg))
+      boolean this_present_id = true && this.isSetId();
+      boolean that_present_id = true && that.isSetId();
+      if (this_present_id || that_present_id) {
+        if (!(this_present_id && that_present_id))
           return false;
-        if (!this.msg.equals(that.msg))
+        if (!this.id.equals(that.id))
           return false;
       }
 
@@ -2513,20 +2515,20 @@ public class Test {
       return 0;
     }
 
-    public int compareTo(error_args other) {
+    public int compareTo(medal_args other) {
       if (!getClass().equals(other.getClass())) {
         return getClass().getName().compareTo(other.getClass().getName());
       }
 
       int lastComparison = 0;
-      error_args typedOther = (error_args)other;
+      medal_args typedOther = (medal_args)other;
 
-      lastComparison = Boolean.valueOf(isSetMsg()).compareTo(typedOther.isSetMsg());
+      lastComparison = Boolean.valueOf(isSetId()).compareTo(typedOther.isSetId());
       if (lastComparison != 0) {
         return lastComparison;
       }
-      if (isSetMsg()) {
-        lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.msg, typedOther.msg);
+      if (isSetId()) {
+        lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.id, typedOther.id);
         if (lastComparison != 0) {
           return lastComparison;
         }
@@ -2548,14 +2550,14 @@ public class Test {
 
     @Override
     public String toString() {
-      StringBuilder sb = new StringBuilder("error_args(");
+      StringBuilder sb = new StringBuilder("medal_args(");
       boolean first = true;
 
-      sb.append("msg:");
-      if (this.msg == null) {
+      sb.append("id:");
+      if (this.id == null) {
         sb.append("null");
       } else {
-        sb.append(this.msg);
+        sb.append(this.id);
       }
       first = false;
       sb.append(")");
@@ -2582,15 +2584,15 @@ public class Test {
       }
     }
 
-    private static class error_argsStandardSchemeFactory implements SchemeFactory {
-      public error_argsStandardScheme getScheme() {
-        return new error_argsStandardScheme();
+    private static class medal_argsStandardSchemeFactory implements SchemeFactory {
+      public medal_argsStandardScheme getScheme() {
+        return new medal_argsStandardScheme();
       }
     }
 
-    private static class error_argsStandardScheme extends StandardScheme<error_args> {
+    private static class medal_argsStandardScheme extends StandardScheme<medal_args> {
 
-      public void read(org.apache.thrift.protocol.TProtocol iprot, error_args struct) throws org.apache.thrift.TException {
+      public void read(org.apache.thrift.protocol.TProtocol iprot, medal_args struct) throws org.apache.thrift.TException {
         org.apache.thrift.protocol.TField schemeField;
         iprot.readStructBegin();
         while (true)
@@ -2600,10 +2602,10 @@ public class Test {
             break;
           }
           switch (schemeField.id) {
-            case 1: // MSG
+            case 1: // ID
               if (schemeField.type == org.apache.thrift.protocol.TType.STRING) {
-                struct.msg = iprot.readString();
-                struct.setMsgIsSet(true);
+                struct.id = iprot.readString();
+                struct.setIdIsSet(true);
               } else { 
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
@@ -2619,13 +2621,13 @@ public class Test {
         struct.validate();
       }
 
-      public void write(org.apache.thrift.protocol.TProtocol oprot, error_args struct) throws org.apache.thrift.TException {
+      public void write(org.apache.thrift.protocol.TProtocol oprot, medal_args struct) throws org.apache.thrift.TException {
         struct.validate();
 
         oprot.writeStructBegin(STRUCT_DESC);
-        if (struct.msg != null) {
-          oprot.writeFieldBegin(MSG_FIELD_DESC);
-          oprot.writeString(struct.msg);
+        if (struct.id != null) {
+          oprot.writeFieldBegin(ID_FIELD_DESC);
+          oprot.writeString(struct.id);
           oprot.writeFieldEnd();
         }
         oprot.writeFieldStop();
@@ -2634,54 +2636,56 @@ public class Test {
 
     }
 
-    private static class error_argsTupleSchemeFactory implements SchemeFactory {
-      public error_argsTupleScheme getScheme() {
-        return new error_argsTupleScheme();
+    private static class medal_argsTupleSchemeFactory implements SchemeFactory {
+      public medal_argsTupleScheme getScheme() {
+        return new medal_argsTupleScheme();
       }
     }
 
-    private static class error_argsTupleScheme extends TupleScheme<error_args> {
+    private static class medal_argsTupleScheme extends TupleScheme<medal_args> {
 
       @Override
-      public void write(org.apache.thrift.protocol.TProtocol prot, error_args struct) throws org.apache.thrift.TException {
+      public void write(org.apache.thrift.protocol.TProtocol prot, medal_args struct) throws org.apache.thrift.TException {
         TTupleProtocol oprot = (TTupleProtocol) prot;
         BitSet optionals = new BitSet();
-        if (struct.isSetMsg()) {
+        if (struct.isSetId()) {
           optionals.set(0);
         }
         oprot.writeBitSet(optionals, 1);
-        if (struct.isSetMsg()) {
-          oprot.writeString(struct.msg);
+        if (struct.isSetId()) {
+          oprot.writeString(struct.id);
         }
       }
 
       @Override
-      public void read(org.apache.thrift.protocol.TProtocol prot, error_args struct) throws org.apache.thrift.TException {
+      public void read(org.apache.thrift.protocol.TProtocol prot, medal_args struct) throws org.apache.thrift.TException {
         TTupleProtocol iprot = (TTupleProtocol) prot;
         BitSet incoming = iprot.readBitSet(1);
         if (incoming.get(0)) {
-          struct.msg = iprot.readString();
-          struct.setMsgIsSet(true);
+          struct.id = iprot.readString();
+          struct.setIdIsSet(true);
         }
       }
     }
 
   }
 
-  public static class error_result implements org.apache.thrift.TBase<error_result, error_result._Fields>, java.io.Serializable, Cloneable   {
-    private static final org.apache.thrift.protocol.TStruct STRUCT_DESC = new org.apache.thrift.protocol.TStruct("error_result");
+  public static class medal_result implements org.apache.thrift.TBase<medal_result, medal_result._Fields>, java.io.Serializable, Cloneable   {
+    private static final org.apache.thrift.protocol.TStruct STRUCT_DESC = new org.apache.thrift.protocol.TStruct("medal_result");
 
+    private static final org.apache.thrift.protocol.TField SUCCESS_FIELD_DESC = new org.apache.thrift.protocol.TField("success", org.apache.thrift.protocol.TType.STRUCT, (short)0);
 
     private static final Map<Class<? extends IScheme>, SchemeFactory> schemes = new HashMap<Class<? extends IScheme>, SchemeFactory>();
     static {
-      schemes.put(StandardScheme.class, new error_resultStandardSchemeFactory());
-      schemes.put(TupleScheme.class, new error_resultTupleSchemeFactory());
+      schemes.put(StandardScheme.class, new medal_resultStandardSchemeFactory());
+      schemes.put(TupleScheme.class, new medal_resultTupleSchemeFactory());
     }
 
+    public TMedal success; // required
 
     /** The set of fields this struct contains, along with convenience methods for finding and manipulating them. */
     public enum _Fields implements org.apache.thrift.TFieldIdEnum {
-;
+      SUCCESS((short)0, "success");
 
       private static final Map<String, _Fields> byName = new HashMap<String, _Fields>();
 
@@ -2696,6 +2700,8 @@ public class Test {
        */
       public static _Fields findByThriftId(int fieldId) {
         switch(fieldId) {
+          case 0: // SUCCESS
+            return SUCCESS;
           default:
             return null;
         }
@@ -2734,37 +2740,87 @@ public class Test {
         return _fieldName;
       }
     }
+
+    // isset id assignments
     public static final Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
     static {
       Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
+      tmpMap.put(_Fields.SUCCESS, new org.apache.thrift.meta_data.FieldMetaData("success", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+          new org.apache.thrift.meta_data.StructMetaData(org.apache.thrift.protocol.TType.STRUCT, TMedal.class)));
       metaDataMap = Collections.unmodifiableMap(tmpMap);
-      org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(error_result.class, metaDataMap);
+      org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(medal_result.class, metaDataMap);
     }
 
-    public error_result() {
+    public medal_result() {
+    }
+
+    public medal_result(
+      TMedal success)
+    {
+      this();
+      this.success = success;
     }
 
     /**
      * Performs a deep copy on <i>other</i>.
      */
-    public error_result(error_result other) {
+    public medal_result(medal_result other) {
+      if (other.isSetSuccess()) {
+        this.success = new TMedal(other.success);
+      }
     }
 
-    public error_result deepCopy() {
-      return new error_result(this);
+    public medal_result deepCopy() {
+      return new medal_result(this);
     }
 
     @Override
     public void clear() {
+      this.success = null;
+    }
+
+    public TMedal getSuccess() {
+      return this.success;
+    }
+
+    public medal_result setSuccess(TMedal success) {
+      this.success = success;
+      return this;
+    }
+
+    public void unsetSuccess() {
+      this.success = null;
+    }
+
+    /** Returns true if field success is set (has been assigned a value) and false otherwise */
+    public boolean isSetSuccess() {
+      return this.success != null;
+    }
+
+    public void setSuccessIsSet(boolean value) {
+      if (!value) {
+        this.success = null;
+      }
     }
 
     public void setFieldValue(_Fields field, Object value) {
       switch (field) {
+      case SUCCESS:
+        if (value == null) {
+          unsetSuccess();
+        } else {
+          setSuccess((TMedal)value);
+        }
+        break;
+
       }
     }
 
     public Object getFieldValue(_Fields field) {
       switch (field) {
+      case SUCCESS:
+        return getSuccess();
+
       }
       throw new IllegalStateException();
     }
@@ -2776,6 +2832,8 @@ public class Test {
       }
 
       switch (field) {
+      case SUCCESS:
+        return isSetSuccess();
       }
       throw new IllegalStateException();
     }
@@ -2784,14 +2842,23 @@ public class Test {
     public boolean equals(Object that) {
       if (that == null)
         return false;
-      if (that instanceof error_result)
-        return this.equals((error_result)that);
+      if (that instanceof medal_result)
+        return this.equals((medal_result)that);
       return false;
     }
 
-    public boolean equals(error_result that) {
+    public boolean equals(medal_result that) {
       if (that == null)
         return false;
+
+      boolean this_present_success = true && this.isSetSuccess();
+      boolean that_present_success = true && that.isSetSuccess();
+      if (this_present_success || that_present_success) {
+        if (!(this_present_success && that_present_success))
+          return false;
+        if (!this.success.equals(that.success))
+          return false;
+      }
 
       return true;
     }
@@ -2801,14 +2868,24 @@ public class Test {
       return 0;
     }
 
-    public int compareTo(error_result other) {
+    public int compareTo(medal_result other) {
       if (!getClass().equals(other.getClass())) {
         return getClass().getName().compareTo(other.getClass().getName());
       }
 
       int lastComparison = 0;
-      error_result typedOther = (error_result)other;
+      medal_result typedOther = (medal_result)other;
 
+      lastComparison = Boolean.valueOf(isSetSuccess()).compareTo(typedOther.isSetSuccess());
+      if (lastComparison != 0) {
+        return lastComparison;
+      }
+      if (isSetSuccess()) {
+        lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.success, typedOther.success);
+        if (lastComparison != 0) {
+          return lastComparison;
+        }
+      }
       return 0;
     }
 
@@ -2826,9 +2903,16 @@ public class Test {
 
     @Override
     public String toString() {
-      StringBuilder sb = new StringBuilder("error_result(");
+      StringBuilder sb = new StringBuilder("medal_result(");
       boolean first = true;
 
+      sb.append("success:");
+      if (this.success == null) {
+        sb.append("null");
+      } else {
+        sb.append(this.success);
+      }
+      first = false;
       sb.append(")");
       return sb.toString();
     }
@@ -2853,15 +2937,15 @@ public class Test {
       }
     }
 
-    private static class error_resultStandardSchemeFactory implements SchemeFactory {
-      public error_resultStandardScheme getScheme() {
-        return new error_resultStandardScheme();
+    private static class medal_resultStandardSchemeFactory implements SchemeFactory {
+      public medal_resultStandardScheme getScheme() {
+        return new medal_resultStandardScheme();
       }
     }
 
-    private static class error_resultStandardScheme extends StandardScheme<error_result> {
+    private static class medal_resultStandardScheme extends StandardScheme<medal_result> {
 
-      public void read(org.apache.thrift.protocol.TProtocol iprot, error_result struct) throws org.apache.thrift.TException {
+      public void read(org.apache.thrift.protocol.TProtocol iprot, medal_result struct) throws org.apache.thrift.TException {
         org.apache.thrift.protocol.TField schemeField;
         iprot.readStructBegin();
         while (true)
@@ -2871,6 +2955,15 @@ public class Test {
             break;
           }
           switch (schemeField.id) {
+            case 0: // SUCCESS
+              if (schemeField.type == org.apache.thrift.protocol.TType.STRUCT) {
+                struct.success = new TMedal();
+                struct.success.read(iprot);
+                struct.setSuccessIsSet(true);
+              } else { 
+                org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
+              }
+              break;
             default:
               org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
           }
@@ -2882,32 +2975,51 @@ public class Test {
         struct.validate();
       }
 
-      public void write(org.apache.thrift.protocol.TProtocol oprot, error_result struct) throws org.apache.thrift.TException {
+      public void write(org.apache.thrift.protocol.TProtocol oprot, medal_result struct) throws org.apache.thrift.TException {
         struct.validate();
 
         oprot.writeStructBegin(STRUCT_DESC);
+        if (struct.success != null) {
+          oprot.writeFieldBegin(SUCCESS_FIELD_DESC);
+          struct.success.write(oprot);
+          oprot.writeFieldEnd();
+        }
         oprot.writeFieldStop();
         oprot.writeStructEnd();
       }
 
     }
 
-    private static class error_resultTupleSchemeFactory implements SchemeFactory {
-      public error_resultTupleScheme getScheme() {
-        return new error_resultTupleScheme();
+    private static class medal_resultTupleSchemeFactory implements SchemeFactory {
+      public medal_resultTupleScheme getScheme() {
+        return new medal_resultTupleScheme();
       }
     }
 
-    private static class error_resultTupleScheme extends TupleScheme<error_result> {
+    private static class medal_resultTupleScheme extends TupleScheme<medal_result> {
 
       @Override
-      public void write(org.apache.thrift.protocol.TProtocol prot, error_result struct) throws org.apache.thrift.TException {
+      public void write(org.apache.thrift.protocol.TProtocol prot, medal_result struct) throws org.apache.thrift.TException {
         TTupleProtocol oprot = (TTupleProtocol) prot;
+        BitSet optionals = new BitSet();
+        if (struct.isSetSuccess()) {
+          optionals.set(0);
+        }
+        oprot.writeBitSet(optionals, 1);
+        if (struct.isSetSuccess()) {
+          struct.success.write(oprot);
+        }
       }
 
       @Override
-      public void read(org.apache.thrift.protocol.TProtocol prot, error_result struct) throws org.apache.thrift.TException {
+      public void read(org.apache.thrift.protocol.TProtocol prot, medal_result struct) throws org.apache.thrift.TException {
         TTupleProtocol iprot = (TTupleProtocol) prot;
+        BitSet incoming = iprot.readBitSet(1);
+        if (incoming.get(0)) {
+          struct.success = new TMedal();
+          struct.success.read(iprot);
+          struct.setSuccessIsSet(true);
+        }
       }
     }
 

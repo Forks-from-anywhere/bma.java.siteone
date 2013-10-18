@@ -98,13 +98,13 @@
 					}
 				}
 			},
-			"error":	{
+			"medal":	{
 				"args":	[{
 						"key":	1,
-						"name":	"msg",
+						"name":	"id",
 						"type":	"string"
 					}],
-				"return":	"void"
+				"return":	"TMedal"
 			},
 			"sleep":	{
 				"args":	[{

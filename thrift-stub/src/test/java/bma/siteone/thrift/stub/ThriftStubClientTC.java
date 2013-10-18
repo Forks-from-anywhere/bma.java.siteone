@@ -36,7 +36,6 @@ public class ThriftStubClientTC extends TestCase {
 				System.out.print(n);
 				System.out.print(",");
 			}
-			System.out.println("END");
 		}
 		if (TC == 2) {
 			List<String> ids = new ArrayList<String>();
@@ -52,11 +51,15 @@ public class ThriftStubClientTC extends TestCase {
 				}
 				System.out.println();
 			}
-			System.out.println("END");
 		}
 		if (TC == 3) {
+			TMedal m = client.medal("123");
+			System.out.println(m.toString());
+		}
+		if (TC == 4) {
 			client.sleep(1000);
 		}
+		System.out.println("END");
 		transport.close();
 	}
 

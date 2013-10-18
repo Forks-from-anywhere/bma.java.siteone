@@ -27,7 +27,7 @@ service Test {
    
    map<string, list<TMedal>> getMedal(1:list<string> ids);
 
-   void error(1:string msg),
+   TMedal medal(1:string id),
    
    void sleep(1:i32 time),
 }
