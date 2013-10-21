@@ -28,7 +28,7 @@ public class ThriftStubClientTC extends TestCase {
 		TProtocol protocol = new TBinaryProtocol(transport);
 		Test.Client client = new Test.Client(protocol);
 
-		int TC = 3;
+		int TC = 1;
 
 		if (TC == 1) {
 			Set<String> r = client.medalNames();

@@ -93,8 +93,8 @@ public class ThriftStubStoreFile implements ThriftStubStore {
 		}
 
 		if (mod) {
-			if (log.isDebugEnabled()) {
-				log.debug("refresh files, count = {}", fs.length);
+			if (log.isInfoEnabled()) {
+				log.info("refresh files, count = {}", fs.length);
 			}
 			synchronized (this) {
 				files.clear();
