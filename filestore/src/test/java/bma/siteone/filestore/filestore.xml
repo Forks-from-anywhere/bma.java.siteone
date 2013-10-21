@@ -17,40 +17,44 @@
 			<list>
 				<bean class="bma.siteone.filestore.service.FileStoreConfig">
 					<property name="appId" value="live.avatar"/>
-					<property name="rootFile" value="d:/wamp/www/temp/filestore/avatar"/>					
+					<property name="rootFile" value="d:/duowan/temp/filestore/avatar"/>					
 				</bean>
 				<bean class="bma.siteone.filestore.service.FileStoreConfig">
 					<property name="appId" value="live.activity_post"/>
-					<property name="rootFile" value="d:/wamp/www/temp/filestore/activity_post"/>					
+					<property name="rootFile" value="d:/duowan/temp/filestore/activity_post"/>					
 				</bean>
 				<bean class="bma.siteone.filestore.service.FileStoreConfig">
 					<property name="appId" value="live.slideshow"/>
-					<property name="rootFile" value="d:/wamp/www/temp/filestore/slideshow"/>					
+					<property name="rootFile" value="d:/duowan/temp/filestore/slideshow"/>					
 				</bean>	
 				<bean class="bma.siteone.filestore.service.FileStoreConfig">
 					<property name="appId" value="live.medal"/>
-					<property name="rootFile" value="d:/wamp/www/temp/filestore/medal"/>					
+					<property name="rootFile" value="d:/duowan/temp/filestore/medal"/>					
 				</bean>	
 				<bean class="bma.siteone.filestore.service.FileStoreConfig">
 					<property name="appId" value="live.actprop"/>
-					<property name="rootFile" value="d:/wamp/www/temp/filestore/actprop"/>					
+					<property name="rootFile" value="d:/duowan/temp/filestore/actprop"/>					
 				</bean>	
 				<bean class="bma.siteone.filestore.service.FileStoreConfig">
 					<property name="appId" value="live.user_temp"/>
-					<property name="rootFile" value="d:/wamp/www/temp/filestore/user_temp"/>					
+					<property name="rootFile" value="d:/duowan/temp/filestore/user_temp"/>					
 				</bean>
 				<bean class="bma.siteone.filestore.service.FileStoreConfig">
 					<property name="appId" value="live.channel_pic"/>
-					<property name="rootFile" value="d:/wamp/www/temp/filestore/channel_pic"/>					
+					<property name="rootFile" value="d:/duowan/temp/filestore/channel_pic"/>					
 				</bean>
 				<bean class="bma.siteone.filestore.service.FileStoreConfig">
 					<property name="appId" value="live.public"/>
-					<property name="rootFile" value="d:/wamp/www/temp/filestore/public"/>					
+					<property name="rootFile" value="d:/duowan/temp/filestore/public"/>					
 				</bean>	
 				<bean class="bma.siteone.filestore.service.FileStoreConfig">
 					<property name="appId" value="live.organization"/>
-					<property name="rootFile" value="d:/wamp/www/temp/filestore/organization"/>					
-				</bean>						
+					<property name="rootFile" value="d:/duowan/temp/filestore/organization"/>					
+				</bean>
+				<bean class="bma.siteone.filestore.service.FileStoreConfig">
+					<property name="appId" value="live.match"/>
+					<property name="rootFile" value="d:/duowan/temp/filestore/match"/>					
+				</bean>							
 			</list>
 		</property>
 	</bean>

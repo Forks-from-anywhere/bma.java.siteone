@@ -9,7 +9,7 @@
 		<version>0.0.1-SNAPSHOT</version>
 	</parent>
 	<artifactId>siteone-config</artifactId>
-	<version>1.2.2</version>
+	<version>1.2.3</version>
 	<name>siteone-config</name>
 	<url>http://maven.apache.org</url>
 	<properties>

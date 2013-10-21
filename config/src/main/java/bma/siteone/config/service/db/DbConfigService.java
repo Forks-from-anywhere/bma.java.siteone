@@ -54,8 +54,10 @@ public class DbConfigService implements ConfigService {
 	}
 
 	private void initConfigGroups() {
-		this.groups = new HashMap<String, ConfigGroup>();
-		groups.clear();
+		if(groups == null){
+			groups = new HashMap<String, ConfigGroup>();
+		}
+		Map<String, ConfigGroup> tmp = new HashMap<String, ConfigGroup>();
 		
 		//查询当前应用在数据库中的所有配置
 		String sql = "SELECT * FROM "+configTableName+" WHERE app='"+ app +"'";
@@ -78,10 +80,12 @@ public class DbConfigService implements ConfigService {
 			
 			if(!groupConfigs.isEmpty()){
 				for (Entry<String, Map<String, String>> e : groupConfigs.entrySet()) {
-					this.groups.put(e.getKey(), new DbConfigGroup(e.getValue()));
+					tmp.put(e.getKey(), new DbConfigGroup(e.getValue()));
 				}
 			}
 		}
+		
+		this.groups = tmp;
 		
 	}
 	
